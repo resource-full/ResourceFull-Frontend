@@ -1,0 +1,56 @@
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  background: #f8f9fc;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  color: #11243d;
+  transition: all 150ms ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.input:focus {
+  border-color: #024A94;
+  background: #ffffff;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+}
+
+.checkboxActive {
+  background: #024A94;
+  border-color: #024A94;
+}
+
+.menuItemHover:hover {
+  background-color: #f8f9fc;
+}
+
+.transparentInput {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.transparentInput:focus {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}

@@ -1,0 +1,181 @@
+.hero {
+  padding: 80px 20px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.headline {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #11243d;
+  max-width: 900px;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+.accent {
+  background: linear-gradient(90deg, #1565d8 0%, #25c16f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subheadline {
+  font-size: 1.125rem;
+  color: #5a6474;
+  max-width: 600px;
+  line-height: 1.6;
+  margin-bottom: 48px;
+}
+
+/* ---------- Search Bar ---------- */
+
+.searchContainer {
+  width: 100%;
+  max-width: 800px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border-radius: 100px;
+  padding: 8px 12px 8px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 10;
+}
+
+.searchGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  position: relative;
+}
+
+.searchLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #11243d;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.searchSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5a6474;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.divider {
+  width: 1px;
+  height: 40px;
+  background: #e2e8f0;
+}
+
+.findBtn {
+  background: #024A94;
+  color: #ffffff;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 150ms ease;
+  white-space: nowrap;
+}
+
+.findBtn:hover {
+  background: #013a75;
+}
+
+/* ---------- Popular Tags ---------- */
+
+.popularSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.popularLabel {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #11243d;
+}
+
+.tag {
+  font-size: 0.8125rem;
+  color: #5a6474;
+  padding: 4px 12px;
+  background: #f8f9fc;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.tag:hover {
+  background: #eef2ff;
+  color: #024A94;
+}
+
+/* ---------- Floating Icons ---------- */
+
+.floatingIcon {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.icon1 { top: 15%; left: 10%; animation: float 4s ease-in-out infinite; }
+.icon2 { top: 20%; right: 12%; animation: float 3s ease-in-out infinite; }
+.icon3 { bottom: 20%; left: 15%; animation: float 5s ease-in-out infinite; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+  .headline { font-size: 2.75rem; }
+  .searchContainer { 
+    max-width: 90%; 
+    border-radius: 20px;
+    padding: 20px;
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+  .divider { display: none; }
+  .findBtn { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .hero { padding: 40px 16px 60px; }
+  .headline { font-size: 2rem; }
+  .subheadline { font-size: 1rem; margin-bottom: 32px; }
+  .floatingIcon { display: none; }
+  .popularSection {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tag {
+    font-size: 0.875rem;
+    padding: 8px 16px;
+  }
+}

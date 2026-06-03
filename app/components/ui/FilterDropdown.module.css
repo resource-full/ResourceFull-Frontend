@@ -1,0 +1,111 @@
+.dropdownContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownTrigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  color: #5a6474;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 150ms ease;
+}
+
+.dropdownTrigger:hover {
+  color: #11243d;
+  background: #f0f4f8;
+}
+
+.triggerIcon {
+  color: #8c95a6;
+  display: flex;
+  margin-top: -3px;
+  align-items: center;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  min-width: 240px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchContainer {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 150ms ease;
+}
+
+.searchInput:focus {
+  border-color: #024A94;
+}
+
+.menuItems {
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.menuItem:hover {
+  background: #f8f9fc;
+}
+
+.itemLabel {
+  font-size: 0.9375rem;
+  color: #11243d;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+  background: #ffffff;
+}
+
+.checkboxSelected {
+  background: #024A94;
+  border-color: #024A94;
+}
+
+.checkIcon {
+  color: #ffffff;
+  width: 12px;
+  height: 12px;
+}

@@ -1,0 +1,60 @@
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.box {
+  width: 20px;
+  height: 20px;
+  background-color: #ffffff;
+  border: 1.5px solid #d6d9e1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+  flex-shrink: 0;
+}
+
+.checkboxWrapper:hover .box {
+  border-color: #1565d8;
+}
+
+.input:checked ~ .box {
+  background-color: #1565d8;
+  border-color: #1565d8;
+}
+
+.checkIcon {
+  color: #ffffff;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.input:checked ~ .box .checkIcon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.label {
+  font-size: 0.875rem;
+  color: #11243d;
+  font-weight: 500;
+}
+
+.labelMuted {
+  color: #5a6474;
+  font-weight: 400;
+}

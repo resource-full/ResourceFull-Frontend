@@ -1,0 +1,109 @@
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.authOptions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.forgotPassword {
+  font-size: 0.8125rem;
+  color: #1565d8;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Divider ---------- */
+
+.dividerContainer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 8px 0;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: #f0f2f5;
+}
+
+.dividerText {
+  font-size: 0.8125rem;
+  color: #8c95a6;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* ---------- Social Login ---------- */
+
+.socialContainer {
+  display: flex;
+  gap: 8px;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.socialButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  background: #ffffff;
+  border: 1px solid #d6d9e1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  color: #11243d;
+}
+
+.socialButton:hover {
+  background: #f8f9fc;
+  border-color: #b0b8c9;
+}
+
+/* ---------- Footer Links ---------- */
+
+.footerLinks {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.signupText {
+  font-size: 0.875rem;
+  color: #5a6474;
+}
+
+.signupLink {
+  color: #1565d8;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signupLink:hover {
+  text-decoration: underline;
+}
+
+.termsContainer {
+  margin-top: 12px;
+}

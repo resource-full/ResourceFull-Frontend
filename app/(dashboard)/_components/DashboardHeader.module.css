@@ -1,0 +1,353 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 32px;
+  background-color: #FFFFFF;
+}
+
+.searchSection {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1;
+  background-color: #F6F6F6;
+  border-radius: 20px;
+  margin-right: 30px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  padding: 6px 6px 6px 16px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-right: 10px;
+  width: 100%;
+  max-width: 400px;
+  border-right: 1px solid #DFDFDF;
+}
+
+.searchIcon {
+  color: #8c95a6;
+  margin-right: 8px;
+  margin-top: -3px;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.9375rem;
+  color: #11243d;
+  background: transparent;
+}
+
+.searchInput::placeholder {
+  color: #8c95a6;
+}
+
+.searchBtn {
+  background: #024A94;
+  color: #ffffff;
+  border: none;
+  border-radius: 100px;
+  padding: 8px 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.searchBtn:hover {
+  background: #013a75;
+}
+
+.filterPillsContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filterPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f8f9fc;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #1565d8;
+  border: 1px solid transparent;
+}
+
+.pillIcon {
+  display: flex;
+  align-items: center;
+}
+
+.pillClose {
+  background: transparent;
+  border: none;
+  color: #1565d8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  color: #5a6474;
+  cursor: pointer;
+}
+
+.filterItem:hover {
+  color: #11243d;
+}
+
+.filterIcon {
+  color: #8c95a6;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.bellBtn {
+  background: transparent;
+  border: none;
+  color: #11243d;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.bellWrapper {
+  position: relative;
+}
+
+.notificationsDropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -60px;
+  width: 380px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.notifHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.notifTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notifTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #11243d;
+}
+
+.notifBadge {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.notifMarkRead {
+  font-size: 0.8125rem;
+  color: #024A94;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.notifMarkRead:hover {
+  text-decoration: underline;
+}
+
+.notifList {
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notifItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 150ms ease;
+  cursor: pointer;
+}
+
+.notifItem:hover {
+  background: #f8f9fc;
+}
+
+.notifItem:last-child {
+  border-bottom: none;
+}
+
+.notifIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffe4e6;
+  color: #11243d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.notifTextGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notifText {
+  font-size: 0.875rem;
+  color: #11243d;
+  line-height: 1.4;
+}
+
+.notifText strong {
+  font-weight: 600;
+}
+
+.notifTime {
+  font-size: 0.75rem;
+  color: #8c95a6;
+}
+
+.notifRightIcon {
+  color: #024A94;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2px;
+}
+
+/* ============================================================
+   Mobile Responsive Header
+   ============================================================ */
+.mobileLogo {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+
+  .mobileLogo {
+    display: flex;
+    align-items: center;
+  }
+
+  .userSection {
+    margin-left: auto;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .searchSection {
+    margin-right: 0;
+    width: 100%;
+    order: 3;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .searchBar {
+    max-width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #DFDFDF;
+    padding-bottom: 12px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .filterPillsContainer {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .notificationsDropdown {
+    position: fixed;
+    top: auto;
+    bottom: 96px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-height: 60vh;
+    border-radius: 20px;
+    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media (max-width: 480px) {
+  .searchBtn {
+    display: none;
+  }
+}

@@ -1,0 +1,93 @@
+.section {
+  padding: 80px;
+  background: #f8f9fc;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #11243d;
+  margin-bottom: 48px;
+  text-align: left;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.testimonialCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.authorName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #11243d;
+}
+
+.date {
+  font-size: 0.875rem;
+  color: #5a6474;
+}
+
+.content {
+  font-size: 1rem;
+  color: #5a6474;
+  line-height: 1.8;
+  font-style: italic;
+}
+
+.badgeContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkCircle {
+  width: 20px;
+  height: 20px;
+  background: #25c16f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.badgeText {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #11243d;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+  .section { padding: 60px 40px; }
+  .title { font-size: 2rem; }
+}
+
+@media (max-width: 640px) {
+  .section { padding: 40px 20px; }
+  .testimonialCard { padding: 24px; }
+  .cardHeader { flex-direction: column; align-items: flex-start; gap: 4px; }
+}

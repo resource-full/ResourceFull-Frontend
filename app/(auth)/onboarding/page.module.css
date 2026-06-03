@@ -1,0 +1,115 @@
+.formPanel {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 40px;
+  overflow-y: auto;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.formInner {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ---------- Header ---------- */
+
+.formHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #11243d;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.formSubtitle {
+  font-size: 0.9375rem;
+  color: #5a6474;
+  font-weight: 400;
+}
+
+/* ---------- Footer ---------- */
+
+.formFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid #f8f9fc;
+}
+
+.footerLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footerDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1565d8;
+  flex-shrink: 0;
+}
+
+.footerLink {
+  font-size: 0.8125rem;
+  color: #5a6474;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.footerLink:hover {
+  color: #1565d8;
+  text-decoration: underline;
+}
+
+/* ---------- Step Indicator ---------- */
+
+.stepIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d6d9e1;
+  transition: all 250ms ease;
+}
+
+.dotActive {
+  width: 28px;
+  border-radius: 999px;
+  background: #1565d8;
+}
+
+.dotCompleted {
+  background: #1565d8;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .formPanel {
+    padding: 32px 20px;
+    min-height: auto;
+  }
+
+  .formTitle {
+    font-size: 1.5rem;
+  }
+}

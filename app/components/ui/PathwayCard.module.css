@@ -1,0 +1,198 @@
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 300ms ease, box-shadow 300ms ease;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.authorInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.authorAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorName {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #5a6474;
+}
+
+.bookmarkBtn {
+  background: transparent;
+  border: none;
+  color: #8c95a6;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 150ms ease;
+}
+
+.bookmarkBtn:hover {
+  color: #11243d;
+}
+
+/* Content */
+.title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+.description {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #707070;
+  font-weight: 400;
+  margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tags */
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.resourceCount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: #8c95a6;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+/* Sequence Block */
+.sequenceBlock {
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex: 1;
+}
+
+.sequenceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sequenceItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 100px;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sequenceNumber {
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sequenceDash {
+  flex: 1;
+  height: 2px;
+  opacity: 0.3;
+}
+
+/* Footer Stats */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.statsLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarStack {
+  display: flex;
+  align-items: center;
+}
+
+.avatarStack img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  margin-right: -8px;
+}
+
+.viewCount {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #5a6474;
+  margin-left: 12px;
+}
+
+.statsRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #5a6474;
+}
+
+.commentCount {
+  font-size: 0.875rem;
+  font-weight: 600;
+}

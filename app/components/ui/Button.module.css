@@ -1,0 +1,90 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: "Vastago Grotesk", system-ui, sans-serif;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  outline: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(21, 101, 216, 0.25);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---------- Sizes ---------- */
+
+.sm {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 0.8125rem;
+  border-radius: 6px;
+}
+
+.md {
+  height: 44px;
+  padding: 0 24px;
+  font-size: 0.9375rem;
+}
+
+.lg {
+  height: 52px;
+  padding: 0 32px;
+  font-size: 1rem;
+}
+
+/* ---------- Variants ---------- */
+
+.primary {
+  background: #1565d8;
+  color: #ffffff;
+}
+
+.primary:hover:not(:disabled) {
+  background: #1252b0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(21, 101, 216, 0.3);
+}
+
+.primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.outline {
+  background: transparent;
+  color: #11243d;
+  border: 1.5px solid #d6d9e1;
+}
+
+.outline:hover:not(:disabled) {
+  background: #f8f9fc;
+  border-color: #b0b8c9;
+}
+
+.ghost {
+  background: transparent;
+  color: #5a6474;
+}
+
+.ghost:hover:not(:disabled) {
+  background: #f8f9fc;
+  color: #11243d;
+}
+
+/* ---------- Full Width ---------- */
+
+.fullWidth {
+  width: 100%;
+}

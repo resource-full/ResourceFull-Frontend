@@ -1,0 +1,125 @@
+.footer {
+  background-color: #024A94;
+  color: #ffffff;
+  padding: 80px 80px 40px;
+  width: 100%;
+}
+
+.footerContent {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1fr;
+  gap: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.logo {
+  width: 180px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+.socials {
+  display: flex;
+  gap: 16px;
+}
+
+.socialIcon {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease;
+  color: #ffffff;
+}
+
+.socialIcon:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.columnHeading {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-transform: capitalize;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.link {
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.link:hover {
+  color: #ffffff;
+}
+
+.copyrightSection {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.copyrightText {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: left;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+  .footer {
+    padding: 60px 40px 30px;
+  }
+  .footerContent {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 20px 20px;
+  }
+  .footerContent {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .brandCol {
+    align-items: center;
+    text-align: center;
+  }
+  .columnHeading {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .linkList {
+    align-items: center;
+  }
+  .copyrightSection {
+    margin-top: 40px;
+  }
+  .copyrightText {
+    text-align: center;
+  }
+}
