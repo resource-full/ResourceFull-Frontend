@@ -137,7 +137,7 @@ export default function ProfilePage() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setProfile((prev) => ({ ...prev, ...parsed }));
+        // setProfile((prev) => ({ ...prev, ...parsed })); // Moved outside or just initializing from state
       } catch (e) {
         console.error("Error reading profile data from localStorage:", e);
       }

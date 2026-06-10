@@ -1,49 +1,42 @@
 .footer {
-  background-color: #024A94;
-  color: #ffffff;
-  padding: 80px 80px 40px;
-  width: 100%;
+  background: white;
+  padding: 32px 24px;
 }
 
-.footerContent {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 1fr;
-  gap: 60px;
+.container {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.brandCol {
+.left {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
+  align-items: center;
 }
 
 .logo {
-  width: 180px;
-  height: auto;
-  filter: brightness(0) invert(1);
+  object-fit: contain;
 }
 
-.socials {
-  display: flex;
-  gap: 16px;
-}
-
-.socialIcon {
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
+.right {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: background 150ms ease;
-  color: #ffffff;
 }
 
-.socialIcon:hover {
-  background: rgba(255, 255, 255, 0.2);
+.copyrightText {
+  color: #888;
+  font-size: 14px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
 }
 
 .columnHeading {
@@ -77,12 +70,6 @@
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.copyrightText {
-  font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.5);
-  text-align: left;
 }
 
 /* ---------- Responsive ---------- */

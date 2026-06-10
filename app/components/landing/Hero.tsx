@@ -1,87 +1,124 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import styles from "./Hero.module.css";
-
-const ChevronDown = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="6 9 12 15 18 9" />
-  </svg>
-);
+import Avatar from "@/public/assets/Mask group.png";
 
 const SearchIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="11" cy="11" r="8" />
     <line x1="21" y1="21" x2="16.65" y2="16.65" />
   </svg>
 );
 
-export default function Hero() {
-  const [goal, setGoal] = useState("Select your goal");
-  const [category, setCategory] = useState("Select a category");
+const DocIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+  </svg>
+);
 
+const ArrowRight = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
+const mockCards = [
+  { id: 1, bgColor: "#AD3307" }, // Orange/Rust
+  { id: 2, bgColor: "#58169C" }, // Purple
+  { id: 3, bgColor: "#9C1658" }, // Pink/Magenta
+  { id: 4, bgColor: "#52B114" }, // Green
+];
+
+export default function Hero() {
   return (
     <section className={styles.hero}>
-      {/* Floating Icons (Mocked with SVGs) */}
-      <div className={`${styles.floatingIcon} ${styles.icon1}`}>
-        <div className="bg-blue-100 p-3 rounded-xl rotate-12 shadow-lg">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#024A94" strokeWidth="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-            <polyline points="10 9 9 9 8 9" />
-          </svg>
-        </div>
-      </div>
-      <div className={`${styles.floatingIcon} ${styles.icon2}`}>
-        <div className="bg-green-100 p-3 rounded-full -rotate-12 shadow-lg">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#25c16f" strokeWidth="2">
-            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-          </svg>
-        </div>
-      </div>
+      <div className={styles.container}>
+        {/* Left Column */}
+        <div className={styles.leftColumn}>
+          <h1 className={styles.headline}>
+            Stop <span className={styles.textDark}>Searching</span><br />
+            Get the Right <span className={styles.textBlue}>Resource</span>
+          </h1>
+          <p className={styles.subheadline}>
+            Your one-stop career resource platform — curated CVs, fellowship
+            guides, skill pathways, and more. All in one place, confidence-scored,
+            and ready for you.
+          </p>
 
-      <h1 className={styles.headline}>
-        Find The Perfect <span className={styles.accent}>Resources</span> To Help You
-        Secure A <span className={styles.accent}>Job</span> And Achieve Your{" "}
-        <span className={styles.accent}>Goals</span>
-      </h1>
-      <p className={styles.subheadline}>
-        Easily access 500+ resources and pathways across more than 30 career
-        categories
-      </p>
+          <div className={styles.actions}>
+            <Link href="/login">
+              <button className={styles.loginBtn}>Log In</button>
+            </Link>
+            <Link href="/login">
+              <button className={styles.getResourcesBtn}>
+                Get Resources
+                <ArrowRight />
+              </button>
+            </Link>
+          </div>
 
-      {/* Interactive Search Mock */}
-      <div className={styles.searchContainer}>
-        <div className={styles.searchGroup}>
-          <span className={styles.searchLabel}>Your Goal</span>
-          <div className={styles.searchSelector}>
-            <span>{goal}</span>
-            <ChevronDown />
+          <div className={styles.statsDivider} />
+          
+          <div className={styles.statsContainer}>
+            <div className={styles.statItem}>
+              <h3 className={styles.statNumber}>12K+</h3>
+              <p className={styles.statLabel}>Resources Uploaded</p>
+            </div>
+            <div className={styles.statItem}>
+              <h3 className={styles.statNumber}>3,400</h3>
+              <p className={styles.statLabel}>Contributors</p>
+            </div>
+            <div className={styles.statItem}>
+              <h3 className={styles.statNumber}>50+</h3>
+              <p className={styles.statLabel}>Countries Covered</p>
+            </div>
           </div>
         </div>
 
-        <div className={styles.divider} />
+        {/* Right Column: Preview Widget */}
+        <div className={styles.rightColumn}>
+          <div className={styles.previewWidget}>
+            <h3 className={styles.widgetTitle}>Find a Resource</h3>
+            
+            <div className={styles.mockSearchInput}>
+              <SearchIcon />
+              <span className={styles.mockPlaceholder}>e.g. Google fellowship guide, Nigeria tech CV...</span>
+            </div>
 
-        <div className={styles.searchGroup}>
-          <span className={styles.searchLabel}>Category</span>
-          <div className={styles.searchSelector}>
-            <SearchIcon />
-            <span>{category}</span>
-            <ChevronDown />
+            <div className={styles.mockCardsGrid}>
+              {mockCards.map((card) => (
+                <div key={card.id} className={styles.miniCard} style={{ backgroundColor: card.bgColor }}>
+                  <div className={styles.miniCardHeader}>
+                    <Image src={Avatar} alt="Stella Delta" width={24} height={24} className={styles.miniAvatar} />
+                    <span className={styles.miniAuthor}>NAME SURNAME</span>
+                  </div>
+                  <h4 className={styles.miniCardTitle}>Graphic Designer<br/>80% wining rate CV</h4>
+                  <div className={styles.miniDocType}>
+                    <DocIcon />
+                    <span>.pdf</span>
+                  </div>
+                  <div className={styles.miniTags}>
+                    <span className={styles.miniTag}>Design</span>
+                    <span className={styles.miniTag}>CV</span>
+                  </div>
+                  <div className={styles.miniFooter}>
+                    <Image src={Avatar} alt="Stella Delta" width={16} height={16} className={styles.microAvatar} />
+                    <span className={styles.microAuthor}>Stella Delta</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.widgetFooter}>
+              <span>Seeing 4 of 12,000+ resources. </span>
+              <Link href="/login" className={styles.loginLink}>Log In for full access</Link>
+            </div>
           </div>
         </div>
-
-        <button className={styles.findBtn}>Find Resources</button>
-      </div>
-
-      <div className={styles.popularSection}>
-        <span className={styles.popularLabel}>Popular:</span>
-        <span className={styles.tag}>Graphic Designing</span>
-        <span className={styles.tag}>Brand Designing</span>
-        <span className={styles.tag}>Medical School</span>
-        <span className={styles.tag}>GMB</span>
       </div>
     </section>
   );

@@ -15,8 +15,8 @@ export default function AuthLayout({
 }>) {
   return (
     <div className={styles.authLayout}>
-      <AuthSidebar />
       <div className={styles.main}>{children}</div>
+      <AuthSidebar />
     </div>
   );
 }

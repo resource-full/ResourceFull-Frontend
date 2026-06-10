@@ -1,224 +1,32 @@
 .sidebarPanel {
   display: flex;
-  flex-direction: column;
   height: 100%;
   width: 50%;
-  background: #024A94;
-  color: #ffffff;
-  padding: 32px 28px 24px;
-  padding-bottom: 0;
+  /* background: #024A94; */
   position: relative;
   overflow: hidden;
 }
 
-/* ---------- Logo ---------- */
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 61px;
-  flex-shrink: 0;
-}
-
-.logoImage {
-  width: 272px;
-  height: 68px;
-  object-fit: contain;
-}
-
-.logoText {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: -0.01em;
-}
-
-/* ---------- Feature Cards ---------- */
-
-.features {
-  display: flex;
-  flex-direction: column;
-  gap: 53px;
-  flex-shrink: 0;
-}
-
-.featureCard {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  gap: 13px;
-}
-
-.featureHeader {
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  gap: 10px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.checkIcon {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.featureTitle {
-  font-size: 25px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.featureDesc {
-  font-size: 20px;
-  font-weight: 400;
-  text-align: left;
-  color: #8fa3bf;
-  line-height: 1.5;
-  padding-left: 30px;
-}
-
-/* ---------- Hero Image ---------- */
-
-.heroSection {
+.heroImage {
   flex: 1;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  position: relative;
-  min-height: 0;
-  z-index: 1;
-}
-
-.heroImage {
-  max-height: 100%;
-  width: auto;
-  max-width: 150%;
-  object-fit: contain;
-  object-position: bottom center;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.3));
-  z-index: 2;
-}
-
-.heroFloat {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.heroFloat1 {
-  position: absolute;
-  top: 32%;
-  left: 12%;
-  animation: float1 4s ease-in-out infinite;
-  z-index: -100;
-}
-
-.heroFloat2 {
-  position: absolute;
-  top: 15%;
-  left: 22%;
-  animation: float2 3.5s ease-in-out infinite;
-}
-
-.heroFloat3 {
-  position: absolute;
-  top: 7%;
-  right: 18%;
-  animation: float3 4.5s ease-in-out infinite;
-}
-
-@keyframes float1 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(-5deg); }
-}
-
-@keyframes float2 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(5deg); }
-}
-
-@keyframes float3 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(-3deg); }
-}
-
-/* ---------- CTA ---------- */
-
-.ctaButton {
-  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 29px;
-  width: 100%;
-  max-width: 500px;
-  height: 100px;
-  background-color: #F6F6F6;
-  color: #024A94;
-  border-radius: 74.5px;
-  font-family: "Vastago Grotesk", system-ui, sans-serif;
-  font-size: 30px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 250ms ease;
-  position: absolute;
-  bottom: 150px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-}
-
-.ctaButton:hover {
-  background: #dbdbdb;
-  transform: translateX(-50%) translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.ctaArrow {
-  display: flex;
-  align-items: center;
-  transition: transform 150ms ease;
+  padding: 8px 8px;
+  overflow-y: auto;
+  min-height: 100vh;
 }
 
 /* ---------- Responsive ---------- */
 
+@media (max-width: 1024px) {
+  .sidebarPanel {
+    width: 45%;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebarPanel {
-    padding: 24px 20px 16px;
-    flex-direction: row;
-    align-items: center;
-    gap: 24px;
-    width: 100%;
-  }
-
-  .features {
-    display: none;
-  }
-
-  .heroSection {
-    position: absolute;
-    right: 20px;
-    bottom: 0;
-    top: 0;
-    margin: 0;
-    width: 140px;
-  }
-
-  .ctaButton {
     display: none;
   }
 }

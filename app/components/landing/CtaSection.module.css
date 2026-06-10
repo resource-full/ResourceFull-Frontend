@@ -1,0 +1,120 @@
+.section {
+  background-color: #011E3D;
+  /* Dark blue background */
+  color: white;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: stretch;
+}
+
+.content {
+  flex: 1;
+  padding: 100px 48px 100px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.badge {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #00BCD4;
+  /* Cyan */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 24px 0;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #8C9BAB;
+  /* Light blue/gray */
+  line-height: 1.6;
+  margin: 0 0 40px 0;
+  max-width: 500px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: #011E3D;
+  padding: 14px 32px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background-color: #F0F0F0;
+  transform: translateY(-2px);
+}
+
+.imageContainer {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 24px 40px 0;
+  display: flex;
+}
+
+.imagePlaceholder {
+  border-radius: 20px;
+}
+
+/* .imagePlaceholder {
+  width: 100%;
+  border-radius: 20px;
+  background-color: #DDE2EA;
+  background-image: linear-gradient(135deg, #EAEAEA 25%, #DDE2EA 25%, #DDE2EA 50%, #EAEAEA 50%, #EAEAEA 75%, #DDE2EA 75%, #DDE2EA 100%);
+  background-size: 20px 20px;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+.placeholderText {
+  background: white;
+  color: #666;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .content {
+    padding: 80px 24px 40px;
+  }
+
+  .imageContainer {
+    padding: 0 24px 80px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+}

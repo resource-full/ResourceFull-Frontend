@@ -1,15 +1,21 @@
 import Hero from "@/app/components/landing/Hero";
+import Pathways from "@/app/components/landing/Pathways";
 import PopularCategories from "@/app/components/landing/PopularCategories";
 import HowItWorks from "@/app/components/landing/HowItWorks";
-import Stories from "@/app/components/landing/Stories";
+import RelevantResources from "@/app/components/landing/RelevantResources";
+import TopContributors from "@/app/components/landing/TopContributors";
+import CtaSection from "@/app/components/landing/CtaSection";
 
 export default function LandingPage() {
   return (
     <>
       <Hero />
-      <PopularCategories />
       <HowItWorks />
-      <Stories />
+      <RelevantResources />
+      <Pathways />
+      <PopularCategories />
+      <TopContributors />
+      <CtaSection />
     </>
   );
 }

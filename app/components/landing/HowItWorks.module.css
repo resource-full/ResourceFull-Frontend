@@ -1,62 +1,95 @@
 .section {
-  padding: 80px;
-  background: #ffffff;
+  padding: 80px 24px;
+  background-color: #D9E7F4;
+  /* Very light cyan/white */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
   text-align: center;
+  margin-bottom: 64px;
+}
+
+.badge {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #119DA4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #11243d;
-  margin-bottom: 64px;
+  font-size: 49px;
+  font-weight: 500;
+  color: #2C2C2C;
+  margin: 0 0 16px 0;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #707070;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 24px;
 }
 
 .card {
-  padding: 40px;
-  background: #ffffff;
-  border: 1px solid #eef2ff;
+  background: white;
   border-radius: 20px;
-  text-align: left;
-  transition: all 300ms ease;
-  position: relative;
-  overflow: hidden;
+  padding: 40px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 }
 
-.card:hover {
-  transform: translateY(-8px);
-  border-color: #024A94;
-  box-shadow: 0 12px 30px rgba(2, 74, 148, 0.08);
-}
-
-.cardHeader {
-  font-size: 1.25rem;
+.number {
+  font-size: 84px;
   font-weight: 700;
-  color: #024A94;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  line-height: 1;
+}
+
+.cardTitle {
+  font-size: 25px;
+  font-weight: 500;
+  color: #2C2C2C;
+  margin: 0 0 16px 0;
 }
 
 .cardDesc {
-  font-size: 0.9375rem;
-  color: #5a6474;
+  font-size: 16px;
+  color: #707070;
+  font-weight: 400;
   line-height: 1.6;
+  margin: 0;
 }
 
-/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
 
-@media (max-width: 1024px) {
-  .section { padding: 60px 40px; }
-  .grid { grid-template-columns: 1fr; gap: 24px; }
-  .title { font-size: 2rem; margin-bottom: 40px; }
+@media (max-width: 768px) {
+  .title {
+    font-size: 36px;
+  }
 }
 
 @media (max-width: 640px) {
-  .section { padding: 40px 20px; }
+  .section {
+    padding: 40px 20px;
+  }
 }

@@ -1,0 +1,280 @@
+.section {
+  padding: 80px 24px;
+  background-color: #EAEFF4;
+  /* Light grayish-blue background */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 48px;
+}
+
+.badge {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #119DA4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 49px;
+  font-weight: 500;
+  color: #2C2C2C;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.viewAllBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #F6F6F6;
+  color: #02386F;
+  padding: 16px;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.viewAllBtn:hover {
+  background: #F8F9FB;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.grid {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.grid::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  flex: 0 0 340px;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.authorInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatarPlaceholder {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #FFE0B2;
+  color: #E65100;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.authorName {
+  font-size: 11px;
+  color: #2C2C2CCC;
+  font-weight: 400;
+}
+
+.bookmarkBtn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+}
+
+.bookmarkBtn:hover {
+  color: #333;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: 400;
+  color: #58169C;
+  /* Purple */
+  margin-bottom: 12px;
+}
+
+.freePrice {
+  font-size: 16px;
+  font-weight: 400;
+  color: #AD3307;
+  /* Orange */
+}
+
+.description {
+  font-size: 10px;
+  color: #707070;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+}
+
+.tag {
+  font-size: 10px;
+  color: #F2E9FB;
+  font-weight: 500;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 10px;
+}
+
+.resourcesMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.pathwayDiagram {
+  background: #FFF5F2;
+  /* Very light orange/pink */
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+  min-height: 100px;
+}
+
+.diagramStep {
+  background: white;
+  border: 1px solid #E1BEE7;
+  border-radius: 16px;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+  font-size: 10px;
+  font-weight: 600;
+  color: #4A148C;
+}
+
+.stepNumber {
+  background: #4A148C;
+  color: white;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #F0F0F0;
+}
+
+.usersInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userAvatars {
+  display: flex;
+}
+
+.smallAvatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #E0E0E0;
+  border: 2px solid white;
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.usersCount {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.commentsInfo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+}

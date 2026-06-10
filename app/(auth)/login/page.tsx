@@ -12,24 +12,14 @@ export default function LoginPage() {
     <div className={styles.formInner}>
       {/* Header */}
       <div className={styles.formHeader}>
-        <h1 className={styles.formTitle}>Log in to your Account</h1>
+        <h1 className={styles.formTitle}>Log In</h1>
         <p className={styles.formSubtitle}>
-          Welcome back!, Log in to your account with
+          Welcome back!
         </p>
       </div>
 
       {/* Login Form */}
       <LoginForm />
-
-      {/* Footer */}
-      <div className={styles.formFooter}>
-        <div className={styles.footerLeft}>
-          <span className={styles.footerDot} />
-          <a href="/privacy" className={styles.footerLink}>
-            Privacy &amp; Terms
-          </a>
-        </div>
-      </div>
     </div>
   );
 }

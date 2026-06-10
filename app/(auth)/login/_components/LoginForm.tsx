@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Input, PasswordInput, Button, Checkbox } from "@/app/components/ui";
+import { Input, PasswordInput, Button } from "@/app/components/ui";
 import styles from "./LoginForm.module.css";
 
 const GoogleIcon = () => (
@@ -27,25 +27,16 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const AppleIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04.547-4.493 3.004-5.324-1.415-2.065-3.57-2.3-4.324-2.338-.754-.038-2.507 1.04-3.104 1.04zM15.352 2.231c.844-1.012 1.403-2.427 1.247-3.83-.883.037-1.95.592-2.584 1.336-.567.662-1.063 2.106-.93 3.478 1.014.078 2.041-.531 2.267-1.336z" />
-  </svg>
-);
-
-const FacebookIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
-    <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z" />
+const LinkedInIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="#0A66C2">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.924 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
   </svg>
 );
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [agreeTerms, setAgreeTerms] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showToast, setShowToast] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,14 +45,11 @@ export default function LoginForm() {
     // Simulate login
     setTimeout(() => {
       setLoading(false);
-      setShowToast(true);
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1000);
+      router.push("/dashboard");
     }, 1500);
   };
 
-  const isFormValid = email.trim() !== "" && password.trim() !== "" && agreeTerms;
+  const isFormValid = email.trim() !== "" && password.trim() !== "";
 
   return (
     <div className={styles.loginForm}>
@@ -69,7 +57,7 @@ export default function LoginForm() {
         <Input
           id="email"
           label="Email"
-          placeholder="Enter your email"
+          placeholder="Placeholder"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
@@ -79,23 +67,11 @@ export default function LoginForm() {
         <PasswordInput
           id="password"
           label="Password"
-          placeholder="Enter your password"
+          placeholder="Placeholder"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
-        <div className={styles.authOptions}>
-          <Checkbox
-            label="Remember me"
-            checked={rememberMe}
-            onChange={setRememberMe}
-            mutedLabel
-          />
-          <Link href="/forgot-password" className={styles.forgotPassword}>
-            Forgot password?
-          </Link>
-        </div>
 
         <Button
           type="submit"
@@ -104,69 +80,28 @@ export default function LoginForm() {
           fullWidth
           disabled={!isFormValid || loading}
         >
-          {loading ? "Logging In..." : "Log In"}
+          {loading ? "Logging in..." : "Login"}
         </Button>
       </form>
 
-      <div className={styles.dividerContainer}>
-        <div className={styles.line} />
-        <span className={styles.dividerText}>or log in with</span>
-        <div className={styles.line} />
-      </div>
-
       <div className={styles.socialContainer}>
-        <button className={styles.socialButton} aria-label="Login with Google">
+        <button type="button" className={styles.socialButton} aria-label="Log in with Google">
           <GoogleIcon />
+          <span>Log in with Google</span>
         </button>
-        <button className={styles.socialButton} aria-label="Login with Apple">
-          <AppleIcon />
-        </button>
-        <button className={styles.socialButton} aria-label="Login with Facebook">
-          <FacebookIcon />
+        <button type="button" className={styles.socialButton} aria-label="Log in with LinkedIn">
+          <LinkedInIcon />
+          <span>Log in with LinkedIn</span>
         </button>
       </div>
 
       <div className={styles.footerLinks}>
         <p className={styles.signupText}>
-          Don&apos;t have an account?{" "}
           <Link href="/onboarding" className={styles.signupLink}>
-            Sign Up
+            Don&apos;t have an account? Sign up
           </Link>
         </p>
-
-        <div className={styles.termsContainer}>
-          <Checkbox
-            label="I agree to the Terms & Conditions"
-            checked={agreeTerms}
-            onChange={setAgreeTerms}
-            mutedLabel
-          />
-        </div>
       </div>
-
-      {showToast && (
-        <div style={{
-          position: "fixed",
-          bottom: "24px",
-          right: "24px",
-          background: "#10b981",
-          color: "#ffffff",
-          padding: "16px 24px",
-          borderRadius: "12px",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          fontWeight: 600,
-          zIndex: 9999,
-          animation: "slideInRight 0.3s ease forwards"
-        }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-          Login successful! Redirecting...
-        </div>
-      )}
     </div>
   );
 }
