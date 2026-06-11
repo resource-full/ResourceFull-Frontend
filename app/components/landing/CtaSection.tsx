@@ -15,7 +15,7 @@ export default function CtaSection() {
             the resources you&apos;ve created, saved, and recommended.
           </p>
           <Link href="/add-resource" className={styles.button}>
-            Create a resource
+            Create a Resource
           </Link>
         </div>
         <div className={styles.imageContainer}>
