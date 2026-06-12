@@ -1,0 +1,248 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #024A94;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #5a6474;
+}
+
+/* Sections */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #11243d;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Forms */
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.label {
+  font-size: 12px;
+  color: #5a6474;
+}
+
+.input {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 150ms ease;
+}
+
+.input:focus {
+  border-color: #024A94;
+}
+
+/* Toggles */
+.toggleGroup {
+  display: flex;
+  gap: 8px;
+  background: #f8f9fc;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.toggleBtn {
+  flex: 1;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  color: #5a6474;
+  transition: all 150ms ease;
+}
+
+.toggleBtnActive {
+  background: #d0e1f9;
+  color: #024A94;
+  border: 1px solid #a3c2f0;
+}
+
+/* Chips */
+.chipContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  min-height: 48px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f0f7ff;
+  border: 1px solid #d0e1f9;
+  color: #024A94;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.chip button {
+  background: transparent;
+  border: none;
+  color: #024A94;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.chipInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  min-width: 120px;
+  font-size: 14px;
+  background: transparent;
+}
+
+/* Buttons */
+.submitBtn {
+  margin-top: 24px;
+  background: #024A94;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.submitBtn:hover {
+  background: #013a75;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.backBtn {
+  background: transparent;
+  color: #024A94;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.finishBtn {
+  background: #024A94;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chipSelectable {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #5a6474;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  white-space: nowrap;
+}
+
+.chipSelectable:hover {
+  background: #f0f7ff;
+  border-color: #d0e1f9;
+}
+
+.chipSelected {
+  background: #f0f7ff;
+  border-color: #024A94;
+  color: #024A94;
+}
+
+.checkboxCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8f9fc;
+  border: 1px solid #f8f9fc;
+  padding: 16px 20px;
+  border-radius: 8px;
+  flex: 1;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.checkboxCard:hover {
+  border-color: #d0e1f9;
+}
+
+.checkboxCardActive {
+  background: #f0f7ff;
+  border-color: #024A94;
+}
+
+.checkboxInput {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  color: #5a6474;
+  font-weight: 500;
+}

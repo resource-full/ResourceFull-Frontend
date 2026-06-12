@@ -1,0 +1,130 @@
+.setupLayout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.sidebarPanel {
+  display: flex;
+  height: 100vh;
+  overflow-y: hidden;
+  width: 40%;
+  position: relative;
+  overflow: hidden;
+  /* background: #f8f9fc; */
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 64px;
+  overflow-y: auto;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Header section containing steps and skip */
+.topNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+}
+
+.stepIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepNode {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  border: 2px solid #d6d9e1;
+  color: #d6d9e1;
+}
+
+.stepNodeActive {
+  border-color: #024A94;
+  color: #024A94;
+}
+
+.stepNodeCompleted {
+  background: #024A94;
+  border-color: #024A94;
+  color: #ffffff;
+}
+
+.stepLine {
+  width: 40px;
+  height: 2px;
+  background: #d6d9e1;
+}
+
+.stepLineActive {
+  background: #024A94;
+}
+
+.skipLink {
+  font-size: 14px;
+  font-weight: 600;
+  color: #024A94;
+  text-decoration: none;
+}
+
+.skipLink:hover {
+  text-decoration: underline;
+}
+
+/* Content wrapper */
+.contentWrapper {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+  .sidebarPanel {
+    width: 35%;
+  }
+
+  .main {
+    padding: 40px 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .setupLayout {
+    flex-direction: column;
+  }
+
+  .sidebarPanel {
+    display: none;
+  }
+
+  .main {
+    padding: 32px 20px;
+    min-height: auto;
+  }
+}

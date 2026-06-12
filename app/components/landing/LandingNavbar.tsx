@@ -41,7 +41,7 @@ export default function LandingNavbar() {
         <Link href="/login">
           <button className={styles.loginBtn}>Log In</button>
         </Link>
-        <Link href="/login">
+        <Link href="/dashboard">
           <button className={styles.getStartedBtn}>
             Get Resources
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -53,8 +53,8 @@ export default function LandingNavbar() {
       </div>
 
       {/* Hamburger Menu Icon */}
-      <button 
-        className={styles.hamburgerBtn} 
+      <button
+        className={styles.hamburgerBtn}
         onClick={toggleMobileMenu}
         aria-label="Toggle menu"
       >
@@ -86,7 +86,7 @@ export default function LandingNavbar() {
               Contact Us
             </Link>
           </div>
-          
+
           <div className={styles.mobileActions}>
             <Link href="/login" onClick={toggleMobileMenu} className={styles.mobileActionLink}>
               <button className={`${styles.loginBtn} ${styles.fullWidth}`}>Log In</button>

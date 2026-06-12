@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./Hero.module.css";
 import Avatar from "@/public/assets/Mask group.png";
+import Pdf from "@/public/assets/fullPdf.png";
 
 const SearchIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -53,7 +54,7 @@ export default function Hero() {
             <Link href="/login">
               <button className={styles.loginBtn}>Log In</button>
             </Link>
-            <Link href="/login">
+            <Link href="/dashboard">
               <button className={styles.getResourcesBtn}>
                 Get Resources
                 <ArrowRight />
@@ -62,7 +63,7 @@ export default function Hero() {
           </div>
 
           <div className={styles.statsDivider} />
-          
+
           <div className={styles.statsContainer}>
             <div className={styles.statItem}>
               <h3 className={styles.statNumber}>12K+</h3>
@@ -82,32 +83,43 @@ export default function Hero() {
         {/* Right Column: Preview Widget */}
         <div className={styles.rightColumn}>
           <div className={styles.previewWidget}>
-            <h3 className={styles.widgetTitle}>Find a Resource</h3>
-            
-            <div className={styles.mockSearchInput}>
-              <SearchIcon />
-              <span className={styles.mockPlaceholder}>e.g. Google fellowship guide, Nigeria tech CV...</span>
+            <div className="bg-white rounded-[20px]" style={{ padding: "20px", marginBottom: "24px" }}>
+              <h3 className={styles.widgetTitle}>Find a Resource</h3>
+
+              <div className="relative">
+                <input className={styles.mockSearchInput} style={{ paddingLeft: "36px" }} placeholder="e.g. Google fellowship guide, Nigeria tech CV..." />
+                <div className="absolute top-3 left-3">
+                  <SearchIcon />
+                </div>
+              </div>
             </div>
 
             <div className={styles.mockCardsGrid}>
               {mockCards.map((card) => (
                 <div key={card.id} className={styles.miniCard} style={{ backgroundColor: card.bgColor }}>
-                  <div className={styles.miniCardHeader}>
-                    <Image src={Avatar} alt="Stella Delta" width={24} height={24} className={styles.miniAvatar} />
-                    <span className={styles.miniAuthor}>NAME SURNAME</span>
+                  <div className={styles.imageDiv}>
+                    <Image src={Pdf} alt="pdf" />
                   </div>
-                  <h4 className={styles.miniCardTitle}>Graphic Designer<br/>80% wining rate CV</h4>
-                  <div className={styles.miniDocType}>
-                    <DocIcon />
-                    <span>.pdf</span>
-                  </div>
-                  <div className={styles.miniTags}>
-                    <span className={styles.miniTag}>Design</span>
-                    <span className={styles.miniTag}>CV</span>
-                  </div>
-                  <div className={styles.miniFooter}>
-                    <Image src={Avatar} alt="Stella Delta" width={16} height={16} className={styles.microAvatar} />
-                    <span className={styles.microAuthor}>Stella Delta</span>
+
+                  <div className={styles.cardContent}>
+                    <h4 className={styles.miniCardTitle}>
+                      Graphic Designer<br />80% wining rate CV
+                    </h4>
+
+                    <div className={styles.miniDocType}>
+                      <DocIcon />
+                      <span>.pdf</span>
+                    </div>
+
+                    <div className={styles.miniTags} style={{ color: card.bgColor }}>
+                      <span className={styles.miniTag}>Design</span>
+                      <span className={styles.miniTag}>CV</span>
+                    </div>
+
+                    <div className={styles.miniFooter}>
+                      <Image src={Avatar} alt="Stella Delta" width={16} height={16} className={styles.microAvatar} />
+                      <span className={styles.microAuthor}>Stella Delta</span>
+                    </div>
                   </div>
                 </div>
               ))}

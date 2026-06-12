@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type {
   OnboardingFormData,
   FormErrors,
@@ -79,6 +80,8 @@ export default function OnboardingForm() {
     []
   );
 
+  const router = useRouter();
+
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
@@ -92,12 +95,12 @@ export default function OnboardingForm() {
 
       // Simulate submission
       setTimeout(() => {
-        console.log("🎉 Onboarding complete!", data);
+        console.log("🎉 Account created!", data);
         setLoading(false);
-        setIsSuccess(true);
+        router.push("/onboarding/profile");
       }, 1500);
     },
-    [data]
+    [data, router]
   );
 
   const isFormValid =

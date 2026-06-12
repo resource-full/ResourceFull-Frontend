@@ -1,4 +1,4 @@
-import type { SelectOption } from "@/app/lib/types/onboarding";
+import type { SelectOption, OnboardingFormData } from "@/app/lib/types/onboarding";
 
 /* ============================================================
    Onboarding — Dropdown Options
@@ -166,19 +166,39 @@ export const COUNTRIES: SelectOption[] = [
   { value: "ZW", label: "Zimbabwe", icon: "🇿🇼" },
 ];
 
+export const TARGET_ROLES: string[] = [
+  "Product Designer",
+  "Business Analyst",
+  "Marketing Manager",
+  "Software Engineer",
+  "Data Scientist",
+  "Product Manager",
+  "UX Researcher",
+  "Frontend Developer",
+  "Backend Developer",
+  "Fullstack Developer"
+];
+
 /** Initial form state with all fields empty. */
-export const INITIAL_FORM_DATA = {
+export const INITIAL_FORM_DATA: OnboardingFormData = {
   firstName: "",
   lastName: "",
   username: "",
   email: "",
   password: "",
   confirmPassword: "",
-  skills: "",
-  experience: "",
+  
   location: "",
-  goals: "",
+  experienceLevel: "Student",
+  currentRole: "",
+  industry: "",
+  country: "",
+  skills: [],
+  
+  primaryGoal: "",
+  targetRoles: [],
+  goalTimeline: "",
 } as const;
 
-/** Total number of onboarding steps. */
-export const TOTAL_STEPS = 3;
+/** Total number of onboarding steps (Profile, Goals) */
+export const TOTAL_STEPS = 2;
