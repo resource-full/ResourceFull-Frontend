@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Input, PasswordInput, Button } from "@/app/components/ui";
 import styles from "./LoginForm.module.css";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24">
@@ -37,22 +38,30 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate login
-    setTimeout(() => {
+    setError("");
+    
+    try {
+      await login({ email, password });
+      router.push("/dashboard"); // Assuming this is the authenticated route
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to log in. Please try again.");
+    } finally {
       setLoading(false);
-      router.push("/dashboard");
-    }, 1500);
+    }
   };
 
   const isFormValid = email.trim() !== "" && password.trim() !== "";
 
   return (
     <div className={styles.loginForm}>
+      {error && <div style={{ color: 'red', marginBottom: '16px', fontSize: '14px', textAlign: 'center' }}>{error}</div>}
       <form onSubmit={handleSubmit} className={styles.loginForm}>
         <Input
           id="email"

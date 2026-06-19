@@ -12,6 +12,7 @@ import { Input, PasswordInput, Button } from "@/app/components/ui";
 import SuccessModal from "@/app/components/ui/SuccessModal";
 import styles from "../page.module.css";
 import socialStyles from "../../../(auth)/login/_components/LoginForm.module.css";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 /* ============================================================
    Validation
@@ -64,6 +65,8 @@ export default function OnboardingForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSuccess, setIsSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
+  const { register } = useAuth();
 
   const handleChange = useCallback(
     (field: keyof OnboardingFormData, value: string) => {
@@ -83,7 +86,7 @@ export default function OnboardingForm() {
   const router = useRouter();
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
       const formErrors = validateForm(data);
       if (Object.keys(formErrors).length > 0) {
@@ -91,16 +94,25 @@ export default function OnboardingForm() {
         return;
       }
       setErrors({});
+      setApiError("");
       setLoading(true);
 
-      // Simulate submission
-      setTimeout(() => {
+      try {
+        await register({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          password: data.password
+        });
         console.log("🎉 Account created!", data);
-        setLoading(false);
         router.push("/onboarding/profile");
-      }, 1500);
+      } catch (err: any) {
+        setApiError(err.response?.data?.message || err.response?.data?.errors?.[0]?.message || "Failed to create account. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     },
-    [data, router]
+    [data, router, register]
   );
 
   const isFormValid =
@@ -123,6 +135,12 @@ export default function OnboardingForm() {
             Welcome to Resourcefull! Create your account
           </p>
         </div>
+
+        {apiError && (
+          <div style={{ color: "red", marginBottom: "16px", fontSize: "14px", textAlign: "center" }}>
+            {apiError}
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
