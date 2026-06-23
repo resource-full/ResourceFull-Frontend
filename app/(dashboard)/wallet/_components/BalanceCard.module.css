@@ -1,0 +1,133 @@
+.card {
+  background: #012143;
+  border-radius: 20px;
+  padding: 40px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.balanceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 16px;
+  color: #BBF7BE;
+  font-weight: 500;
+}
+
+.amount {
+  font-size: 39px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #F6F6F6;
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.withdrawBtn {
+  background: #F6F6F6;
+  color: #024A94;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.withdrawBtn:hover {
+  background: #f1f1f1;
+  transform: translateY(-1px);
+}
+
+.divider {
+  height: 1px;
+  background: #B6D3F280;
+  width: 100%;
+}
+
+.statsRow {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #B6D3F2B2;
+}
+
+.statValue {
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+}
+
+.statItem:not(:last-child) {
+  padding-right: 48px;
+  border-right: 1px solid #B6D3F280
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .amount {
+    font-size: 36px;
+  }
+
+  .statsRow {
+    gap: 24px;
+  }
+
+  .statItem:not(:last-child) {
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topRow {
+    flex-direction: column;
+  }
+
+  .statsRow {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .statItem:not(:last-child) {
+    padding-right: 0;
+    border-right: none;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}

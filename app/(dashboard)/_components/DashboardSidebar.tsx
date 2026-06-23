@@ -230,7 +230,7 @@ export default function DashboardSidebar() {
           </div>
           <span className={styles.badge}>10</span>
         </Link>
-        <Link href="/settings" className={styles.navLink}>
+        <Link href="/settings" className={`${styles.navLink} ${pathname === '/settings' ? styles.navLinkActive : ''}`}>
           <div className={styles.navLinkInner}>
             <SettingsIcon />
             <span className={styles.navLinkText}>Settings</span>

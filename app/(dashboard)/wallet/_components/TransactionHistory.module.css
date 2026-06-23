@@ -1,0 +1,243 @@
+.container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000000;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tabs {
+  display: flex;
+  background: #F1F1F1;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #2C2C2C;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tabActive {
+  background: #ffffff;
+  color: #023B76;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+.exportBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #F6F6F6;
+  padding: 16px 24px;
+  border-radius: 8px;
+  color: #024A94;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exportBtn:hover {
+  background: #f0f7ff;
+  border-color: #024A94;
+}
+
+.dateGroup {
+  margin-bottom: 24px;
+}
+
+.dateGroupHeader {
+  font-size: 16px;
+  font-weight: 500;
+  color: #707070;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.dateGroupHeader::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #A5A5A5;
+  margin-left: 16px;
+}
+
+.transactionList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transactionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #f8f9fc;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.transactionRow:hover {
+  background: #f1f5f9;
+}
+
+.rowLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconBlue {
+  background: rgba(2, 74, 148, 0.1);
+  color: #024A94;
+}
+
+.iconDark {
+  background: rgba(17, 36, 61, 0.1);
+  color: #11243d;
+}
+
+.iconCyan {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0ea5e9;
+}
+
+.rowDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rowTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #023B76;
+  text-decoration: none;
+}
+
+.rowTitle:hover {
+  text-decoration: underline;
+}
+
+.rowSubtitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #707070;
+}
+
+.rowRight {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.rowAmount {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2C2C2C;
+  min-width: 40px;
+  text-align: right;
+}
+
+.badge {
+  padding: 2px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+}
+
+.badgeSuccess {
+  background: #E9FCEA;
+  color: #0D5010;
+}
+
+.badgeFailed {
+  background: #FCE9ED;
+  color: #AB1C3A;
+}
+
+.badgePending {
+  background: #FCFBE9;
+  color: #AB9F1C;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .rowRight {
+    gap: 16px;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .transactionRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .rowRight {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

@@ -1,0 +1,211 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 24px;
+}
+
+.accountsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.accountRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: #F6F6F6;
+  border-radius: 12px;
+}
+
+.accountInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bankLogo {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: #f8f9fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.accountDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bankName {
+  font-weight: 500;
+  color: #2C2C2C;
+  font-size: 14px;
+}
+
+.accountNumber {
+  color: #707070;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.accountActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.defaultBadge {
+  background: #024A94;
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.setDefault {
+  color: #024385;
+  font-size: 14px;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  color: #8c95a6;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.deleteBtn:hover {
+  color: #ef4444;
+}
+
+.addAccount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #024385;
+  font-weight: 500;
+  font-size: 14px;
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+}
+
+.scheduleList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.scheduleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 10px;
+}
+
+.scheduleLabel {
+  color: #2C2C2C;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.scheduleValue {
+  color: #2C2C2C;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressLabel {
+  color: #2C2C2C;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.progressValue {
+  color: #2C2C2C;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.progressValues {
+  color: #024A94;
+  font-weight: 400;
+  font-size: 10px;
+}
+
+.progressBar {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #024A94;
+  border-radius: 100px;
+}
+
+@media (max-width: 480px) {
+  .accountRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .accountActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

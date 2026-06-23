@@ -21,7 +21,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <Script
-            src="https://widgets.easyappz.com/widget.js?client=browan"
+            src="https://widgets.easyappz.com/widget.js?client=philipjones"
             strategy="afterInteractive"
           />
         </Providers>

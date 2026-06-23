@@ -43,19 +43,19 @@ export const authAPI = {
         return response.data;
     },
 
-        getCurrentUser: async () => {
-            // According to Postman, returns success, data (User)
-            const response = await apiClient.get<{ success: boolean; data: User }>("/auth/me");
-            return response.data;
-        },
+    getCurrentUser: async () => {
+        // According to Postman, returns success, data (User)
+        const response = await apiClient.get<{ success: boolean; data: User }>("/auth/me");
+        return response.data;
+    },
 
-            logout: async () => {
-                const response = await apiClient.post("/auth/logout");
-                return response.data;
-            },
+    logout: async () => {
+        const response = await apiClient.post("/auth/logout");
+        return response.data;
+    },
 
-                forgotPassword: async (email: string) => {
-                    const response = await apiClient.post("/auth/forgot-password", { email });
-                    return response.data;
-                },
+    forgotPassword: async (email: string) => {
+        const response = await apiClient.post("/auth/forgot-password", { email });
+        return response.data;
+    },
 };

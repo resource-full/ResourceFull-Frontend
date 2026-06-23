@@ -1,0 +1,87 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+}
+
+.accordionItem {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.accordionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.accordionTitle {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #11243d;
+}
+
+.icon {
+  color: #5a6474;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.iconOpen {
+  transform: rotate(180deg);
+}
+
+.accordionContent {
+  padding: 0 16px 16px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #f8f9fc;
+}
+
+/* Specific to selected chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #e0e7ff;
+  color: #024A94;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-top: 16px;
+}
+
+.removeIcon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #024A94;
+}
+
+.removeIcon:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 24px;
+  }
+}

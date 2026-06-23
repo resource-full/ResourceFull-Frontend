@@ -6,6 +6,7 @@ import FilterDropdown, { FilterOption } from "@/app/components/ui/FilterDropdown
 import { COUNTRIES, SKILLS_OPTIONS } from "@/app/lib/constants/onboarding";
 import styles from "./DashboardHeader.module.css";
 import React from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 const SearchIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -81,6 +82,12 @@ const CloseIcon = () => (
   </svg>
 );
 
+const TrackIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" clipRule="evenodd" d="M17.756 7.31264C17.9292 6.86149 18.4353 6.63615 18.8865 6.80933L25.8179 9.47008C26.2691 9.64326 26.4944 10.1494 26.3213 10.6005L23.6605 17.532C23.4873 17.9832 22.9812 18.2085 22.5301 18.0353C22.0789 17.8621 21.8536 17.356 22.0267 16.9049L23.9305 11.9455L22.6629 12.5099C19.8008 13.7842 17.6209 15.9551 16.3042 18.5457C16.1772 18.7955 15.9383 18.9694 15.6615 19.0134C15.3847 19.0574 15.1036 18.9661 14.9054 18.768L10.5 14.3625L3.24372 21.6188C2.90201 21.9605 2.34799 21.9605 2.00628 21.6188C1.66457 21.2771 1.66457 20.7231 2.00628 20.3814L9.88128 12.5064C10.0454 12.3423 10.2679 12.2501 10.5 12.2501C10.7321 12.2501 10.9546 12.3423 11.1187 12.5064L15.3257 16.7133C16.8431 14.2387 19.0996 12.1808 21.9511 10.9112L23.2187 10.3468L18.2593 8.4431C17.8082 8.26991 17.5828 7.76379 17.756 7.31264Z" fill="#023B76" />
+  </svg>
+)
+
 const EXPERIENCE_OPTIONS: FilterOption[] = [
   { value: "under-graduate", label: "Undergraduate" },
   { value: "recent-graduate", label: "Recent graduate (0-2 years)" },
@@ -103,6 +110,8 @@ interface DashboardHeaderProps {
 export default function DashboardHeader({ filters, onFiltersChange }: DashboardHeaderProps) {
   const [isNotifOpen, setIsNotifOpen] = React.useState(false);
   const notifRef = React.useRef<HTMLDivElement>(null);
+
+  const pathname = usePathname()
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -181,6 +190,11 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
       </div>
 
       <div className={styles.userSection}>
+        {
+          pathname === "/wallet" ? <TrackIcon /> : (
+            <div></div>
+          )
+        }
         <div className={styles.bellWrapper} ref={notifRef}>
           <button
             className={styles.bellBtn}

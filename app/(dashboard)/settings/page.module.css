@@ -1,0 +1,98 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -10px;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backButton {
+  background: transparent;
+  border: none;
+  color: #11243d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 4px;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #11243d;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.activeTabName {
+  font-weight: 600;
+  color: #024A94;
+}
+
+.saveButton {
+  background: #e2e8f0;
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Make it look active/clickable for demo purposes */
+.saveButtonActive {
+  background: #024A94;
+}
+
+.saveButtonActive:hover {
+  background: #023B76;
+}
+
+.mainContent {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+}
+
+.tabContent {
+  flex: 1;
+  min-width: 0; /* Prevent flex overflow */
+}
+
+.placeholderTab {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+  color: #5a6474;
+  font-size: 1.125rem;
+  font-weight: 500;
+  border: 1px dashed #e2e8f0;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
