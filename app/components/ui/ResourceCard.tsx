@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./ResourceCard.module.css";
 
 export type ResourceCardVariant = "purple" | "orange";
@@ -17,6 +18,7 @@ interface ResourceCardProps {
   previewImageUrl?: string;
   viewCount: string;
   commentCount: number;
+  href?: string;
 }
 
 const BookmarkIcon = () => (
@@ -53,10 +55,11 @@ export default function ResourceCard({
   previewImageUrl,
   viewCount,
   commentCount,
+  href,
 }: ResourceCardProps) {
   const variantClass = variant === "purple" ? styles.variantPurple : styles.variantOrange;
 
-  return (
+  const cardContent = (
     <div className={`${styles.card} ${variantClass}`}>
       <div className={styles.header}>
         <div className={styles.authorInfo}>
@@ -123,4 +126,14 @@ export default function ResourceCard({
       </div>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className={styles.cardLink} style={{ textDecoration: 'none', color: 'inherit' }}>
+        {cardContent}
+      </Link>
+    );
+  }
+
+  return cardContent;
 }

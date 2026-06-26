@@ -14,6 +14,7 @@ const MOCK_RESOURCES = Array(8).fill(null).map((_, i) => ({
   variant: (i % 2 === 0 ? "orange" : "purple") as ResourceCardVariant,
   authorName: "Stella Della",
   authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
+  previewImageUrl: "/assets/pdf1.png",
   title: "Graphic Designer 80% wining rate CV",
   price: i % 2 === 0 ? "Free" : "$120",
   description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio exampl..",
@@ -30,6 +31,7 @@ const MOCK_HUBS = Array(8).fill(null).map((_, i) => {
     variant: (isOrange ? "orange" : "purple") as "orange" | "purple",
     authorName: "Stella Della",
     authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
+    previewImageUrl: "/assets/pdf1.png",
     title: "Become a Full Stack Developer in 3 Months",
     price: i % 2 === 0 ? "$120" : "Free",
     description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume...",
@@ -182,7 +184,7 @@ export default function DashboardPage() {
       {activeTab === "resources" && (
         <div className={styles.resourceGrid}>
           {MOCK_RESOURCES.map((resource) => (
-            <ResourceCard key={resource.id} {...resource} />
+            <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} />
           ))}
         </div>
       )}
