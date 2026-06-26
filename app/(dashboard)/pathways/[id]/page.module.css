@@ -25,29 +25,34 @@
   background-color: #f5f5f5;
 }
 
-/* Hero Banner */
-.heroBanner {
+/* Two Column Layout */
+.mainLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.5fr) minmax(320px, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 968px) {
+  .mainLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Pathway Info Card */
+.pathwayInfoCard {
+  background: white;
   border-radius: 24px;
-  /* height: 241px; */
-  overflow: hidden;
-  display: flex;
-  color: white;
+  padding: 2rem;
   margin-bottom: 1rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
-.heroContent {
-  flex: 1;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.heroHeader {
+.infoHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 }
 
 .authorInfo {
@@ -62,110 +67,126 @@
 
 .authorName {
   font-weight: 500;
-  font-size: 1.125rem;
+  font-size: 15px;
+  color: #5a6474;
 }
 
 .headerActions {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .iconBtn {
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent;
   border: none;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
+  color: #8c95a6;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.iconBtn:hover {
+  color: #333;
+}
+
+.pathwayTitle {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  color: #2C2C2C;
+}
+
+.pathwayPrice {
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: #2C2C2C;
+}
+
+.pathwayDesc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #707070;
+  margin-bottom: 20px;
+}
+
+/* Tags */
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  color: #ffffff;
+  padding: 4px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Resource Count */
+.resourceCount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #8c95a6;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+/* Sequence Steps */
+.sequenceBlock {
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sequenceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sequenceItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 100px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sequenceNumber {
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  transition: background-color 0.2s;
+  font-size: 11px;
+  font-weight: 700;
 }
 
-.iconBtn:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.heroTitle {
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 1.2;
-  margin-bottom: 10px;
-}
-
-.heroPrice {
-  font-size: 20px;
-  font-weight: 400;
-  margin-bottom: 10px;
-}
-
-.heroDesc {
-  font-size: 12px;
-  line-height: 1.6;
-  font-weight: 400;
-  opacity: 0.9;
-  margin-bottom: 10px;
-  max-width: 90%;
-  color: #FFFFFFCC;
-}
-
-.heroMeta {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-top: auto;
-}
-
-.fileType {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 500;
-}
-
-.tags {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.tag {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 100px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.heroPreview {
-  width: 35%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-}
-
-.heroPreviewImageWrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 10px;
-}
-
-.heroPreviewImage {
-  object-fit: cover;
-  object-position: center;
+.sequenceDash {
+  flex: 1;
+  height: 2px;
+  opacity: 0.3;
 }
 
 /* Purchase Action */
 .actionSection {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
 }
 
 .buyBtn {
@@ -213,28 +234,6 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-.mainLayout {
-  display: grid;
-  grid-template-columns: minmax(0, 2.5fr) minmax(320px, 1fr);
-  gap: 3rem;
-  align-items: start;
-}
-
-@media (max-width: 968px) {
-  .mainLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .heroBanner {
-    flex-direction: column;
-  }
-
-  .heroPreview {
-    width: 100%;
-    height: 300px;
   }
 }
 
@@ -445,7 +444,6 @@
   font-weight: 500;
   cursor: pointer;
 }
-
 
 /* Sidebar */
 .sidebarTitle {

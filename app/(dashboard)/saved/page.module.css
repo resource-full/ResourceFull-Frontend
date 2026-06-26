@@ -1,0 +1,181 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.exploreHeader {
+  margin-bottom: 32px;
+}
+
+.exploreTitle {
+  font-size: 31px;
+  font-weight: 500;
+  color: #011A34;
+  margin-bottom: 4px;
+}
+
+.exploreDesc {
+  color: #707070;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tagsContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.exploreTag {
+  background: #f8f9fc;
+  color: #5a6474;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.exploreTag:hover {
+  background: #e2e8f0;
+  color: #11243d;
+}
+
+.exploreTagActive {
+  background: #f0f7ff;
+  color: #024A94;
+  font-weight: 600;
+}
+
+.filterWrapper {
+  position: relative;
+}
+
+.filterBtn {
+  background: #f8f9fc;
+  border: none;
+  color: #024A94;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.filterDropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-width: 140px;
+  z-index: 100;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterBtn:hover {
+  background: #e2e8f0;
+}
+
+.placeholderContent {
+  padding: 40px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px dashed #cbd5e1;
+  text-align: center;
+  color: #8c95a6;
+  font-size: 1rem;
+}
+
+.resourceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding-bottom: 40px;
+}
+
+.hubGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .resourceGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .exploreHeader {
+    margin-bottom: 24px;
+  }
+
+  .exploreTitle {
+    font-size: 24px;
+  }
+
+  .filterRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .tagsContainer {
+    overflow-x: auto;
+    padding-bottom: 8px;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .exploreTag {
+    white-space: nowrap;
+  }
+
+  .filterWrapper {
+    align-self: flex-end;
+    margin-top: -56px;
+    /* align with tags */
+    z-index: 20;
+  }
+
+  .filterBtn {
+    /* styles reset for wrapper */
+  }
+
+  .filterDropdown {
+    right: 0;
+    max-width: 200px;
+    /* prevent overflowing */
+  }
+
+  .resourceGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .hubGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

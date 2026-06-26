@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./PathwayCard.module.css";
 
 export type PathwayCardVariant = "purple" | "orange";
@@ -17,12 +18,21 @@ interface PathwayCardProps {
   tags: string[];
   resourceCount: number;
   viewCount: string;
-  commentCount: number;
+  commentCount: number | string;
+  href?: string;
+  isPurchased?: boolean;
+  isSaved?: boolean;
 }
 
 const BookmarkIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const BookmarkedIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 2C11.7163 2 13.4088 2.1056 15.0703 2.31055C16.1944 2.44939 17 3.41385 17 4.5166V17.25C17 17.5078 16.8676 17.7475 16.6494 17.8848C16.4313 18.022 16.1582 18.0373 15.9258 17.9258L10 15.082L4.07422 17.9258C3.84185 18.0373 3.56873 18.022 3.35059 17.8848C3.1324 17.7475 3 17.5078 3 17.25V4.5166C3 3.41385 3.80562 2.44939 4.92969 2.31055C6.59124 2.1056 8.28365 2 10 2Z" fill="#EDFD02" />
   </svg>
 );
 
@@ -53,20 +63,31 @@ export default function PathwayCard({
   resourceCount,
   viewCount,
   commentCount,
+  href,
+  isPurchased,
+  isSaved,
 }: PathwayCardProps) {
   const mainColor = variant === "purple" ? "#6a359c" : "#c4452a";
   const bgLightColor = variant === "purple" ? "rgba(106, 53, 156, 0.08)" : "rgba(196, 69, 42, 0.08)";
 
-  return (
+  const cardContent = (
     <div className={styles.card}>
       <div className={styles.header}>
         <div className={styles.authorInfo}>
           <img src={authorAvatarUrl} alt={authorName} className={styles.authorAvatar} />
           <span className={styles.authorName}>{authorName}</span>
         </div>
-        <button className={styles.bookmarkBtn} aria-label="Bookmark pathway">
-          <BookmarkIcon />
-        </button>
+        {isPurchased ? (
+          <div className={styles.openBadge}>Open</div>
+        ) : isSaved ? (
+          <button className={styles.bookmarkBtn} aria-label="Bookmark">
+            <BookmarkedIcon />
+          </button>
+        ) : (
+          <button className={styles.bookmarkBtn} aria-label="Bookmark">
+            <BookmarkIcon />
+          </button>
+        )}
       </div>
 
       <h3 className={styles.title} style={{ color: mainColor }}>{title}</h3>
@@ -133,9 +154,25 @@ export default function PathwayCard({
         </div>
         <div className={styles.statsRight}>
           <span className={styles.commentCount}>{commentCount}</span>
-          <CommentIcon />
+          {isPurchased ? (
+            <div className={styles.rsBadge}>R.S</div>
+          ) : isSaved ? (
+            <div className={styles.rsBadge}>R.S</div>
+          ) : (
+            <CommentIcon />
+          )}
         </div>
       </div>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className={styles.cardLink} style={{ textDecoration: 'none', color: 'inherit' }}>
+        {cardContent}
+      </Link>
+    );
+  }
+
+  return cardContent;
 }

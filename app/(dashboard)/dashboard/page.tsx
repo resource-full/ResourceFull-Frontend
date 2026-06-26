@@ -192,7 +192,7 @@ export default function DashboardPage() {
       {activeTab === "pathways" && (
         <div className={styles.resourceGrid}>
           {MOCK_PATHWAYS.map((pathway) => (
-            <PathwayCard key={pathway.id} {...pathway} />
+            <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
           ))}
         </div>
       )}
@@ -200,7 +200,7 @@ export default function DashboardPage() {
       {activeTab === "hubs" && (
         <div className={styles.hubGrid}>
           {MOCK_HUBS.map((hub) => (
-            <HubCard key={hub.id} {...hub} />
+            <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} />
           ))}
         </div>
       )}
