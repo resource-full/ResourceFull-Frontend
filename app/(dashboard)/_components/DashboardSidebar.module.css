@@ -161,25 +161,24 @@
 }
 
 .addMenu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  margin-top: 8px;
-  background: #E6EDF4;
+  position: fixed;
+  top: 5px !important;
+  /* Take full height from top */
+  bottom: 5px;
+  /* Take full height to bottom */
+  width: 320px;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  padding-top: 12px;
-  padding-bottom: 12px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  /* Align items to the top */
   align-items: center;
   gap: 12px;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .addMenuItem {
@@ -190,12 +189,13 @@
   border-radius: 12px;
   text-decoration: none;
   color: #11243d;
-  background-color: #fff;
+  background-color: #f6f8fb;
+  width: 100%;
   transition: background 150ms ease;
 }
 
 .addMenuItem:hover {
-  background: #f8f9fc;
+  background: #eef2f6;
 }
 
 .addMenuIcon {
@@ -399,11 +399,14 @@
     flex-shrink: 0;
   }
 
-  /* Add menu pops UP from bottom */
+  /* Add menu pops UP from bottom when on mobile */
   .addMenu {
-    bottom: calc(100% + 16px);
-    top: auto;
-    left: 50%;
+    position: fixed !important;
+    bottom: 80px !important;
+    /* Above bottom nav */
+    top: auto !important;
+    height: auto !important;
+    left: 50% !important;
     transform: translateX(-50%);
     margin-bottom: 0;
     margin-top: 0;
@@ -411,4 +414,68 @@
     box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
     border-radius: 16px;
   }
+}
+
+/* Help Modal */
+.helpModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
+}
+
+.helpModal {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+  width: 90%;
+  max-width: 750px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.helpModalTitle {
+  font-size: 39px;
+  font-weight: 500;
+  color: #181D27;
+}
+
+.helpModalSubtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #535862;
+  margin-bottom: 24px;
+}
+
+.helpOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.helpOptionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  border: none;
+  background: #F6F6F6;
+  color: #2C2C2C;
+  font-size: 25px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-decoration: none;
+}
+
+.helpOptionBtn:hover {
+  background: #f1f5f9;
 }

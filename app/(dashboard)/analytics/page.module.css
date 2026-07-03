@@ -1,0 +1,375 @@
+.pageContainer {
+  font-family: var(--font-inter), sans-serif;
+  color: #11243d;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: 4rem;
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.headerTitle {
+  font-size: 31px;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: #011A34;
+}
+
+.headerSubtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #707070;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Segmented Control */
+.segmentedControl {
+  display: flex;
+  background-color: white;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 8px;
+  gap: 4px;
+}
+
+.segmentBtn {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #707070;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.segmentBtn:hover {
+  color: #11243d;
+}
+
+.segmentBtn.active {
+  background-color: #f1f5f9;
+  color: #024A94;
+}
+
+.exportBtn {
+  background-color: #024A94;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.exportBtn:hover {
+  background-color: #023870;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.statCard {
+  background-color: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.statIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.iconGreen {
+  background-color: #e6f7ef;
+  color: #10b981;
+}
+
+.iconPurple {
+  background-color: #f3e8ff;
+  color: #8b5cf6;
+}
+
+.iconBlue {
+  background-color: #e0f2fe;
+  color: #0ea5e9;
+}
+
+.iconOrange {
+  background-color: #ffedd5;
+  color: #f97316;
+}
+
+.statTitle1 {
+  font-size: 10px;
+  font-weight: 400;
+  color: #0D5010;
+  margin-bottom: 0.25rem;
+}
+
+.statTitle2 {
+  font-size: 10px;
+  font-weight: 400;
+  color: #300D50;
+  margin-bottom: 0.25rem;
+}
+
+.statTitle3 {
+  font-size: 10px;
+  font-weight: 400;
+  color: #0D504F;
+  margin-bottom: 0.25rem;
+}
+
+.statTitle4 {
+  font-size: 10px;
+  font-weight: 400;
+  color: #502B0D;
+  margin-bottom: 0.25rem;
+}
+
+.statValue {
+  font-size: 21.7px;
+  font-weight: 600;
+  color: #2C2C2C;
+  margin-bottom: 0.75rem;
+}
+
+.statTrend {
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.trendUp {
+  color: #10b981;
+}
+
+.trendDown {
+  color: #ef4444;
+}
+
+.trendText {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+/* Cards (Chart & Table) */
+.card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 500;
+  color: #2C2C2C;
+}
+
+.chartLegend {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 12px;
+  font-weight: 500;
+  color: #707070;
+}
+
+.legendDot {
+  width: 8px;
+  height: 4px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* Table Controls */
+.tableControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+}
+
+.searchInput {
+  padding: 8px 12px 8px 36px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 200px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.searchInput:focus {
+  border-color: #024A94;
+}
+
+.sortWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 13px;
+  color: #707070;
+}
+
+.sortSelect {
+  padding: 8px 32px 8px 12px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #11243d;
+  appearance: none;
+  background: white url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23707070%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") no-repeat right 8px center;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Table */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.performanceTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.performanceTable th {
+  font-size: 13px;
+  font-weight: 500;
+  color: #707070;
+  padding: 1rem 1rem 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.performanceTable td {
+  padding: 1rem 1rem 1rem 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #11243d;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.performanceTable tr:last-child td {
+  border-bottom: none;
+}
+
+.typeIcon {
+  color: #024A94;
+}
+
+.typeIcon.pathway {
+  color: #2dd4bf;
+}
+
+.nameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nameTitle {
+  color: #024A94;
+  font-weight: 500;
+}
+
+.namePrice {
+  color: #707070;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.descText {
+  color: #707070;
+  font-weight: 400;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.confUp {
+  color: #10b981;
+  background-color: #e6f7ef;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.confDown {
+  color: #ef4444;
+  background-color: #fee2e2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}

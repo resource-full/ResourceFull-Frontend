@@ -102,7 +102,7 @@
 
 .resourceGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 24px;
   padding-bottom: 40px;
 }
@@ -124,39 +124,50 @@
   .exploreHeader {
     margin-bottom: 24px;
   }
+
   .exploreTitle {
     font-size: 24px;
   }
+
   .filterRow {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
+
   .tagsContainer {
     overflow-x: auto;
     padding-bottom: 8px;
     width: 100%;
     flex-wrap: nowrap;
   }
+
   .exploreTag {
     white-space: nowrap;
   }
+
   .filterWrapper {
     align-self: flex-end;
-    margin-top: -56px; /* align with tags */
+    margin-top: -56px;
+    /* align with tags */
     z-index: 20;
   }
+
   .filterBtn {
     /* styles reset for wrapper */
   }
+
   .filterDropdown {
     right: 0;
-    max-width: 200px; /* prevent overflowing */
+    max-width: 200px;
+    /* prevent overflowing */
   }
+
   .resourceGrid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
+
   .hubGrid {
     grid-template-columns: 1fr;
     gap: 16px;

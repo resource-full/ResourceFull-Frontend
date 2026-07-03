@@ -85,13 +85,20 @@ const DocumentIcon = () => (
 
 const PathwayLineIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fillRule="evenodd" clipRule="evenodd" d="M12.3488 4.5332C13.0336 4.53321 13.6903 4.80526 14.1745 5.28946C14.6587 5.77366 14.9307 6.43037 14.9307 7.11512C14.9307 7.79988 14.6587 8.45663 14.1745 8.94084C13.6903 9.42504 13.0336 9.6971 12.3488 9.6971H6.71547C6.27971 9.6971 5.86174 9.87017 5.55361 10.1783C5.24548 10.4864 5.07241 10.9044 5.07241 11.3402C5.07241 11.7759 5.24549 12.1938 5.55361 12.502C5.86174 12.8101 6.27971 12.9832 6.71547 12.9832H12.2349C12.381 12.5717 12.6509 12.2154 13.0075 11.9633C13.3641 11.7112 13.7899 11.5755 14.2266 11.5749C14.6139 11.5749 14.9937 11.6813 15.3246 11.8826C15.6555 12.0839 15.9246 12.3723 16.1027 12.7162C16.2807 13.0601 16.3608 13.4464 16.3341 13.8328C16.3074 14.2191 16.1751 14.5907 15.9515 14.907C15.7279 15.2232 15.4216 15.4719 15.0663 15.6258C14.7109 15.7798 14.32 15.833 13.9364 15.7798C13.5528 15.7266 13.1912 15.569 12.8911 15.3241C12.591 15.0793 12.364 14.7566 12.2349 14.3915H6.71547C5.9062 14.3915 5.13006 14.07 4.55782 13.4978C3.98558 12.9256 3.66407 12.1494 3.66406 11.3402C3.66406 10.5309 3.98557 9.75476 4.55782 9.18251C5.13007 8.61026 5.90619 8.28875 6.71547 8.28875H12.3488C12.66 8.28875 12.9586 8.16513 13.1787 7.94504C13.3987 7.72495 13.5224 7.42638 13.5224 7.11512C13.5224 6.80387 13.3987 6.50534 13.1787 6.28526C12.9586 6.06517 12.66 5.94155 12.3488 5.94155H6.71547C6.52871 5.94155 6.3496 5.86733 6.21754 5.73527C6.08549 5.60322 6.01126 5.4241 6.01126 5.23734C6.01127 5.0506 6.0855 4.87153 6.21754 4.73948C6.3496 4.60742 6.52871 4.5332 6.71547 4.5332H12.3488ZM14.496 13.0368C14.3673 12.9835 14.2258 12.9696 14.0892 12.9967C13.9526 13.0239 13.8271 13.091 13.7286 13.1894C13.6302 13.2879 13.5631 13.4134 13.5359 13.55C13.5088 13.6866 13.5227 13.8282 13.576 13.9569C13.6293 14.0855 13.7196 14.1955 13.8354 14.2729C13.9512 14.3502 14.0873 14.3915 14.2266 14.3915C14.4133 14.3915 14.5924 14.3173 14.7245 14.1853C14.8565 14.0532 14.9307 13.8741 14.9307 13.6874C14.9307 13.5481 14.8894 13.4119 14.8121 13.2961C14.7347 13.1803 14.6247 13.0901 14.496 13.0368Z" fill="currentColor" />
+    <path fillRule="evenodd" clipRule="evenodd" d="M12.3488 4.53125C13.0336 4.53125 13.6903 4.80331 14.1745 5.28751C14.6587 5.77171 14.9307 6.42841 14.9307 7.11316C14.9307 7.79793 14.6587 8.45468 14.1745 8.93888C13.6903 9.42309 13.0336 9.69514 12.3488 9.69515H6.71547C6.27971 9.69515 5.86174 9.86822 5.55361 10.1763C5.24548 10.4845 5.07241 10.9024 5.07241 11.3382C5.07241 11.774 5.24549 12.1919 5.55361 12.5C5.86174 12.8081 6.27971 12.9813 6.71547 12.9813H12.2349C12.381 12.5697 12.6509 12.2135 13.0075 11.9613C13.3641 11.7092 13.7899 11.5735 14.2266 11.5729C14.6139 11.5729 14.9937 11.6793 15.3246 11.8806C15.6555 12.0819 15.9246 12.3703 16.1027 12.7142C16.2807 13.0582 16.3608 13.4444 16.3341 13.8308C16.3074 14.2172 16.1751 14.5888 15.9515 14.905C15.7279 15.2212 15.4216 15.4699 15.0663 15.6239C14.7109 15.7778 14.32 15.8311 13.9364 15.7779C13.5528 15.7247 13.1912 15.567 12.8911 15.3222C12.591 15.0773 12.364 14.7547 12.2349 14.3895H6.71547C5.9062 14.3895 5.13006 14.0681 4.55782 13.4959C3.98558 12.9236 3.66407 12.1475 3.66406 11.3382C3.66406 10.5289 3.98557 9.7528 4.55782 9.18056C5.13007 8.60831 5.90619 8.2868 6.71547 8.2868H12.3488C12.66 8.28679 12.9586 8.16318 13.1787 7.94309C13.3987 7.723 13.5224 7.42443 13.5224 7.11316C13.5224 6.80191 13.3987 6.50339 13.1787 6.2833C12.9586 6.06322 12.66 5.9396 12.3488 5.9396H6.71547C6.52871 5.9396 6.3496 5.86538 6.21754 5.73332C6.08549 5.60126 6.01126 5.42215 6.01126 5.23539C6.01127 5.04865 6.0855 4.86958 6.21754 4.73753C6.3496 4.60547 6.52871 4.53125 6.71547 4.53125H12.3488ZM14.496 13.0349C14.3673 12.9816 14.2258 12.9676 14.0892 12.9948C13.9526 13.022 13.8271 13.089 13.7286 13.1875C13.6302 13.286 13.5631 13.4115 13.5359 13.548C13.5088 13.6846 13.5227 13.8262 13.576 13.9549C13.6293 14.0836 13.7196 14.1936 13.8354 14.2709C13.9512 14.3483 14.0873 14.3895 14.2266 14.3895C14.4133 14.3895 14.5924 14.3154 14.7245 14.1833C14.8565 14.0513 14.9307 13.8722 14.9307 13.6854C14.9307 13.5461 14.8894 13.41 14.8121 13.2942C14.7347 13.1784 14.6247 13.0882 14.496 13.0349Z" fill="#0AC0C7" />
   </svg>
 );
 
+const PathwayLineIconDark = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" clipRule="evenodd" d="M12.3488 4.53125C13.0336 4.53125 13.6903 4.80331 14.1745 5.28751C14.6587 5.77171 14.9307 6.42841 14.9307 7.11316C14.9307 7.79793 14.6587 8.45468 14.1745 8.93888C13.6903 9.42309 13.0336 9.69514 12.3488 9.69515H6.71547C6.27971 9.69515 5.86174 9.86822 5.55361 10.1763C5.24548 10.4845 5.07241 10.9024 5.07241 11.3382C5.07241 11.774 5.24549 12.1919 5.55361 12.5C5.86174 12.8081 6.27971 12.9813 6.71547 12.9813H12.2349C12.381 12.5697 12.6509 12.2135 13.0075 11.9613C13.3641 11.7092 13.7899 11.5735 14.2266 11.5729C14.6139 11.5729 14.9937 11.6793 15.3246 11.8806C15.6555 12.0819 15.9246 12.3703 16.1027 12.7142C16.2807 13.0582 16.3608 13.4444 16.3341 13.8308C16.3074 14.2172 16.1751 14.5888 15.9515 14.905C15.7279 15.2212 15.4216 15.4699 15.0663 15.6239C14.7109 15.7778 14.32 15.8311 13.9364 15.7779C13.5528 15.7247 13.1912 15.567 12.8911 15.3222C12.591 15.0773 12.364 14.7547 12.2349 14.3895H6.71547C5.9062 14.3895 5.13006 14.0681 4.55782 13.4959C3.98558 12.9236 3.66407 12.1475 3.66406 11.3382C3.66406 10.5289 3.98557 9.7528 4.55782 9.18056C5.13007 8.60831 5.90619 8.2868 6.71547 8.2868H12.3488C12.66 8.28679 12.9586 8.16318 13.1787 7.94309C13.3987 7.723 13.5224 7.42443 13.5224 7.11316C13.5224 6.80191 13.3987 6.50339 13.1787 6.2833C12.9586 6.06322 12.66 5.9396 12.3488 5.9396H6.71547C6.52871 5.9396 6.3496 5.86538 6.21754 5.73332C6.08549 5.60126 6.01126 5.42215 6.01126 5.23539C6.01127 5.04865 6.0855 4.86958 6.21754 4.73753C6.3496 4.60547 6.52871 4.53125 6.71547 4.53125H12.3488ZM14.496 13.0349C14.3673 12.9816 14.2258 12.9676 14.0892 12.9948C13.9526 13.022 13.8271 13.089 13.7286 13.1875C13.6302 13.286 13.5631 13.4115 13.5359 13.548C13.5088 13.6846 13.5227 13.8262 13.576 13.9549C13.6293 14.0836 13.7196 14.1936 13.8354 14.2709C13.9512 14.3483 14.0873 14.3895 14.2266 14.3895C14.4133 14.3895 14.5924 14.3154 14.7245 14.1833C14.8565 14.0513 14.9307 13.8722 14.9307 13.6854C14.9307 13.5461 14.8894 13.41 14.8121 13.2942C14.7347 13.1784 14.6247 13.0882 14.496 13.0349Z" fill="#707070" />
+  </svg>
+);
+
+
 const HubFolderIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.1323 13.9455C17.1323 14.7508 16.4794 15.4037 15.6741 15.4037H5.72385C4.91849 15.4037 4.26562 14.7508 4.26562 13.9455V8.63848C4.26562 7.83313 4.91849 7.18026 5.72385 7.18026H12.0432C12.7569 7.18026 13.3355 6.60169 13.3355 5.88798C13.3355 5.17428 13.914 4.5957 14.6277 4.5957H15.6741C16.4794 4.5957 17.1323 5.24857 17.1323 6.05393V13.9455Z" fill="currentColor" />
+    <path fillRule="evenodd" clipRule="evenodd" d="M6.04427 6.04167C5.60705 6.04167 5.2526 6.39611 5.2526 6.83333V8.62849C5.48549 8.49377 5.75588 8.41667 6.04427 8.41667H13.9609C14.2493 8.41667 14.5197 8.49377 14.7526 8.62849V8.41667C14.7526 7.97944 14.3982 7.625 13.9609 7.625H11.1222C10.8072 7.625 10.5052 7.49989 10.2825 7.27719L9.16292 6.1576C9.08868 6.08337 8.988 6.04167 8.88302 6.04167H6.04427ZM14.7526 10C14.7526 9.56277 14.3982 9.20833 13.9609 9.20833H6.04427C5.60705 9.20833 5.2526 9.56277 5.2526 10V13.1667C5.2526 13.6039 5.60705 13.9583 6.04427 13.9583H13.9609C14.3982 13.9583 14.7526 13.6039 14.7526 13.1667V10ZM15.5443 13.1667C15.5443 14.0411 14.8354 14.75 13.9609 14.75H6.04427C5.16982 14.75 4.46094 14.0411 4.46094 13.1667V6.83333C4.46094 5.95888 5.16982 5.25 6.04427 5.25H8.88302C9.19796 5.25 9.50001 5.37511 9.72271 5.59781L10.8423 6.7174C10.9165 6.79163 11.0172 6.83333 11.1222 6.83333H13.9609C14.8354 6.83333 15.5443 7.54222 15.5443 8.41667V13.1667Z" fill="#0F172A" />
   </svg>
 );
 
@@ -102,11 +109,26 @@ const DraftIcon = () => (
   </svg>
 );
 
+const LockIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" clipRule="evenodd" d="M5.83333 5.83073C5.83333 3.52954 7.69881 1.66406 10 1.66406C12.3012 1.66406 14.1667 3.52954 14.1667 5.83073V8.33073H15C16.3807 8.33073 17.5 9.45002 17.5 10.8307V15.8307C17.5 17.2114 16.3807 18.3307 15 18.3307H5C3.61929 18.3307 2.5 17.2114 2.5 15.8307V10.8307C2.5 9.45002 3.61929 8.33073 5 8.33073H5.83333V5.83073ZM7.5 8.33073H12.5V5.83073C12.5 4.45002 11.3807 3.33073 10 3.33073C8.61929 3.33073 7.5 4.45002 7.5 5.83073V8.33073ZM5 9.9974C4.53976 9.9974 4.16667 10.3705 4.16667 10.8307V15.8307C4.16667 16.291 4.53976 16.6641 5 16.6641H15C15.4602 16.6641 15.8333 16.291 15.8333 15.8307V10.8307C15.8333 10.3705 15.4602 9.9974 15 9.9974H5ZM10 11.6641C10.4602 11.6641 10.8333 12.0372 10.8333 12.4974V14.1641C10.8333 14.6243 10.4602 14.9974 10 14.9974C9.53976 14.9974 9.16667 14.6243 9.16667 14.1641V12.4974C9.16667 12.0372 9.53976 11.6641 10 11.6641Z" fill="currentColor" />
+  </svg>
+);
+
 const MoreIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="1" />
     <circle cx="12" cy="5" r="1" />
     <circle cx="12" cy="19" r="1" />
+  </svg>
+);
+
+const ResourceTypeIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12.7017 13.1802C13.3005 13.1802 13.7858 13.6655 13.7858 14.2643C13.7858 14.863 13.3005 15.3483 12.7017 15.3483H5.13876C4.54004 15.3483 4.05469 14.863 4.05469 14.2643C4.05469 13.6655 4.54004 13.1802 5.13876 13.1802H12.7017Z" fill="#024A94" />
+    <path d="M15.853 9.98215C16.4517 9.98216 16.937 10.4675 16.9371 11.0662C16.9371 11.6649 16.4517 12.1503 15.853 12.1503H5.13876C4.54004 12.1503 4.05469 11.6649 4.05469 11.0662C4.0547 10.4675 4.54006 9.98215 5.13876 9.98215H15.853Z" fill="#024A94" />
+    <path d="M15.8619 6.83988C16.4607 6.83989 16.946 7.32524 16.946 7.92396C16.946 8.52267 16.4607 9.00803 15.8619 9.00804H5.14773C4.54902 9.00802 4.06365 8.52267 4.06365 7.92396C4.06365 7.32525 4.54902 6.8399 5.14773 6.83988H15.8619Z" fill="#024A94" />
+    <path d="M15.853 3.67969C16.4517 3.67969 16.9371 4.16505 16.9371 4.76376C16.9371 5.36248 16.4517 5.84783 15.853 5.84784H5.13876C4.54004 5.84784 4.05469 5.36248 4.05469 4.76376C4.05469 4.16504 4.54004 3.67969 5.13876 3.67969H15.853Z" fill="#024A94" />
   </svg>
 );
 
@@ -119,6 +141,34 @@ const MOCK_RESOURCES_TABLE = [
   { id: 5, name: "Leading text", desc: "Leading text", price: "Leading text", downloads: "1", saves: "1", status: "Label" },
   { id: 6, name: "Leading text", desc: "Leading text", price: "Leading text", downloads: "3", saves: "3", status: "Label" },
 ];
+
+const MOCK_PATHWAYS_TABLE = [
+  { id: 1, name: "Graphic Design CV", desc: "Our Graphic Design...", price: "$120", resources: "9", downloads: "24", saves: "24", status: "Active" },
+  { id: 2, name: "Leading text", desc: "Leading text", price: "Free", resources: "3", downloads: "300", saves: "300", status: "Only Me" },
+  { id: 3, name: "Leading text", desc: "Leading text", price: "Leading text", resources: "2", downloads: "700,000", saves: "700,000", status: "Label" },
+  { id: 4, name: "Leading text", desc: "Leading text", price: "Leading text", resources: "5", downloads: "2M", saves: "2M", status: "Label" },
+  { id: 5, name: "Leading text", desc: "Leading text", price: "Leading text", resources: "10", downloads: "1", saves: "1", status: "Label" },
+  { id: 6, name: "Leading text", desc: "Leading text", price: "Leading text", resources: "3", downloads: "3", saves: "3", status: "Label" },
+];
+
+const MOCK_HUBS_TABLE = [
+  { id: 1, name: "Graphic Design CV", desc: "Our Graphic Design...", resources: "9", pathways: "1", downloads: "24", saves: "24", status: "Active" },
+  { id: 2, name: "Leading text", desc: "Leading text", resources: "3", pathways: "3", downloads: "300", saves: "300", status: "Only Me" },
+  { id: 3, name: "Leading text", desc: "Leading text", resources: "2", pathways: "2", downloads: "700,000", saves: "700,000", status: "Label" },
+  { id: 4, name: "Leading text", desc: "Leading text", resources: "5", pathways: "5", downloads: "2M", saves: "2M", status: "Label" },
+  { id: 5, name: "Leading text", desc: "Leading text", resources: "10", pathways: "10", downloads: "1", saves: "1", status: "Label" },
+  { id: 6, name: "Leading text", desc: "Leading text", resources: "3", pathways: "3", downloads: "3", saves: "3", status: "Label" },
+];
+
+const MOCK_MIXED_TABLE = [
+  { id: 1, type: "resource", name: "Graphic Design CV", desc: "Our Graphic Design...", downloads: "24", saves: "24" },
+  { id: 2, type: "pathway", name: "Leading text", desc: "Leading text", downloads: "300", saves: "300" },
+  { id: 3, type: "hub", name: "Leading text", desc: "Leading text", downloads: "700,000", saves: "700,000" },
+  { id: 4, type: "pathway", name: "Leading text", desc: "Leading text", downloads: "2M", saves: "2M" },
+  { id: 5, type: "resource", name: "Leading text", desc: "Leading text", downloads: "1", saves: "1" },
+  { id: 6, type: "hub", name: "Leading text", desc: "Leading text", downloads: "3", saves: "3" },
+];
+
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -148,6 +198,13 @@ export default function ProfilePage() {
     if (status === "Active") return <span className={`${styles.statusLabel} ${styles.statusActive}`}>{status}</span>;
     if (status === "Only Me") return <span className={`${styles.statusLabel} ${styles.statusOnlyMe}`}>{status}</span>;
     return <span className={`${styles.statusLabel} ${styles.statusLabelDefault}`}>{status}</span>;
+  };
+
+  const renderTypeIcon = (type: string) => {
+    if (type === 'resource') return <span style={{ color: '#024A94', display: 'flex' }}><ResourceTypeIcon /></span>;
+    if (type === 'pathway') return <span style={{ color: '#00B5D8', display: 'flex' }}><PathwayLineIcon /></span>;
+    if (type === 'hub') return <span style={{ color: '#5a6474', display: 'flex' }}><HubFolderIcon /></span>;
+    return null;
   };
 
   return (
@@ -241,8 +298,8 @@ export default function ProfilePage() {
               <span className={styles.statLabel}>Total Sold</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statValue}>3.5 <StarIcon /></span>
-              <span className={styles.statLabel}>Avg. Relevancy Score</span>
+              <span className={styles.statValue}>~ 96%</span>
+              <span className={styles.statLabel}>Avg. Confidence Score</span>
             </div>
           </div>
         </div>
@@ -260,13 +317,19 @@ export default function ProfilePage() {
           className={`${styles.tab} ${activeTab === 'pathways' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('pathways')}
         >
-          <PathwayLineIcon /> Pathways <span className={styles.tabCount}>15</span>
+          <PathwayLineIconDark /> Pathways <span className={styles.tabCount}>15</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'hubs' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('hubs')}
         >
           <HubFolderIcon /> Hubs <span className={styles.tabCount}>7</span>
+        </button>
+        <button
+          className={`${styles.tab} ${activeTab === 'onlyme' ? styles.tabActive : ''}`}
+          onClick={() => setActiveTab('onlyme')}
+        >
+          <LockIcon /> Only me <span className={styles.tabCount}>15</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'drafts' ? styles.tabActive : ''}`}
@@ -312,7 +375,9 @@ export default function ProfilePage() {
                       {renderStatus(row.status)}
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.actionIcon}><EditIcon /></span>
+                      <Link href={`/edit-resource/${row.id}`} className={styles.actionIcon}>
+                        <EditIcon />
+                      </Link>
                     </td>
                     <td className={styles.td}>
                       <span className={styles.actionIcon}><MoreIcon /></span>
@@ -324,10 +389,154 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {activeTab === 'pathways' && (
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles.th}>Pathway Name</th>
+                  <th className={styles.th}>Short Description</th>
+                  <th className={styles.th}>Price</th>
+                  <th className={styles.th}>Resources</th>
+                  <th className={styles.th}>Downloads</th>
+                  <th className={styles.th}>Saves</th>
+                  <th className={styles.th}>Status</th>
+                  <th className={styles.th}>Edit</th>
+                  <th className={styles.th}>More</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MOCK_PATHWAYS_TABLE.map((row) => (
+                  <tr key={row.id} className={styles.tr}>
+                    <td className={styles.td}>
+                      <div className={styles.resourceName}>
+                        <div className={styles.checkbox}></div>
+                        {row.name}
+                      </div>
+                    </td>
+                    <td className={styles.td}>
+                      <span className={styles.shortDesc}>{row.desc}</span>
+                    </td>
+                    <td className={styles.td}>{row.price}</td>
+                    <td className={styles.td}>{row.resources}</td>
+                    <td className={styles.td}>{row.downloads}</td>
+                    <td className={styles.td}>{row.saves}</td>
+                    <td className={styles.td}>
+                      {renderStatus(row.status)}
+                    </td>
+                    <td className={styles.td}>
+                      <Link href={`/edit-pathway/${row.id}`} className={styles.actionIcon}>
+                        <EditIcon />
+                      </Link>
+                    </td>
+                    <td className={styles.td}>
+                      <span className={styles.actionIcon}><MoreIcon /></span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {activeTab === 'hubs' && (
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles.th}>Hub Name</th>
+                  <th className={styles.th}>Short Description</th>
+                  <th className={styles.th}>Resources</th>
+                  <th className={styles.th}>Pathways</th>
+                  <th className={styles.th}>Downloads</th>
+                  <th className={styles.th}>Saves</th>
+                  <th className={styles.th}>Status</th>
+                  <th className={styles.th}>Edit</th>
+                  <th className={styles.th}>More</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MOCK_HUBS_TABLE.map((row) => (
+                  <tr key={row.id} className={styles.tr}>
+                    <td className={styles.td}>
+                      <div className={styles.resourceName}>
+                        <div className={styles.checkbox}></div>
+                        {row.name}
+                      </div>
+                    </td>
+                    <td className={styles.td}>
+                      <span className={styles.shortDesc}>{row.desc}</span>
+                    </td>
+                    <td className={styles.td}>{row.resources}</td>
+                    <td className={styles.td}>{row.pathways}</td>
+                    <td className={styles.td}>{row.downloads}</td>
+                    <td className={styles.td}>{row.saves}</td>
+                    <td className={styles.td}>
+                      {renderStatus(row.status)}
+                    </td>
+                    <td className={styles.td}>
+                      <Link href={`/edit-hub/${row.id}`} className={styles.actionIcon}>
+                        <EditIcon />
+                      </Link>
+                    </td>
+                    <td className={styles.td}>
+                      <span className={styles.actionIcon}><MoreIcon /></span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+
         {/* Placeholders for other tabs */}
-        {activeTab === 'pathways' && <div className="text-gray-500 py-8 text-center">Pathways content coming soon.</div>}
-        {activeTab === 'hubs' && <div className="text-gray-500 py-8 text-center">Hubs content coming soon.</div>}
-        {activeTab === 'drafts' && <div className="text-gray-500 py-8 text-center">Drafts content coming soon.</div>}
+        {(activeTab === 'onlyme' || activeTab === 'drafts') && (
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles.th}>Type</th>
+                  <th className={styles.th}>Name</th>
+                  <th className={styles.th}>Short Description</th>
+                  <th className={styles.th}>Downloads</th>
+                  <th className={styles.th}>Saves</th>
+                  <th className={styles.th}>Edit</th>
+                  <th className={styles.th}>More</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MOCK_MIXED_TABLE.map((row) => (
+                  <tr key={row.id} className={styles.tr}>
+                    <td className={styles.td}>
+                      <div className={styles.resourceName}>
+                        {renderTypeIcon(row.type)}
+                      </div>
+                    </td>
+                    <td className={styles.td}>
+                      <span className={styles.resourceName} style={{ color: row.id === 1 ? '#024A94' : '#11243d' }}>
+                        {row.name}
+                      </span>
+                    </td>
+                    <td className={styles.td}>
+                      <span className={styles.shortDesc}>{row.desc}</span>
+                    </td>
+                    <td className={styles.td}>{row.downloads}</td>
+                    <td className={styles.td}>{row.saves}</td>
+                    <td className={styles.td}>
+                      <Link href={`/edit-${row.type}/${row.id}`} className={styles.actionIcon}>
+                        <EditIcon />
+                      </Link>
+                    </td>
+                    <td className={styles.td}>
+                      <span className={styles.actionIcon}><MoreIcon /></span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
     </div>

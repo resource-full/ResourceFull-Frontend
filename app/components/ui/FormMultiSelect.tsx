@@ -26,13 +26,13 @@ interface MultiSelectProps {
   isTransparent?: boolean;
 }
 
-export default function FormMultiSelect({ 
-  label, 
-  options, 
-  selected, 
-  onChange, 
-  isOpen, 
-  onToggle, 
+export default function FormMultiSelect({
+  label,
+  options,
+  selected,
+  onChange,
+  isOpen,
+  onToggle,
   enableSearch = false,
   isTransparent = false
 }: MultiSelectProps) {
@@ -52,21 +52,26 @@ export default function FormMultiSelect({
     onChange(selected.filter(v => v !== val));
   };
 
-  const filteredOptions = enableSearch 
+  const filteredOptions = enableSearch
     ? options.filter(opt => opt.label.toLowerCase().includes(searchTerm.toLowerCase()))
     : options;
 
   return (
     <div className={styles.inputGroup} style={{ position: 'relative' }}>
-      <button 
-        type="button" 
+      {!isTransparent && (
+        <span style={{ fontSize: '0.9375rem', fontWeight: 500, color: '#11243d' }}>
+          {label}
+        </span>
+      )}
+      <button
+        type="button"
         className={`${styles.input} ${isTransparent ? styles.transparentInput : ''}`}
-        style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          minHeight: '50px', 
-          padding: selected.length > 0 ? (isTransparent ? '8px 16px 8px 0' : '8px 16px') : (isTransparent ? '14px 16px 14px 0' : '14px 16px'), 
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          minHeight: '50px',
+          padding: selected.length > 0 ? (isTransparent ? '8px 16px 8px 0' : '8px 16px') : (isTransparent ? '14px 16px 14px 0' : '14px 16px'),
           height: 'auto',
           ...(isTransparent ? {
             background: 'transparent',
@@ -79,7 +84,7 @@ export default function FormMultiSelect({
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
           {selected.length === 0 ? (
-            <span>{label}</span>
+            <span style={{ color: '#8c95a6' }}>{isTransparent ? label : 'Select...'}</span>
           ) : (
             selected.map(val => {
               const opt = options.find(o => o.value === val);
@@ -88,7 +93,7 @@ export default function FormMultiSelect({
                 <div key={val} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f0f4f8', padding: '4px 8px', borderRadius: '6px', fontSize: '0.875rem', fontWeight: 500, color: '#11243d' }}>
                   {opt.icon && <span>{opt.icon}</span>}
                   {opt.label}
-                  <div 
+                  <div
                     onClick={(e) => removeOption(val, e)}
                     style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginLeft: '4px', color: '#8c95a6' }}
                   >
@@ -106,19 +111,19 @@ export default function FormMultiSelect({
           <ChevronDown />
         </span>
       </button>
-      
+
       {isOpen && (
-        <div style={{ 
-          position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '8px', 
-          background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', 
+        <div style={{
+          position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '8px',
+          background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px',
           padding: '8px 0', zIndex: 10, maxHeight: '250px', display: 'flex', flexDirection: 'column',
           boxShadow: '0 10px 25px rgba(0,0,0,0.05)'
         }}>
           {enableSearch && (
             <div style={{ padding: '0 16px 8px 16px', borderBottom: '1px solid #e2e8f0', marginBottom: '8px' }}>
-              <input 
-                type="text" 
-                placeholder="Search..." 
+              <input
+                type="text"
+                placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onClick={(e) => e.stopPropagation()}
@@ -128,12 +133,12 @@ export default function FormMultiSelect({
           )}
           <div style={{ overflowY: 'auto' }}>
             {filteredOptions.map(opt => (
-              <div 
-                key={opt.value} 
+              <div
+                key={opt.value}
                 onClick={(e) => toggleOption(opt.value, e)}
-                style={{ 
-                  display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', cursor: 'pointer' 
-                }} 
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', cursor: 'pointer'
+                }}
                 className={styles.menuItemHover}
               >
                 <div className={`${styles.checkbox} ${selected.includes(opt.value) ? styles.checkboxActive : ''}`}>
