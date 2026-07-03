@@ -1,6 +1,6 @@
 import Image from "next/image";
 import styles from "./AboutBackstory.module.css";
-import BackstoryImg from "@/public/assets/oyibo.jpg";
+import BackstoryImg from "@/public/assets/brown.png";
 
 export default function AboutBackstory() {
   return (
@@ -9,11 +9,10 @@ export default function AboutBackstory() {
         <div className={styles.content}>
           <span className={styles.badge}>OUR BACKSTORY</span>
           <h2 className={styles.title}>
-            We understood that people need resources...
+            We understood that<br />people need resources...
           </h2>
           <p className={styles.description}>
-            ResourceFull puts every career tool you need in one place — no
-            more hunting across WhatsApp groups and Google Drives.
+            We understood that people need resources. But more than that, we realized that people are completely exhausted by the hunt for them.
           </p>
         </div>
         <div className={styles.imageContainer}>

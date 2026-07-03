@@ -130,6 +130,7 @@
 /* ---------- Right Column (Preview Widget) ---------- */
 .rightColumn {
   flex: 1;
+  max-width: 550px;
   display: flex;
   justify-content: flex-end;
 }

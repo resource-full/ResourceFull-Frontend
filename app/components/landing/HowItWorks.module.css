@@ -44,41 +44,38 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
 }
 
 .card {
   background: white;
-  border-radius: 20px;
-  padding: 40px;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 }
 
-.number {
-  font-size: 84px;
-  font-weight: 700;
-  margin-bottom: 24px;
-  line-height: 1;
+.card:first-child {
+  border-right: 0.5px solid #024A9499;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
-.cardTitle {
-  font-size: 25px;
-  font-weight: 500;
-  color: #2C2C2C;
-  margin: 0 0 16px 0;
-}
-
-.cardDesc {
-  font-size: 16px;
-  color: #707070;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
+.card:last-child {
+  border-left: 0.5px solid #024A9499;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .card, .card:first-child, .card:last-child {
+    border: none;
+    border-radius: 20px;
   }
 }
 

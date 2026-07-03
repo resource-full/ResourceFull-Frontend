@@ -5,15 +5,17 @@ import HowItWorks from "@/app/components/landing/HowItWorks";
 import RelevantResources from "@/app/components/landing/RelevantResources";
 import TopContributors from "@/app/components/landing/TopContributors";
 import CtaSection from "@/app/components/landing/CtaSection";
+import CommunityTestimonials from "@/app/components/landing/CommunityTestimonials";
 
 export default function LandingPage() {
   return (
     <>
       <Hero />
       <HowItWorks />
-      <RelevantResources />
-      <Pathways />
       <PopularCategories />
+      <Pathways />
+      <CommunityTestimonials />
+      {/* add the community section here after pathways*/}
       <TopContributors />
       <CtaSection />
     </>

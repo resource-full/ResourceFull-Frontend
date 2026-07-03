@@ -77,6 +77,10 @@ export default function Hero() {
               <h3 className={styles.statNumber}>50+</h3>
               <p className={styles.statLabel}>Countries Covered</p>
             </div>
+            <div className={styles.statItem}>
+              <h3 className={styles.statNumber}>~84%</h3>
+              <p className={styles.statLabel}>AVG. Confidence Score</p>
+            </div>
           </div>
         </div>
 

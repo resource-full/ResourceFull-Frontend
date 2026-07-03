@@ -98,8 +98,9 @@ export default function Pathways() {
       <div className={styles.container}>
         <div className={styles.header}>
           <div>
-            <span className={styles.badge}>PATHWAYS</span>
-            <h2 className={styles.title}>Step-by-step journey to your goals</h2>
+            <span className={styles.badge}>CURATED PATHWAYS</span>
+            <h2 className={styles.title}>Your step-by-step<br />journey to the goal</h2>
+            <p className={styles.subTitle}>Built by people who walked it. Resources in the right order, with<br />checkpoints at every stage.</p>
           </div>
           <Link href="/pathways" className={styles.viewAllBtn}>
             View all pathways

@@ -34,7 +34,7 @@
 
 .subtitle {
   font-size: 16px;
-  color: #707070;
+  color: #024A9499;
   font-weight: 400;
   margin: 0;
 }
@@ -95,7 +95,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .categoriesSection {
+  .section {
     padding: 60px 40px;
   }
 }
@@ -116,11 +116,12 @@
     grid-template-columns: 1fr;
   }
 
-  .categoriesSection {
+  .section {
     padding: 40px 16px;
   }
 
   .card {
-    height: 350px;
+    min-height: 250px;
+    height: auto;
   }
 }
