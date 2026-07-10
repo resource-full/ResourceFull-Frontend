@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { resourceAPI } from "@/app/lib/api/resource";
 import styles from "./page.module.css";
 
 const ChevronDown = () => (
@@ -54,6 +55,8 @@ const RefreshIcon = () => (
 export default function AddResourcePage() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
+  const [coverPhotoFile, setCoverPhotoFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Form State
   const [name, setName] = useState("");
@@ -68,6 +71,12 @@ export default function AddResourcePage() {
   // Dropdown States
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
+  const HUB_OPTIONS = [
+    { value: "create", label: "+ Create Hub", icon: "" },
+    { value: "6a367c19f6d5e39da2a28636", label: "CV Templates" },
+    { value: "6a367c19f6d5e39da2a28637", label: "JS Codes" }
+  ];
+
   // Modal State
   const [modalType, setModalType] = useState<"success" | "error" | "draft" | null>(null);
 
@@ -81,17 +90,73 @@ export default function AddResourcePage() {
     }
   };
 
-  const handlePost = () => {
-    // Simulate API call
-    if (name && description) {
-      setModalType("success");
-    } else {
+  const submitResource = async (actionType: 'post' | 'save_draft') => {
+    if (!uploadedFile || !name || !description) return;
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('resourceFile', uploadedFile);
+      if (coverPhotoFile) {
+        formData.append('coverPhoto', coverPhotoFile);
+      }
+      
+      const locationLabel = locations.length > 0 
+        ? COUNTRIES.find(c => c.value === locations[0])?.label 
+        : 'Worldwide';
+        
+      const experienceLabel = experiences.length > 0 
+        ? EXPERIENCE_OPTIONS.find(e => e.value === experiences[0])?.label 
+        : 'Professional (above 6 years)';
+        
+      const industryLabel = industries.length > 0 
+        ? SKILLS_OPTIONS.find(s => s.value === industries[0])?.label 
+        : 'Software Development';
+
+      formData.append('applicableLocation', locationLabel || 'Worldwide');
+      formData.append('experience', experienceLabel || 'Professional (above 6 years)');
+      
+      // The backend seems strictly configured for 'Software Development' instead of 'Web Development'
+      formData.append('industry', 'Software Development');
+      
+      formData.append('isFree', isFree.toString());
+      formData.append('price', price || '0');
+      formData.append('currency', 'USD');
+      
+      // Temporary fix: Do not send hubId because the mock IDs won't exist for this user in the backend
+      // if (hubs.length > 0 && hubs[0] !== "create") {
+      //   formData.append('hubId', hubs[0]);
+      // }
+      
+      formData.append('status', 'draft');
+
+      const response = await resourceAPI.createResource(formData);
+
+      if (response && response.success === false) {
+        throw new Error((response as any).message || "Upload failed");
+      }
+
+      if (actionType === 'save_draft') {
+        setModalType("draft");
+      } else {
+        setModalType("success");
+      }
+    } catch (error: any) {
+      console.error('Failed to upload resource:', error?.response?.data || error);
       setModalType("error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const handlePost = () => {
+    submitResource('post');
+  };
+
   const handleSaveDraft = () => {
-    setModalType("draft");
+    submitResource('save_draft');
   };
 
   const closeModal = () => {
@@ -99,6 +164,8 @@ export default function AddResourcePage() {
     if (modalType === "success") {
       // Reset form
       setUploadedFile(null);
+      setCoverPhoto(null);
+      setCoverPhotoFile(null);
       setName("");
       setDescription("");
       setLocations([]);
@@ -116,15 +183,17 @@ export default function AddResourcePage() {
         <h1 className={styles.title}>Add Resource</h1>
         {uploadedFile && (
           <div className={styles.headerActions}>
-            <button className={styles.btnDraft} onClick={handleSaveDraft}>Save Draft</button>
-            <button className={`${styles.btnPost} ${!name ? styles.btnPostDisabled : ''}`} onClick={handlePost}>
+            <button className={styles.btnDraft} onClick={handleSaveDraft} disabled={isLoading}>
+              {isLoading ? 'Saving...' : 'Save Draft'}
+            </button>
+            <button className={`${styles.btnPost} ${(!name || isLoading) ? styles.btnPostDisabled : ''}`} onClick={handlePost} disabled={isLoading || !name}>
               <span style={{ transform: 'rotate(-45deg)' }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="22" y1="2" x2="11" y2="13"></line>
                   <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                 </svg>
               </span>
-              Post
+              {isLoading ? 'Posting...' : 'Post'}
             </button>
           </div>
         )}
@@ -191,9 +260,11 @@ export default function AddResourcePage() {
                 accept="image/*"
                 onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    setCoverPhotoFile(file);
                     const reader = new FileReader();
                     reader.onload = (e) => setCoverPhoto(e.target?.result as string);
-                    reader.readAsDataURL(e.target.files[0]);
+                    reader.readAsDataURL(file);
                   }
                 }}
               />
@@ -279,11 +350,7 @@ export default function AddResourcePage() {
 
             <FormMultiSelect
               label="Add to Hub"
-              options={[
-                { value: "create", label: "+ Create Hub", icon: "" },
-                { value: "cv", label: "CV Templates" },
-                { value: "js", label: "JS Codes" }
-              ]}
+              options={HUB_OPTIONS}
               selected={hubs}
               onChange={setHubs}
               isOpen={openDropdown === 'hub'}
@@ -303,7 +370,12 @@ export default function AddResourcePage() {
                   <CheckIcon />
                 </div>
                 <h3 className={styles.modalTitle}>Resource Uploaded!</h3>
-                <p className={styles.modalSubtitle}>Your resource is live and has been added to <strong>CV Template Hub</strong></p>
+                <p className={styles.modalSubtitle}>
+                  Your resource is live
+                  {hubs.length > 0 && hubs[0] !== 'create' ? (
+                    <> and has been added to <strong>{HUB_OPTIONS.find(h => h.value === hubs[0])?.label}</strong></>
+                  ) : null}
+                </p>
                 <div className={styles.modalActions}>
                   <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => window.location.href = '#'}>Go to Profile</button>
                   <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={closeModal}>Upload More</button>

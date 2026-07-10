@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { Resource } from "@/app/lib/types/resource";
 import ResourceCard, { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
 import DashboardTopNav from "../_components/DashboardTopNav";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
@@ -83,6 +85,59 @@ export default function DashboardPage() {
     industry: [],
     experience: [],
   });
+
+  const [fetchedResources, setFetchedResources] = useState<Resource[]>([]);
+  const [isLoadingResources, setIsLoadingResources] = useState(true);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      setIsLoadingResources(true);
+      try {
+        const res = await resourceAPI.getAllResources();
+        if (res.success && res.data.resources) {
+          setFetchedResources(res.data.resources);
+        }
+      } catch (error) {
+        console.error("Failed to fetch resources:", error);
+      } finally {
+        setIsLoadingResources(false);
+      }
+    };
+    
+    fetchResources();
+  }, []);
+
+  const formatPrice = (isFree: boolean, price: number | string, currency: string) => {
+    if (isFree || !price || price === "0" || price === 0) return "Free";
+    
+    let symbol = currency || "$";
+    if (symbol.toUpperCase() === "USD") symbol = "$";
+    else if (symbol.toUpperCase() === "NGN") symbol = "₦";
+    
+    return `${symbol}${price}`;
+  };
+
+  // Map API resources to the format expected by ResourceCard
+  const apiResourcesMapped = fetchedResources.map((res, index) => ({
+    id: res._id || res.id,
+    variant: (index % 2 === 0 ? "orange" : "purple") as ResourceCardVariant,
+    authorName: "Author", // Placeholder until backend includes populated author info
+    authorAvatarUrl: "https://i.pravatar.cc/150", 
+    previewImageUrl: res.coverPhoto || "/assets/pdf1.png",
+    title: res.name,
+    price: formatPrice(res.isFree, res.price, res.currency),
+    description: res.description,
+    fileType: res.resourceFile?.format ? `.${res.resourceFile.format}` : ".pdf",
+    tags: res.tags || [],
+    viewCount: res.viewCount?.toString() || "0",
+    commentCount: 0,
+  }));
+
+  // Combine one mock resource with the API resources as requested
+  const displayResources = [
+    MOCK_RESOURCES[0],
+    ...apiResourcesMapped
+  ];
 
   // Dynamic Title Logic
   const getDynamicTitle = () => {
@@ -183,9 +238,15 @@ export default function DashboardPage() {
 
       {activeTab === "resources" && (
         <div className={styles.resourceGrid}>
-          {MOCK_RESOURCES.map((resource) => (
-            <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} />
-          ))}
+          {isLoadingResources ? (
+            <div className="col-span-full text-center py-8 text-gray-500">Loading resources...</div>
+          ) : displayResources.length > 0 ? (
+            displayResources.map((resource) => (
+              <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8 text-gray-500">No resources found.</div>
+          )}
         </div>
       )}
 

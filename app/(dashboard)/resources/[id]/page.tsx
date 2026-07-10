@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ResourceCard from "@/app/components/ui/ResourceCard";
 import DashboardHeader, { DashboardFilters } from "../../_components/DashboardHeader";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { Resource } from "@/app/lib/types/resource";
 import styles from "./page.module.css";
 
 const BackIcon = () => (
@@ -75,6 +77,7 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
   const { id } = use(params);
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [resource, setResource] = useState(MOCK_RESOURCE);
   const [filters, setFilters] = useState<DashboardFilters>({
     searchQuery: "",
@@ -82,6 +85,51 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
     industry: [],
     experience: [],
   });
+
+  const formatPrice = (isFree: boolean, price: number | string, currency: string) => {
+    if (isFree || !price || price === "0" || price === 0) return "Free";
+    
+    let symbol = currency || "$";
+    if (symbol.toUpperCase() === "USD") symbol = "$";
+    else if (symbol.toUpperCase() === "NGN") symbol = "₦";
+    
+    return `${symbol}${price}`;
+  };
+
+  useEffect(() => {
+    const fetchResource = async () => {
+      setIsLoading(true);
+      try {
+        const res = await resourceAPI.getSingleResource(id);
+        if (res.success && res.data) {
+          const data = res.data;
+          setResource({
+            id: data._id || data.id,
+            variant: "purple", // Keep a default variant or random if preferred
+            authorName: data.owner?.name || "Author",
+            authorAvatarUrl: data.owner?.avatar || "https://i.pravatar.cc/150",
+            title: data.name,
+            price: formatPrice(data.isFree, data.price, data.currency),
+            description: data.description,
+            fileType: data.resourceFile?.format ? `.${data.resourceFile.format}` : ".pdf",
+            tags: data.tags || [],
+            previewImageUrl: data.coverPhoto || "/assets/pdf1.png",
+            viewCount: data.viewCount?.toString() || "0",
+            commentCount: 0,
+            isOwned: false // Placeholder until ownership logic is implemented
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch resource details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    if (id) {
+      fetchResource();
+    }
+  }, [id]);
 
   const handleBuyClick = () => {
     if (resource.isOwned) {
@@ -109,8 +157,14 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
 
       <div className={styles.mainLayout}>
         <div className={styles.mainContent}>
-          {/* Hero Banner */}
-          <div className={styles.heroBanner} style={{ backgroundColor: resource.variant === 'purple' ? '#5D2E8C' : '#D03B1F' }}>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className={styles.spinner}></div>
+            </div>
+          ) : (
+            <>
+              {/* Hero Banner */}
+              <div className={styles.heroBanner} style={{ backgroundColor: resource.variant === 'purple' ? '#5D2E8C' : '#D03B1F' }}>
             {/* Preview Left Side */}
             <div className={styles.heroPreview}>
               {resource.previewImageUrl && (
@@ -291,6 +345,8 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
               <button className={styles.postCommentBtn}>Post</button>
             </div>
           </div>
+          </>
+          )}
         </div>
 
         {/* Sidebar */}

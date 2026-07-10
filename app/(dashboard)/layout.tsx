@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import DashboardSidebar from "./_components/DashboardSidebar";
+import ProtectedRoute from "@/app/components/ProtectedRoute";
 import styles from "./layout.module.css";
 
 export const metadata: Metadata = {
@@ -13,15 +14,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={styles.dashboardLayout}>
-      <div className={styles.sidebarWrapper}>
-        <DashboardSidebar />
-      </div>
-      <div className={styles.mainContent}>
-        <div className={styles.mainInner}>
-          {children}
+    <ProtectedRoute>
+      <div className={styles.dashboardLayout}>
+        <div className={styles.sidebarWrapper}>
+          <DashboardSidebar />
+        </div>
+        <div className={styles.mainContent}>
+          <div className={styles.mainInner}>
+            {children}
+          </div>
         </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }
