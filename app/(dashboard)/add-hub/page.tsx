@@ -1,8 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { pathwayAPI } from "@/app/lib/api/pathway";
+import { hubAPI } from "@/app/lib/api/hub";
+import { CreateHubRequest } from "@/app/lib/types/hub";
+import { Resource } from "@/app/lib/types/resource";
+import { Pathway } from "@/app/lib/types/pathway";
 import styles from "./page.module.css";
 
 const CheckIcon = () => (
@@ -92,20 +98,68 @@ export default function AddHubPage() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   // Selected Items State
-  const [selectedResources, setSelectedResources] = useState<number[]>([1, 2, 3]); // pre-select some dummies
-  const [selectedPathways, setSelectedPathways] = useState<number[]>([1, 2]); // pre-select some dummies
+  // Selected Items State (now storing string IDs)
+  const [selectedResources, setSelectedResources] = useState<string[]>([]);
+  const [selectedPathways, setSelectedPathways] = useState<string[]>([]);
+
+  // Fetched Data
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [pathways, setPathways] = useState<Pathway[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   // Modal State
   const [modalType, setModalType] = useState<"success" | "error" | "draft" | null>(null);
   const [selectModal, setSelectModal] = useState<"resource" | "pathway" | null>(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [resRes, pathRes] = await Promise.all([
+          resourceAPI.getAllResources(),
+          pathwayAPI.getAllPathways()
+        ]);
+        if (resRes.success && resRes.data.resources) {
+          setResources(resRes.data.resources);
+        }
+        if (pathRes.success && pathRes.data.pathways) {
+          setPathways(pathRes.data.pathways);
+        }
+      } catch (error) {
+        console.error("Failed to fetch data for modal:", error);
+      } finally {
+        setIsDataLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   const toggleDropdown = (dropdownName: string) => {
     setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (name && description) {
-      setModalType("success");
+      try {
+        const payload: CreateHubRequest = {
+          name,
+          description,
+          industry: industries[0] || "Software Development",
+          applicableLocation: locations[0] || "Worldwide",
+          experience: experiences[0] || "Professional",
+          ...(selectedResources.length > 0 && { resources: selectedResources }),
+          ...(selectedPathways.length > 0 && { pathways: selectedPathways }),
+        };
+        const response = await hubAPI.createHub(payload);
+        if (response.success) {
+          setModalType("success");
+        } else {
+          console.error("API error:", response.message);
+          setModalType("error");
+        }
+      } catch (error) {
+        console.error("Failed to create hub:", error);
+        setModalType("error");
+      }
     } else {
       setModalType("error");
     }
@@ -128,7 +182,7 @@ export default function AddHubPage() {
     }
   };
 
-  const toggleResource = (id: number) => {
+  const toggleResource = (id: string) => {
     if (selectedResources.includes(id)) {
       setSelectedResources(selectedResources.filter(r => r !== id));
     } else {
@@ -136,7 +190,7 @@ export default function AddHubPage() {
     }
   };
 
-  const togglePathway = (id: number) => {
+  const togglePathway = (id: string) => {
     if (selectedPathways.includes(id)) {
       setSelectedPathways(selectedPathways.filter(p => p !== id));
     } else {
@@ -215,36 +269,20 @@ export default function AddHubPage() {
               </button>
             </div>
             <div className={styles.selectedList}>
-              {selectedResources.includes(1) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => toggleResource(1)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
+              {selectedResources.map((id, idx) => {
+                const res = resources.find(r => (r._id || r.id) === id);
+                if (!res) return null;
+                return (
+                  <div key={id} className={styles.selectedItem}>
+                    <div className={styles.checkboxContainer}>
+                      <div className={styles.checkbox} onClick={() => toggleResource(id)} style={{ cursor: 'pointer' }}>
+                        <CheckIcon />
+                      </div>
                     </div>
+                    <DummyResourceCard title={res.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
                   </div>
-                  <DummyResourceCard title="Graphic Designer 80% wining rate CV" variant="purple" />
-                </div>
-              )}
-              {selectedResources.includes(2) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => toggleResource(2)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
-                    </div>
-                  </div>
-                  <DummyResourceCard title="Graphic Designer 80% wining rate CV" variant="orange" />
-                </div>
-              )}
-              {selectedResources.includes(3) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => toggleResource(3)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
-                    </div>
-                  </div>
-                  <DummyResourceCard title="Graphic Designer 80% wining rate CV" variant="orange" />
-                </div>
-              )}
+                );
+              })}
             </div>
           </div>
 
@@ -257,26 +295,20 @@ export default function AddHubPage() {
               </button>
             </div>
             <div className={styles.selectedList}>
-              {selectedPathways.includes(1) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => togglePathway(1)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
+              {selectedPathways.map((id, idx) => {
+                const pw = pathways.find(p => (p._id || p.id) === id);
+                if (!pw) return null;
+                return (
+                  <div key={id} className={styles.selectedItem}>
+                    <div className={styles.checkboxContainer}>
+                      <div className={styles.checkbox} onClick={() => togglePathway(id)} style={{ cursor: 'pointer' }}>
+                        <CheckIcon />
+                      </div>
                     </div>
+                    <DummyPathwayCard title={pw.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
                   </div>
-                  <DummyPathwayCard title="Become a Full Stack Developer in 3 Months" variant="purple" />
-                </div>
-              )}
-              {selectedPathways.includes(2) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => togglePathway(2)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
-                    </div>
-                  </div>
-                  <DummyPathwayCard title="Become a Full Stack Developer in 3 Months" variant="orange" />
-                </div>
-              )}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -289,9 +321,12 @@ export default function AddHubPage() {
             <h3 className={styles.selectResourceTitle}>Select {selectModal === "resource" ? "Resource" : "Pathway"}</h3>
             <input type="text" className={styles.selectResourceSearch} placeholder="Search" />
             <div className={styles.selectResourceList}>
-              {selectModal === "resource" ? (
+              {isDataLoading ? (
+                <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>Loading data...</div>
+              ) : selectModal === "resource" ? (
                 <>
-                  {[1, 2, 3].map(id => {
+                  {resources.map((res, idx) => {
+                    const id = res._id || res.id;
                     const isSelected = selectedResources.includes(id);
                     return (
                       <label key={id} className={styles.selectResourceItem}>
@@ -299,7 +334,7 @@ export default function AddHubPage() {
                           {isSelected && <span style={{ color: '#fff' }}><CheckIcon /></span>}
                         </div>
                         <div style={{ pointerEvents: 'none', width: '100%' }}>
-                          <DummyResourceCard title="Graphic Designer 80% wining rate CV" variant={id === 1 ? "purple" : "orange"} />
+                          <DummyResourceCard title={res.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
                         </div>
                         <input 
                           type="checkbox" 
@@ -313,7 +348,8 @@ export default function AddHubPage() {
                 </>
               ) : (
                 <>
-                  {[1, 2].map(id => {
+                  {pathways.map((pw, idx) => {
+                    const id = pw._id || pw.id;
                     const isSelected = selectedPathways.includes(id);
                     return (
                       <label key={id} className={styles.selectResourceItem}>
@@ -321,7 +357,7 @@ export default function AddHubPage() {
                           {isSelected && <span style={{ color: '#fff' }}><CheckIcon /></span>}
                         </div>
                         <div style={{ pointerEvents: 'none', width: '100%' }}>
-                          <DummyPathwayCard title="Become a Full Stack Developer in 3 Months" variant={id === 1 ? "purple" : "orange"} />
+                          <DummyPathwayCard title={pw.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
                         </div>
                         <input 
                           type="checkbox" 

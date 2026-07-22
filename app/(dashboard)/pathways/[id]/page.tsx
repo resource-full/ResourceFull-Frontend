@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import PathwayCard from "@/app/components/ui/PathwayCard";
 import DashboardHeader, { DashboardFilters } from "../../_components/DashboardHeader";
+import { pathwayAPI } from "@/app/lib/api/pathway";
+import { useDashboardData } from "@/app/hooks/useDashboardData";
 import styles from "./page.module.css";
 
 const BackIcon = () => (
@@ -52,27 +54,24 @@ const MOCK_PATHWAY = {
   resourceCount: 20,
   viewCount: "2.5k",
   commentCount: 28000,
-  isOwned: false
+  isOwned: false,
+  blocks: [
+    { name: "Intro", order: 1 },
+    { name: "Tools", order: 2 },
+    { name: "Projects", order: 3 },
+    { name: "Set Up VS Code", order: 4 },
+    { name: "CV Template", order: 5 },
+  ] as any[],
 };
 
-const MOCK_SIMILAR = Array(3).fill(null).map((_, i) => ({
-  id: i,
-  variant: (i % 2 === 0 ? "purple" : "orange") as "orange" | "purple",
-  authorName: "Stella Della",
-  authorAvatarUrl: `https://i.pravatar.cc/150?u=${i}`,
-  title: "Become a Full Stack Developer in 3 Months",
-  price: i === 1 ? "$120" : "Free",
-  description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume.",
-  tags: ["Design", "CV"],
-  resourceCount: 20,
-  viewCount: "2.5k",
-  commentCount: 2,
-}));
+// Note: MOCK_SIMILAR has been replaced by data from the API via useDashboardData
 
 export default function PathwayDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { displayPathways, isLoadingPathways } = useDashboardData();
   const [pathway, setPathway] = useState(MOCK_PATHWAY);
   const [filters, setFilters] = useState<DashboardFilters>({
     searchQuery: "",
@@ -80,6 +79,51 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
     industry: [],
     experience: [],
   });
+
+  const formatPrice = (isFree: boolean, price: number | string, currency: string) => {
+    if (isFree || !price || price === "0" || price === 0) return "Free";
+    
+    let symbol = currency || "$";
+    if (symbol.toUpperCase() === "USD") symbol = "$";
+    else if (symbol.toUpperCase() === "NGN") symbol = "₦";
+    
+    return `${symbol}${price}`;
+  };
+
+  useEffect(() => {
+    const fetchPathway = async () => {
+      setIsLoading(true);
+      try {
+        const res = await pathwayAPI.getSinglePathway(id);
+        if (res.success && res.data) {
+          const data = res.data;
+          setPathway({
+            id: data._id || data.id,
+            variant: "purple",
+            authorName: data.author?.name || "Author",
+            authorAvatarUrl: data.author?.avatar || "https://i.pravatar.cc/150",
+            title: data.name,
+            price: formatPrice(data.isFree, data.price, data.currency),
+            description: data.description,
+            tags: data.tags || [],
+            resourceCount: data.resourceCount || data.blockCount || 0,
+            viewCount: data.viewCount?.toString() || "0",
+            commentCount: 0,
+            isOwned: false,
+            blocks: data.blocks || [],
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch pathway details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    if (id) {
+      fetchPathway();
+    }
+  }, [id]);
 
   const mainColor = pathway.variant === "purple" ? "#6a359c" : "#c4452a";
   const bgLightColor = pathway.variant === "purple" ? "rgba(106, 53, 156, 0.08)" : "rgba(196, 69, 42, 0.08)";
@@ -110,7 +154,12 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
 
       <div className={styles.mainLayout}>
         <div className={styles.mainContent}>
-          
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className={styles.spinner}></div>
+            </div>
+          ) : (
+            <>
           <div className={styles.pathwayInfoCard}>
             <div className={styles.infoHeader}>
               <div className={styles.authorInfo}>
@@ -140,30 +189,26 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
 
             <div className={styles.sequenceBlock} style={{ backgroundColor: bgLightColor }}>
               <div className={styles.sequenceRow}>
-                <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                  <div className={styles.sequenceNumber} style={{ color: mainColor }}>1</div>
-                  Intro
-                </div>
-                <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
-                <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                  <div className={styles.sequenceNumber} style={{ color: mainColor }}>2</div>
-                  Tools
-                </div>
-                <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
-                <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                  <div className={styles.sequenceNumber} style={{ color: mainColor }}>3</div>
-                  Projects
-                </div>
-                <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
-                <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                  <div className={styles.sequenceNumber} style={{ color: mainColor }}>4</div>
-                  Set Up VS Code
-                </div>
-                <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
-                <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                  <div className={styles.sequenceNumber} style={{ color: mainColor }}>5</div>
-                  CV Template
-                </div>
+                {(pathway.blocks && pathway.blocks.length > 0
+                  ? pathway.blocks
+                  : [
+                      { name: "Intro", order: 1 },
+                      { name: "Tools", order: 2 },
+                      { name: "Projects", order: 3 },
+                      { name: "Set Up VS Code", order: 4 },
+                      { name: "CV Template", order: 5 },
+                    ]
+                ).map((block: any, idx: number, arr: any[]) => (
+                  <>
+                    <div key={`block-${idx}`} className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
+                      <div className={styles.sequenceNumber} style={{ color: mainColor }}>{block.order || idx + 1}</div>
+                      {block.name}
+                    </div>
+                    {idx < arr.length - 1 && (
+                      <div key={`dash-${idx}`} className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
+                    )}
+                  </>
+                ))}
               </div>
             </div>
 
@@ -304,15 +349,21 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
               <button className={styles.postCommentBtn}>Post</button>
             </div>
           </div>
+          </>
+          )}
         </div>
 
         {/* Sidebar */}
         <aside className={styles.sidebar}>
           <h3 className={styles.sidebarTitle}>See Similar</h3>
           <div className={styles.similarGrid}>
-            {MOCK_SIMILAR.map(pathway => (
-              <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
-            ))}
+            {isLoadingPathways ? (
+              <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>Loading...</div>
+            ) : (
+              displayPathways.slice(0, 3).map(pathway => (
+                <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
+              ))
+            )}
           </div>
         </aside>
       </div>

@@ -8,54 +8,7 @@ import HubCard from "@/app/components/ui/HubCard";
 import PathwayCard from "@/app/components/ui/PathwayCard";
 import styles from "./page.module.css";
 
-// Mock data matching the Figma design
-const MOCK_RESOURCES = Array(8).fill(null).map((_, i) => ({
-    id: i,
-    variant: (i % 2 === 0 ? "orange" : "purple") as ResourceCardVariant,
-    authorName: "Stella Della",
-    authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-    previewImageUrl: "/assets/pdf1.png",
-    title: "Graphic Designer 80% wining rate CV",
-    price: i % 2 === 0 ? "Free" : "$120",
-    description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio exampl..",
-    fileType: ".pdf",
-    tags: ["Design", "CV"],
-    viewCount: "2.5k",
-    commentCount: "79%",
-}));
-
-const MOCK_HUBS = Array(8).fill(null).map((_, i) => {
-    const isOrange = [1, 4, 7].includes(i);
-    return {
-        id: i,
-        variant: (isOrange ? "orange" : "purple") as "orange" | "purple",
-        authorName: "Stella Della",
-        authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-        previewImageUrl: "/assets/pdf1.png",
-        title: "Become a Full Stack Developer in 3 Months",
-        price: i % 2 === 0 ? "$120" : "Free",
-        description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume...",
-        tags: ["Design", "CV"],
-        resourceCount: 20,
-        pathwayCount: 16,
-        viewCount: "2.5k",
-        commentCount: "79%",
-    };
-});
-
-const MOCK_PATHWAYS = Array(8).fill(null).map((_, i) => ({
-    id: i,
-    variant: (i % 3 === 1 ? "orange" : "purple") as "orange" | "purple", // Pattern matching screenshot
-    authorName: "Stella Della",
-    authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-    title: "Become a Full Stack Developer in 3 Months",
-    price: i % 2 === 0 ? "$120" : "Free",
-    description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume...",
-    tags: ["Design", "CV"],
-    resourceCount: 20,
-    viewCount: "2.5k",
-    commentCount: "79%",
-}));
+import { useDashboardData } from "@/app/hooks/useDashboardData";
 
 const TAGS = [
     "All",
@@ -83,6 +36,15 @@ export default function PurchasedPage() {
         industry: [],
         experience: [],
     });
+
+    const {
+        displayResources,
+        displayPathways,
+        displayHubs,
+        isLoadingResources,
+        isLoadingPathways,
+        isLoadingHubs
+    } = useDashboardData();
 
     // Dynamic Title Logic
     const getDynamicTitle = () => {
@@ -117,25 +79,37 @@ export default function PurchasedPage() {
 
             {activeTab === "resources" && (
                 <div className={styles.resourceGrid}>
-                    {MOCK_RESOURCES.map((resource) => (
-                        <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} isPurchased={true} />
-                    ))}
+                    {isLoadingResources ? (
+                        <div className="col-span-full text-center py-8 text-gray-500">Loading...</div>
+                    ) : (
+                        displayResources.map((resource) => (
+                            <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} isPurchased={true} />
+                        ))
+                    )}
                 </div>
             )}
 
             {activeTab === "pathways" && (
-                <div className={styles.resourceGrid}>
-                    {MOCK_PATHWAYS.map((pathway) => (
-                        <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} isPurchased={true} />
-                    ))}
+                <div className={styles.pathwayGrid}>
+                    {isLoadingPathways ? (
+                        <div className="col-span-full text-center py-8 text-gray-500">Loading...</div>
+                    ) : (
+                        displayPathways.map((pathway) => (
+                            <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} isPurchased={true} />
+                        ))
+                    )}
                 </div>
             )}
 
             {activeTab === "hubs" && (
                 <div className={styles.hubGrid}>
-                    {MOCK_HUBS.map((hub) => (
-                        <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} isPurchased={true} />
-                    ))}
+                    {isLoadingHubs ? (
+                        <div className="col-span-full text-center py-8 text-gray-500">Loading hubs...</div>
+                    ) : (
+                        displayHubs.map((hub) => (
+                            <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} isPurchased={true} />
+                        ))
+                    )}
                 </div>
             )}
         </div>

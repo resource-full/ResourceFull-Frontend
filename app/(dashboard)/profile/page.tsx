@@ -170,8 +170,13 @@ const MOCK_MIXED_TABLE = [
 ];
 
 
+import { useDashboardData } from "@/app/hooks/useDashboardData";
+import { userAPI } from "@/app/lib/api/user";
+import { UserProfileStats, UserProfileSocials } from "@/app/lib/types/user";
+
 export default function ProfilePage() {
   const router = useRouter();
+  const { displayResources, displayPathways, displayHubs } = useDashboardData();
   const [activeTab, setActiveTab] = useState("resources");
   const [profile, setProfile] = useState({
     name: "Stella Della",
@@ -182,16 +187,30 @@ export default function ProfilePage() {
     coverPhoto: "linear-gradient(90deg, #d4a72d 0%, #a6d88c 100%)"
   });
 
+  const [stats, setStats] = useState<UserProfileStats | null>(null);
+  const [socials, setSocials] = useState<UserProfileSocials | null>(null);
+
   useEffect(() => {
-    const saved = localStorage.getItem("resourcefull_profile_data");
-    if (saved) {
+    const fetchProfile = async () => {
       try {
-        const parsed = JSON.parse(saved);
-        // setProfile((prev) => ({ ...prev, ...parsed })); // Moved outside or just initializing from state
+        const res = await userAPI.getUserProfile();
+        if (res.success && res.data) {
+          setProfile({
+            name: res.data.name || `${res.data.firstName} ${res.data.lastName}`,
+            profession: res.data.currentRole || "Professional",
+            username: res.data.email ? `@${res.data.email.split('@')[0]}` : "@user",
+            bio: res.data.bio || res.data.shortDescription || "Building career resources...",
+            avatar: res.data.avatar || "",
+            coverPhoto: res.data.coverImage || "linear-gradient(90deg, #d4a72d 0%, #a6d88c 100%)"
+          });
+          setStats(res.data.stats || null);
+          setSocials(res.data.socials || null);
+        }
       } catch (e) {
-        console.error("Error reading profile data from localStorage:", e);
+        console.error("Error fetching profile from API:", e);
       }
-    }
+    };
+    fetchProfile();
   }, []);
 
   const renderStatus = (status: string) => {
@@ -282,23 +301,23 @@ export default function ProfilePage() {
 
           <div className={styles.statsRow}>
             <div className={styles.statItem}>
-              <span className={styles.statValue}>367</span>
+              <span className={styles.statValue}>{stats?.following || 0}</span>
               <span className={styles.statLabel}>Following</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statValue}>2.6M</span>
+              <span className={styles.statValue}>{stats?.followers || 0}</span>
               <span className={styles.statLabel}>Followers</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statValue}>23</span>
+              <span className={styles.statValue}>{stats?.totalCreated || 0}</span>
               <span className={styles.statLabel}>Total Created</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statValue}>21</span>
+              <span className={styles.statValue}>{stats?.totalSold || 0}</span>
               <span className={styles.statLabel}>Total Sold</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statValue}>~ 96%</span>
+              <span className={styles.statValue}>~ {stats?.avgRelevancyScore || 0}%</span>
               <span className={styles.statLabel}>Avg. Confidence Score</span>
             </div>
           </div>
@@ -311,31 +330,31 @@ export default function ProfilePage() {
           className={`${styles.tab} ${activeTab === 'resources' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('resources')}
         >
-          <DocumentIcon /> Resources <span className={styles.tabCount}>245</span>
+          <DocumentIcon /> Resources <span className={styles.tabCount}>{displayResources.length}</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'pathways' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('pathways')}
         >
-          <PathwayLineIconDark /> Pathways <span className={styles.tabCount}>15</span>
+          <PathwayLineIconDark /> Pathways <span className={styles.tabCount}>{displayPathways.length}</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'hubs' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('hubs')}
         >
-          <HubFolderIcon /> Hubs <span className={styles.tabCount}>7</span>
+          <HubFolderIcon /> Hubs <span className={styles.tabCount}>{displayHubs.length}</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'onlyme' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('onlyme')}
         >
-          <LockIcon /> Only me <span className={styles.tabCount}>15</span>
+          <LockIcon /> Only me <span className={styles.tabCount}>0</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'drafts' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('drafts')}
         >
-          <DraftIcon /> Drafts <span className={styles.tabCount}>15</span>
+          <DraftIcon /> Drafts <span className={styles.tabCount}>0</span>
         </button>
       </div>
 
@@ -357,25 +376,25 @@ export default function ProfilePage() {
                 </tr>
               </thead>
               <tbody>
-                {MOCK_RESOURCES_TABLE.map((row) => (
-                  <tr key={row.id} className={styles.tr}>
+                {displayResources.map((res) => (
+                  <tr key={res.id} className={styles.tr}>
                     <td className={styles.td}>
                       <div className={styles.resourceName}>
                         <div className={styles.checkbox}></div>
-                        {row.name}
+                        {res.title}
                       </div>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.shortDesc}>{row.desc}</span>
+                      <span className={styles.shortDesc}>{res.description}</span>
                     </td>
-                    <td className={styles.td}>{row.price}</td>
-                    <td className={styles.td}>{row.downloads}</td>
-                    <td className={styles.td}>{row.saves}</td>
+                    <td className={styles.td}>{res.price}</td>
+                    <td className={styles.td}>{res.viewCount}</td>
+                    <td className={styles.td}>{res.viewCount}</td>
                     <td className={styles.td}>
-                      {renderStatus(row.status)}
+                      {renderStatus(res.id === MOCK_RESOURCES_TABLE[0].id ? "Active" : "Active")}
                     </td>
                     <td className={styles.td}>
-                      <Link href={`/edit-resource/${row.id}`} className={styles.actionIcon}>
+                      <Link href={`/edit-resource/${res.id}`} className={styles.actionIcon}>
                         <EditIcon />
                       </Link>
                     </td>
@@ -406,26 +425,26 @@ export default function ProfilePage() {
                 </tr>
               </thead>
               <tbody>
-                {MOCK_PATHWAYS_TABLE.map((row) => (
-                  <tr key={row.id} className={styles.tr}>
+                {displayPathways.map((pw) => (
+                  <tr key={pw.id} className={styles.tr}>
                     <td className={styles.td}>
                       <div className={styles.resourceName}>
                         <div className={styles.checkbox}></div>
-                        {row.name}
+                        {pw.title}
                       </div>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.shortDesc}>{row.desc}</span>
+                      <span className={styles.shortDesc}>{pw.description}</span>
                     </td>
-                    <td className={styles.td}>{row.price}</td>
-                    <td className={styles.td}>{row.resources}</td>
-                    <td className={styles.td}>{row.downloads}</td>
-                    <td className={styles.td}>{row.saves}</td>
+                    <td className={styles.td}>{pw.price}</td>
+                    <td className={styles.td}>{pw.resourceCount}</td>
+                    <td className={styles.td}>{pw.viewCount}</td>
+                    <td className={styles.td}>{pw.viewCount}</td>
                     <td className={styles.td}>
-                      {renderStatus(row.status)}
+                      {renderStatus(pw.id === MOCK_PATHWAYS_TABLE[0].id ? "Active" : "Active")}
                     </td>
                     <td className={styles.td}>
-                      <Link href={`/edit-pathway/${row.id}`} className={styles.actionIcon}>
+                      <Link href={`/edit-pathway/${pw.id}`} className={styles.actionIcon}>
                         <EditIcon />
                       </Link>
                     </td>
@@ -456,26 +475,26 @@ export default function ProfilePage() {
                 </tr>
               </thead>
               <tbody>
-                {MOCK_HUBS_TABLE.map((row) => (
-                  <tr key={row.id} className={styles.tr}>
+                {displayHubs.map((hub) => (
+                  <tr key={hub.id} className={styles.tr}>
                     <td className={styles.td}>
                       <div className={styles.resourceName}>
                         <div className={styles.checkbox}></div>
-                        {row.name}
+                        {hub.title}
                       </div>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.shortDesc}>{row.desc}</span>
+                      <span className={styles.shortDesc}>{hub.description}</span>
                     </td>
-                    <td className={styles.td}>{row.resources}</td>
-                    <td className={styles.td}>{row.pathways}</td>
-                    <td className={styles.td}>{row.downloads}</td>
-                    <td className={styles.td}>{row.saves}</td>
+                    <td className={styles.td}>{hub.resourceCount}</td>
+                    <td className={styles.td}>{hub.pathwayCount}</td>
+                    <td className={styles.td}>{hub.viewCount}</td>
+                    <td className={styles.td}>{hub.viewCount}</td>
                     <td className={styles.td}>
-                      {renderStatus(row.status)}
+                      {renderStatus(hub.id === MOCK_HUBS_TABLE[0].id ? "Active" : "Active")}
                     </td>
                     <td className={styles.td}>
-                      <Link href={`/edit-hub/${row.id}`} className={styles.actionIcon}>
+                      <Link href={`/edit-hub/${hub.id}`} className={styles.actionIcon}>
                         <EditIcon />
                       </Link>
                     </td>

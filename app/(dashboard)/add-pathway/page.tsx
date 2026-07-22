@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { pathwayAPI } from "@/app/lib/api/pathway";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { Resource } from "@/app/lib/types/resource";
 import styles from "./page.module.css";
 
 const CheckIcon = () => (
@@ -76,9 +79,28 @@ export default function AddPathwayPage() {
   const [price, setPrice] = useState("");
   const [isFree, setIsFree] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [isResourcesLoading, setIsResourcesLoading] = useState(true);
 
   // Modal State
   const [modalType, setModalType] = useState<"success" | "error" | "draft" | null>(null);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const res = await resourceAPI.getAllResources();
+        if (res.success && res.data.resources) {
+          setResources(res.data.resources);
+        }
+      } catch (error) {
+        console.error("Failed to fetch resources for modal:", error);
+      } finally {
+        setIsResourcesLoading(false);
+      }
+    };
+    fetchResources();
+  }, []);
 
   const toggleDropdown = (dropdownName: string) => {
     setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
@@ -105,23 +127,92 @@ export default function AddPathwayPage() {
     setNodes(nodes.map(n => n.id === id ? { ...n, ...updates } : n));
   };
 
-  const handleResourceSelected = (resourceTitle: string) => {
+  const handleResourceSelected = (resourceId: string, resourceTitle: string) => {
     if (selectResourceModalNodeId) {
-      updateNode(selectResourceModalNodeId, { resourceTitle, resourceId: "dummy-id" });
+      updateNode(selectResourceModalNodeId, { resourceTitle, resourceId });
       setSelectResourceModalNodeId(null);
     }
   };
 
-  const handlePost = () => {
-    if (name && description) {
-      setModalType("success");
-    } else {
-      setModalType("error");
+  const HUB_OPTIONS = [
+    { value: "create", label: "+ Create Hub", icon: "" },
+    { value: "6a367c19f6d5e39da2a28636", label: "CV Templates" },
+    { value: "6a367c19f6d5e39da2a28637", label: "JS Codes" }
+  ];
+
+  const submitPathway = async (actionType: 'post' | 'save_draft') => {
+    if (!name || !description) return;
+    setIsLoading(true);
+
+    try {
+      const locationLabel = locations.length > 0
+        ? COUNTRIES.find(c => c.value === locations[0])?.label
+        : 'Worldwide';
+
+      const experienceLabel = experiences.length > 0
+        ? EXPERIENCE_OPTIONS.find(e => e.value === experiences[0])?.label
+        : 'Undergraduate';
+
+      const industryLabel = industries.length > 0
+        ? SKILLS_OPTIONS.find(s => s.value === industries[0])?.label
+        : 'Software Development';
+
+      const blocks = nodes.map((node, index) => {
+        const block: any = {
+          type: node.type,
+          name: node.title || (node.type === 'text' ? 'Text Block' : 'Resource Block'),
+          shortDescription: node.content || node.title || '',
+          order: index + 1,
+        };
+        if (node.type === 'resource' && node.resourceId) {
+          block.resource = node.resourceId;
+        }
+        return block;
+      });
+
+      const payload: any = {
+        name,
+        description,
+        blocks,
+        applicableLocation: locationLabel || 'Worldwide',
+        experience: experienceLabel || 'Undergraduate',
+        industry: 'Software Development',
+        isFree,
+        price: isFree ? 0 : Number(price) || 0,
+        currency: 'NGN',
+        tags: ['webdev'],
+      };
+
+      // Temporary fix: Do not send hubId because the mock IDs won't exist for this user in the backend
+      // if (hubs.length > 0 && hubs[0] !== 'create') {
+      //   payload.hubId = hubs[0];
+      // }
+
+      const response = await pathwayAPI.createPathway(payload);
+
+      if (response && response.success === false) {
+        throw new Error((response as any).message || 'Upload failed');
+      }
+
+      if (actionType === 'save_draft') {
+        setModalType('draft');
+      } else {
+        setModalType('success');
+      }
+    } catch (error: any) {
+      console.error('Failed to create pathway:', error?.response?.data || error);
+      setModalType('error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const handlePost = () => {
+    submitPathway('post');
+  };
+
   const handleSaveDraft = () => {
-    setModalType("draft");
+    submitPathway('save_draft');
   };
 
   const closeModal = () => {
@@ -146,13 +237,17 @@ export default function AddPathwayPage() {
       <div className={styles.header}>
         <h1 className={styles.title}>Add Pathway</h1>
         <div className={styles.headerActions}>
-          <button className={styles.btnDraft} onClick={handleSaveDraft}>Save Draft</button>
+          <button className={styles.btnDraft} onClick={handleSaveDraft} disabled={isLoading}>
+            {isLoading ? 'Saving...' : 'Save Draft'}
+          </button>
           {step === 1 ? (
             <button className={styles.btnNext} onClick={() => setStep(2)}>Next</button>
           ) : (
             <>
               <button className={styles.btnDraft} onClick={() => setStep(1)} style={{ border: 'none', background: 'transparent' }}>Back</button>
-              <button className={styles.btnNext} onClick={handlePost}>Post</button>
+              <button className={`${styles.btnNext} ${(!name || isLoading) ? styles.btnNextDisabled : ''}`} onClick={handlePost} disabled={isLoading || !name}>
+                {isLoading ? 'Posting...' : 'Post'}
+              </button>
             </>
           )}
         </div>
@@ -304,11 +399,7 @@ export default function AddPathwayPage() {
 
           <FormMultiSelect 
             label="Add to Hub" 
-            options={[
-              { value: "create", label: "+ Create Hub", icon: "" },
-              { value: "cv", label: "CV Templates" },
-              { value: "js", label: "JS Codes" }
-            ]} 
+            options={HUB_OPTIONS} 
             selected={hubs} 
             onChange={setHubs}
             isOpen={openDropdown === 'hub'}
@@ -324,19 +415,25 @@ export default function AddPathwayPage() {
             <h3 className={styles.selectResourceTitle}>Select Resource</h3>
             <input type="text" className={styles.selectResourceSearch} placeholder="Search" />
             <div className={styles.selectResourceList}>
-              {[1, 2].map(i => (
-                <label key={i} className={styles.selectResourceItem}>
-                  <div className={styles.checkbox}></div>
-                  <div style={{ pointerEvents: 'none', width: '100%' }}>
-                    <DummyResourceCard title="Graphic Designer 80% wining rate CV" />
-                  </div>
-                  <input 
-                    type="checkbox" 
-                    className="hidden" 
-                    onChange={() => handleResourceSelected("Graphic Designer 80% wining rate CV")} 
-                  />
-                </label>
-              ))}
+              {isResourcesLoading ? (
+                <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>Loading resources...</div>
+              ) : resources.length > 0 ? (
+                resources.map((res) => (
+                  <label key={res._id || res.id} className={styles.selectResourceItem}>
+                    <div className={styles.checkbox}></div>
+                    <div style={{ pointerEvents: 'none', width: '100%' }}>
+                      <DummyResourceCard title={res.name} />
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      className="hidden" 
+                      onChange={() => handleResourceSelected(res._id || res.id, res.name)} 
+                    />
+                  </label>
+                ))
+              ) : (
+                <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>No resources found.</div>
+              )}
             </div>
           </div>
         </div>

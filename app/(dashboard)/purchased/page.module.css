@@ -113,6 +113,13 @@
   padding-bottom: 40px;
 }
 
+.pathwayGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+  padding-bottom: 40px;
+}
+
 .hubGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

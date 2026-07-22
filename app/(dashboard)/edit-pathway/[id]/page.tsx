@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { Resource } from "@/app/lib/types/resource";
 import styles from "./page.module.css";
 
 const CheckIcon = () => (
@@ -95,9 +97,27 @@ export default function EditPathwayPage() {
   const [price, setPrice] = useState("$120");
   const [isFree, setIsFree] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [isResourcesLoading, setIsResourcesLoading] = useState(true);
 
   // Modal State
   const [modalType, setModalType] = useState<"success" | "error" | "draft" | "onlyme" | "back" | null>(null);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const res = await resourceAPI.getAllResources();
+        if (res.success && res.data.resources) {
+          setResources(res.data.resources);
+        }
+      } catch (error) {
+        console.error("Failed to fetch resources for modal:", error);
+      } finally {
+        setIsResourcesLoading(false);
+      }
+    };
+    fetchResources();
+  }, []);
 
   const toggleDropdown = (dropdownName: string) => {
     setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
@@ -124,9 +144,9 @@ export default function EditPathwayPage() {
     setNodes(nodes.map(n => n.id === id ? { ...n, ...updates } : n));
   };
 
-  const handleResourceSelected = (resourceTitle: string) => {
+  const handleResourceSelected = (resourceId: string, resourceTitle: string) => {
     if (selectResourceModalNodeId) {
-      updateNode(selectResourceModalNodeId, { resourceTitle, resourceId: "dummy-id" });
+      updateNode(selectResourceModalNodeId, { resourceTitle, resourceId });
       setSelectResourceModalNodeId(null);
     }
   };
@@ -340,19 +360,25 @@ export default function EditPathwayPage() {
             <h3 className={styles.selectResourceTitle}>Select Resource</h3>
             <input type="text" className={styles.selectResourceSearch} placeholder="Search" />
             <div className={styles.selectResourceList}>
-              {[1, 2].map(i => (
-                <label key={i} className={styles.selectResourceItem}>
-                  <div className={styles.checkbox}></div>
-                  <div style={{ pointerEvents: 'none', width: '100%' }}>
-                    <DummyResourceCard title="Graphic Designer 80% wining rate CV" />
-                  </div>
-                  <input
-                    type="checkbox"
-                    className="hidden"
-                    onChange={() => handleResourceSelected("Graphic Designer 80% wining rate CV")}
-                  />
-                </label>
-              ))}
+              {isResourcesLoading ? (
+                <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>Loading resources...</div>
+              ) : resources.length > 0 ? (
+                resources.map((res) => (
+                  <label key={res._id || res.id} className={styles.selectResourceItem}>
+                    <div className={styles.checkbox}></div>
+                    <div style={{ pointerEvents: 'none', width: '100%' }}>
+                      <DummyResourceCard title={res.name} />
+                    </div>
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      onChange={() => handleResourceSelected(res._id || res.id, res.name)}
+                    />
+                  </label>
+                ))
+              ) : (
+                <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>No resources found.</div>
+              )}
             </div>
           </div>
         </div>

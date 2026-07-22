@@ -8,7 +8,7 @@ import styles from "./PathwayCard.module.css";
 export type PathwayCardVariant = "purple" | "orange";
 
 interface PathwayCardProps {
-  id: number;
+  id: number | string;
   variant: PathwayCardVariant;
   authorName: string;
   authorAvatarUrl: string;

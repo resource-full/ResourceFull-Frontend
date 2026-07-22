@@ -8,7 +8,7 @@ import styles from "./HubCard.module.css";
 export type HubCardVariant = "purple" | "orange";
 
 interface HubCardProps {
-  id: number;
+  id: string | number;
   variant: HubCardVariant;
   authorName: string;
   authorAvatarUrl: string;

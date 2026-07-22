@@ -7,6 +7,7 @@ import ResourceCard from "@/app/components/ui/ResourceCard";
 import DashboardHeader, { DashboardFilters } from "../../_components/DashboardHeader";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { Resource } from "@/app/lib/types/resource";
+import { useDashboardData } from "@/app/hooks/useDashboardData";
 import styles from "./page.module.css";
 
 const BackIcon = () => (
@@ -58,26 +59,14 @@ const MOCK_RESOURCE = {
   isOwned: false
 };
 
-const MOCK_SIMILAR = Array(3).fill(null).map((_, i) => ({
-  id: `similar-${i}`,
-  variant: (i % 2 === 0 ? "orange" : "purple") as "orange" | "purple",
-  authorName: "Stella Della",
-  authorAvatarUrl: `https://i.pravatar.cc/150?u=${i}`,
-  previewImageUrl: "/assets/pdf1.png",
-  title: "Graphic Designer 80% wining rate CV",
-  price: i === 1 ? "Free" : "$120",
-  description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio exampl..",
-  fileType: ".pdf",
-  tags: ["Design", "CV"],
-  viewCount: "2.5k",
-  commentCount: 2,
-}));
+// Note: MOCK_SIMILAR has been replaced by data from the API via useDashboardData
 
 export default function ResourceDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { displayResources, isLoadingResources } = useDashboardData();
   const [resource, setResource] = useState(MOCK_RESOURCE);
   const [filters, setFilters] = useState<DashboardFilters>({
     searchQuery: "",
@@ -353,9 +342,13 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
         <aside className={styles.sidebar}>
           <h3 className={styles.sidebarTitle}>See Similar</h3>
           <div className={styles.similarGrid}>
-            {MOCK_SIMILAR.map(resource => (
-              <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} />
-            ))}
+            {isLoadingResources ? (
+              <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>Loading...</div>
+            ) : (
+              displayResources.slice(0, 3).map(resource => (
+                <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} />
+              ))
+            )}
           </div>
         </aside>
       </div>

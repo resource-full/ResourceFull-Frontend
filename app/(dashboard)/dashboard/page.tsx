@@ -1,63 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { resourceAPI } from "@/app/lib/api/resource";
-import { Resource } from "@/app/lib/types/resource";
-import ResourceCard, { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
+import { useState } from "react";
+import { useDashboardData } from "@/app/hooks/useDashboardData";
+import ResourceCard from "@/app/components/ui/ResourceCard";
 import DashboardTopNav from "../_components/DashboardTopNav";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
 import HubCard from "@/app/components/ui/HubCard";
 import PathwayCard from "@/app/components/ui/PathwayCard";
 import styles from "./page.module.css";
-
-// Mock data matching the Figma design
-const MOCK_RESOURCES = Array(8).fill(null).map((_, i) => ({
-  id: i,
-  variant: (i % 2 === 0 ? "orange" : "purple") as ResourceCardVariant,
-  authorName: "Stella Della",
-  authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-  previewImageUrl: "/assets/pdf1.png",
-  title: "Graphic Designer 80% wining rate CV",
-  price: i % 2 === 0 ? "Free" : "$120",
-  description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio exampl..",
-  fileType: ".pdf",
-  tags: ["Design", "CV"],
-  viewCount: "2.5k",
-  commentCount: 2,
-}));
-
-const MOCK_HUBS = Array(8).fill(null).map((_, i) => {
-  const isOrange = [1, 4, 7].includes(i);
-  return {
-    id: i,
-    variant: (isOrange ? "orange" : "purple") as "orange" | "purple",
-    authorName: "Stella Della",
-    authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-    previewImageUrl: "/assets/pdf1.png",
-    title: "Become a Full Stack Developer in 3 Months",
-    price: i % 2 === 0 ? "$120" : "Free",
-    description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume...",
-    tags: ["Design", "CV"],
-    resourceCount: 20,
-    pathwayCount: 16,
-    viewCount: "2.5k",
-    commentCount: 2,
-  };
-});
-
-const MOCK_PATHWAYS = Array(8).fill(null).map((_, i) => ({
-  id: i,
-  variant: (i % 3 === 1 ? "orange" : "purple") as "orange" | "purple", // Pattern matching screenshot
-  authorName: "Stella Della",
-  authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-  title: "Become a Full Stack Developer in 3 Months",
-  price: i % 2 === 0 ? "$120" : "Free",
-  description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume...",
-  tags: ["Design", "CV"],
-  resourceCount: 20,
-  viewCount: "2.5k",
-  commentCount: 2,
-}));
 
 const TAGS = [
   "All",
@@ -86,58 +36,14 @@ export default function DashboardPage() {
     experience: [],
   });
 
-  const [fetchedResources, setFetchedResources] = useState<Resource[]>([]);
-  const [isLoadingResources, setIsLoadingResources] = useState(true);
-
-  useEffect(() => {
-    const fetchResources = async () => {
-      setIsLoadingResources(true);
-      try {
-        const res = await resourceAPI.getAllResources();
-        if (res.success && res.data.resources) {
-          setFetchedResources(res.data.resources);
-        }
-      } catch (error) {
-        console.error("Failed to fetch resources:", error);
-      } finally {
-        setIsLoadingResources(false);
-      }
-    };
-    
-    fetchResources();
-  }, []);
-
-  const formatPrice = (isFree: boolean, price: number | string, currency: string) => {
-    if (isFree || !price || price === "0" || price === 0) return "Free";
-    
-    let symbol = currency || "$";
-    if (symbol.toUpperCase() === "USD") symbol = "$";
-    else if (symbol.toUpperCase() === "NGN") symbol = "₦";
-    
-    return `${symbol}${price}`;
-  };
-
-  // Map API resources to the format expected by ResourceCard
-  const apiResourcesMapped = fetchedResources.map((res, index) => ({
-    id: res._id || res.id,
-    variant: (index % 2 === 0 ? "orange" : "purple") as ResourceCardVariant,
-    authorName: "Author", // Placeholder until backend includes populated author info
-    authorAvatarUrl: "https://i.pravatar.cc/150", 
-    previewImageUrl: res.coverPhoto || "/assets/pdf1.png",
-    title: res.name,
-    price: formatPrice(res.isFree, res.price, res.currency),
-    description: res.description,
-    fileType: res.resourceFile?.format ? `.${res.resourceFile.format}` : ".pdf",
-    tags: res.tags || [],
-    viewCount: res.viewCount?.toString() || "0",
-    commentCount: 0,
-  }));
-
-  // Combine one mock resource with the API resources as requested
-  const displayResources = [
-    MOCK_RESOURCES[0],
-    ...apiResourcesMapped
-  ];
+  const {
+    displayResources,
+    displayPathways,
+    displayHubs,
+    isLoadingResources,
+    isLoadingPathways,
+    isLoadingHubs,
+  } = useDashboardData();
 
   // Dynamic Title Logic
   const getDynamicTitle = () => {
@@ -251,18 +157,30 @@ export default function DashboardPage() {
       )}
 
       {activeTab === "pathways" && (
-        <div className={styles.resourceGrid}>
-          {MOCK_PATHWAYS.map((pathway) => (
-            <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
-          ))}
+        <div className={styles.pathwayGrid}>
+          {isLoadingPathways ? (
+            <div className="col-span-full text-center py-8 text-gray-500">Loading pathways...</div>
+          ) : displayPathways.length > 0 ? (
+            displayPathways.map((pathway) => (
+              <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8 text-gray-500">No pathways found.</div>
+          )}
         </div>
       )}
 
       {activeTab === "hubs" && (
         <div className={styles.hubGrid}>
-          {MOCK_HUBS.map((hub) => (
-            <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} />
-          ))}
+          {isLoadingHubs ? (
+            <div className="col-span-full text-center py-8 text-gray-500">Loading hubs...</div>
+          ) : displayHubs.length > 0 ? (
+            displayHubs.map((hub) => (
+              <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8 text-gray-500">No hubs found.</div>
+          )}
         </div>
       )}
     </div>
