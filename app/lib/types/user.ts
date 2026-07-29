@@ -58,3 +58,29 @@ export interface GetUserProfileResponse {
   message?: string;
   data: UserProfile;
 }
+
+export interface UpdateUserProfilePayload {
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  location?: string;
+  currentCareer?: string;
+  skills?: string[];
+  bio?: string;
+  industry?: string;
+  experienceLevel?: string;
+  currentGoals?: string;
+  primaryGoal?: string;
+  goalTimeline?: string[];
+  experiences?: any[];
+  avatar?: string;
+  coverPhoto?: string;
+  [key: string]: any; // Allow other fields to be updated if needed
+}
+
+export interface UpdateUserProfileResponse {
+  success: boolean;
+  message?: string;
+  data: UserProfile;
+}

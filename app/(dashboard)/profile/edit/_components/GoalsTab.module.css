@@ -1,0 +1,82 @@
+.timelineGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.checkboxCard {
+  background: #f8f9fc;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.checkboxCard:hover {
+  background: #f0f7ff;
+}
+
+.checkboxWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.customCheckbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: transparent;
+  border: 2px solid #a0a9b8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.checkbox:checked ~ .customCheckbox {
+  background-color: #a0a9b8;
+  border-color: #a0a9b8;
+}
+
+.checkboxText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkboxTitle {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #11243d;
+}
+
+.checkboxSubtitle {
+  font-size: 0.8125rem;
+  color: #5a6474;
+}
+
+@media (max-width: 768px) {
+  .timelineGrid {
+    grid-template-columns: 1fr;
+  }
+}

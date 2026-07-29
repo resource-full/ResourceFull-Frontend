@@ -13,6 +13,7 @@ interface SelectProps {
   onChange: (value: string) => void;
   error?: string;
   searchable?: boolean;
+  isTransparent?: boolean;
 }
 
 const ChevronIcon = () => (

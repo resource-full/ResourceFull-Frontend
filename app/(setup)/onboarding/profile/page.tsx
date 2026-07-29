@@ -3,12 +3,29 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "../../setup.module.css";
-import { INITIAL_FORM_DATA, COUNTRIES } from "@/app/lib/constants/onboarding";
+import { INITIAL_FORM_DATA, COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 
 export default function ProfileSetupPage() {
   const router = useRouter();
   const [data, setData] = useState({ ...INITIAL_FORM_DATA });
   const [skillInput, setSkillInput] = useState("");
+
+  // Dropdown open state
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  // Location state (for Personal Information)
+  const [personalLocation, setPersonalLocation] = useState<string[]>([]);
+
+  // Industry state
+  const [industry, setIndustry] = useState<string[]>([]);
+
+  // Role location state (for Professional Experience)
+  const [roleLocation, setRoleLocation] = useState<string[]>([]);
+
+  const toggleDropdown = (name: string) => {
+    setOpenDropdown(openDropdown === name ? null : name);
+  };
 
   const handleToggle = (level: string) => {
     setData((prev) => ({ ...prev, experienceLevel: level }));
@@ -32,7 +49,6 @@ export default function ProfileSetupPage() {
   };
 
   const handleNext = () => {
-    // In a real app, save to context/store/API
     router.push("/onboarding/goals");
   };
 
@@ -72,11 +88,15 @@ export default function ProfileSetupPage() {
           </div>
         </div>
         <div className={styles.field}>
-          <label className={styles.label}>Location</label>
-          <div className={styles.chipContainer} style={{ minHeight: "auto", padding: "4px 8px" }}>
-            <span className={styles.chip}>Nigeria <button>&times;</button></span>
-            <input className={styles.chipInput} placeholder="Add location..." style={{ padding: "8px" }} />
-          </div>
+          <FormMultiSelect
+            label="Location"
+            options={COUNTRIES.filter(c => c.value !== 'worldwide')}
+            selected={personalLocation}
+            onChange={setPersonalLocation}
+            isOpen={openDropdown === 'personalLocation'}
+            onToggle={() => toggleDropdown('personalLocation')}
+            enableSearch
+          />
         </div>
       </div>
 
@@ -112,16 +132,26 @@ export default function ProfileSetupPage() {
             />
           </div>
           <div className={styles.field} style={{ flex: 1 }}>
-             <select className={styles.input}>
-               <option>Law</option>
-               <option>Tech</option>
-             </select>
+            <FormMultiSelect
+              label="Industry"
+              options={SKILLS_OPTIONS}
+              selected={industry}
+              onChange={setIndustry}
+              isOpen={openDropdown === 'industry'}
+              onToggle={() => toggleDropdown('industry')}
+              enableSearch
+            />
           </div>
           <div className={styles.field} style={{ flex: 1 }}>
-             <select className={styles.input}>
-               <option>Nigeria</option>
-               <option>Worldwide</option>
-             </select>
+            <FormMultiSelect
+              label="Role Location"
+              options={COUNTRIES.filter(c => c.value !== 'worldwide')}
+              selected={roleLocation}
+              onChange={setRoleLocation}
+              isOpen={openDropdown === 'roleLocation'}
+              onToggle={() => toggleDropdown('roleLocation')}
+              enableSearch
+            />
           </div>
         </div>
       </div>
@@ -148,7 +178,7 @@ export default function ProfileSetupPage() {
           ))}
           <input
             className={styles.chipInput}
-            placeholder="Placeholder"
+            placeholder="Type a skill and press Enter"
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
             onKeyDown={handleAddSkill}

@@ -1,205 +1,271 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
-import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
+import DashboardHeader, { DashboardFilters } from "../../_components/DashboardHeader";
 import { SuccessModal, ErrorModal } from "@/app/components/ui";
+import { userAPI } from "@/app/lib/api/user";
+
+// Sidebar & Tabs
+import EditProfileSidebar, { EditProfileTab } from "./_components/EditProfileSidebar";
+import BasicInfoTab from "./_components/BasicInfoTab";
+import AboutTab from "./_components/AboutTab";
+import SkillsTab from "./_components/SkillsTab";
+import ExperienceTab, { ExperienceItem } from "./_components/ExperienceTab";
+import GoalsTab from "./_components/GoalsTab";
 
 const BackIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fillRule="evenodd" clipRule="evenodd" d="M7.28033 7.71967C7.57322 8.01256 7.57322 8.48744 7.28033 8.78033L4.81066 11.25H21C21.4142 11.25 21.75 11.5858 21.75 12C21.75 12.4142 21.4142 12.75 21 12.75H4.81066L7.28033 15.2197C7.57322 15.5126 7.57322 15.9874 7.28033 16.2803C6.98744 16.5732 6.51256 16.5732 6.21967 16.2803L2.46967 12.5303C2.17678 12.2374 2.17678 11.7626 2.46967 11.4697L6.21967 7.71967C6.51256 7.42678 6.98744 7.42678 7.28033 7.71967Z" fill="#0F0F0F" />
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"></line>
+    <polyline points="12 19 5 12 12 5"></polyline>
   </svg>
 );
-
-const CameraIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-    <circle cx="12" cy="13" r="4" fill="none" />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#024A94" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="5" x2="12" y2="19" />
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-);
-
-const UserSilhouetteIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a0a9b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-    <circle cx="12" cy="7" r="4" />
-  </svg>
-);
-
-const INDUSTRY_OPTIONS = [
-  { value: "law", label: "Law" },
-  { value: "tech", label: "Technology" },
-  { value: "health", label: "Healthcare" },
-  { value: "finance", label: "Finance" },
-  { value: "edu", label: "Education" },
-  { value: "design", label: "Design" },
-];
 
 export default function EditProfilePage() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<EditProfileTab>("basic-info");
+  
+  // Dashboard header filter state (required)
+  const [filters, setFilters] = useState<DashboardFilters>({
+    searchQuery: "",
+    worldwide: [],
+    industry: [],
+    experience: [],
+  });
 
-  // Form states
-  const [name, setName] = useState("Stella Della");
-  const [username, setUsername] = useState("@adaeze.builds");
-  const [profession, setProfession] = useState("Frontend Development");
-  const [shortDesc, setShortDesc] = useState(
-    "Senior PM at Google Lagos · Building career resources for ambitious Africans. Previously Paystack, Andela."
-  );
-  const [selectedIndustries, setSelectedIndustries] = useState<string[]>(["law"]);
-  const [isIndustryOpen, setIsIndustryOpen] = useState(false);
+  // --- Profile State ---
+  // Basic Info
+  const [coverPhoto, setCoverPhoto] = useState<string | null>("linear-gradient(90deg, #d4a72d 0%, #a6d88c 100%)");
+  const [avatar, setAvatar] = useState<string | null>("/assets/9fa8a96b7774ec94ca80cf93ebd4ece37578f603.jpg");
+  const [firstName, setFirstName] = useState("Adaeze");
+  const [lastName, setLastName] = useState("Okafor");
+  const [username, setUsername] = useState("Adaeze");
+  const [location, setLocation] = useState("Nigeria");
+  const [currentCareer, setCurrentCareer] = useState("");
 
-  // Image states
-  const [avatar, setAvatar] = useState<string | null>(
-    "/assets/9fa8a96b7774ec94ca80cf93ebd4ece37578f603.jpg"
-  );
-  const [coverPhoto, setCoverPhoto] = useState<string | null>(
-    "linear-gradient(90deg, #d4a72d 0%, #a6d88c 100%)"
-  );
+  // About
+  const [bio, setBio] = useState("Senior PM at Google Lagos · Building career resources for ambitious Africans. Previously Paystack, Andela.");
+  const [industry, setIndustry] = useState("Design");
+  const [experienceLevel, setExperienceLevel] = useState("Undergraduate");
+
+  // Skills
+  const [skills, setSkills] = useState<string[]>(["Product Designer", "Business Analyst"]);
+
+  // Goals
+  const [currentGoals, setCurrentGoals] = useState("Preparing applications for the Schwarzman Scholars and Google Fellowship programmes in Q4 2026. Also building a course on African fintech product strategy.");
+  const [primaryGoal, setPrimaryGoal] = useState("Skillbuilding");
+  const [goalTimeline, setGoalTimeline] = useState<string[]>(["6_months"]);
+
+  // Experience
+  const [experiences, setExperiences] = useState<ExperienceItem[]>([
+    {
+      id: "exp-1",
+      title: "Senior Product Manager",
+      company: "Google",
+      type: "Fulltime",
+      dateRange: "Jan 2023 - Present",
+      duration: "1yr 4 mos",
+      location: "Nigeria",
+      linkedResources: ["PM CV — Lagos tech market", "PM CV — Lagos tech market", "PM CV — Lagos tech market"],
+    },
+    {
+      id: "exp-2",
+      title: "Senior Product Manager",
+      company: "Google",
+      type: "Fulltime",
+      dateRange: "Jan 2023 - Present",
+      duration: "1yr 4 mos",
+      location: "Nigeria",
+      linkedResources: ["PM CV — Lagos tech market", "PM CV — Lagos tech market", "PM CV — Lagos tech market"],
+    }
+  ]);
 
   // Modal / save states
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
 
-  const avatarInputRef = useRef<HTMLInputElement>(null);
-  const coverInputRef = useRef<HTMLInputElement>(null);
-
-  // Load from localStorage on mount
+  // Load from API on mount
   useEffect(() => {
-    const saved = localStorage.getItem("resourcefull_profile_data");
-    if (saved) {
+    const fetchProfile = async () => {
       try {
-        const parsed = JSON.parse(saved);
-        // eslint-disable-next-line
-        if (parsed.name) setName(parsed.name);
-        // eslint-disable-next-line
-        if (parsed.username) setUsername(parsed.username);
-        // eslint-disable-next-line
-        if (parsed.profession) setProfession(parsed.profession);
-        // eslint-disable-next-line
-        if (parsed.shortDesc) setShortDesc(parsed.shortDesc);
-        // eslint-disable-next-line
-        if (parsed.industries) setSelectedIndustries(parsed.industries);
-        // eslint-disable-next-line
-        if (parsed.avatar) setAvatar(parsed.avatar);
-        // eslint-disable-next-line
-        if (parsed.coverPhoto) setCoverPhoto(parsed.coverPhoto);
+        const res = await userAPI.getUserProfile();
+        if (res.success && res.data) {
+          const parsed = res.data;
+          if (parsed.firstName) setFirstName(parsed.firstName);
+          if (parsed.lastName) setLastName(parsed.lastName);
+          if (parsed.email) setUsername(parsed.email.split('@')[0]);
+          if (parsed.location) setLocation(parsed.location);
+          if (parsed.bio || parsed.shortDescription) setBio(parsed.bio || parsed.shortDescription || "");
+          if (parsed.industry) setIndustry(parsed.industry);
+          if (parsed.professionalExperience) setExperienceLevel(parsed.professionalExperience);
+          if (parsed.currentCareer) setCurrentCareer(parsed.currentCareer);
+          if (parsed.skills) setSkills(parsed.skills);
+          if (parsed.primaryCareerGoal) setPrimaryGoal(parsed.primaryCareerGoal);
+          if (parsed.goalReviewTimeline) setGoalTimeline([parsed.goalReviewTimeline]);
+          if (parsed.avatar) setAvatar(parsed.avatar);
+          if (parsed.coverImage) setCoverPhoto(parsed.coverImage);
+        }
       } catch (e) {
-        console.error("Error reading profile data from localStorage:", e);
+        console.error("Error reading profile data from API:", e);
       }
-    }
+    };
+    fetchProfile();
   }, []);
 
-  const handleAvatarClick = () => {
-    avatarInputRef.current?.click();
-  };
-
-  const handleCoverClick = () => {
-    coverInputRef.current?.click();
-  };
-
-  const convertToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      try {
-        const base64 = await convertToBase64(file);
-        setAvatar(base64);
-      } catch (err) {
-        console.error("Error converting avatar to base64:", err);
-      }
-    }
-  };
-
-  const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      try {
-        const base64 = await convertToBase64(file);
-        setCoverPhoto(base64);
-      } catch (err) {
-        console.error("Error converting cover photo to base64:", err);
-      }
-    }
-  };
-
-  const handleDone = () => {
-    setIsSaving(true);
-
-    const profileData = {
-      name,
-      username,
-      profession,
-      shortDesc,
-      industries: selectedIndustries,
-      avatar,
-      coverPhoto
+  const getProfileDataPayload = () => {
+    const payload: any = {
+      firstName,
+      lastName,
+      name: `${firstName} ${lastName}`.trim(),
+      location,
+      bio,
+      experienceLevel,
+      currentCareer: currentCareer || industry,
+      skills,
+      primaryGoal,
+      goalTimeline,
     };
+    
+    if (avatar) payload.avatar = avatar;
+    if (coverPhoto) payload.coverPhoto = coverPhoto;
 
-    // Simulate API request
-    setTimeout(() => {
-      setIsSaving(false);
-      // To test error modal: if Name contains "fail" or "error", show error modal.
-      if (name.toLowerCase().includes("fail") || name.toLowerCase().includes("error")) {
-        setShowError(true);
-      } else {
-        localStorage.setItem("resourcefull_profile_data", JSON.stringify(profileData));
+    return payload;
+  };
+
+  const handleDone = async () => {
+    setIsSaving(true);
+    const profileData = getProfileDataPayload();
+
+    try {
+      const response = await userAPI.updateUserProfile(profileData);
+      if (response.success) {
         setShowSuccess(true);
+      } else {
+        setShowError(true);
       }
-    }, 1000);
+    } catch (error) {
+      console.error("Failed to update profile", error);
+      setShowError(true);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleSaveDraft = () => {
-    const profileData = {
-      name,
-      username,
-      profession,
-      shortDesc,
-      industries: selectedIndustries,
-      avatar,
-      coverPhoto
-    };
-    localStorage.setItem("resourcefull_profile_data", JSON.stringify(profileData));
+    const profileData = getProfileDataPayload();
+    localStorage.setItem("resourcefull_profile_data_v2", JSON.stringify(profileData));
     alert("Draft saved successfully!");
   };
 
-  const removeAvatar = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setAvatar(null);
+  // Handlers for generic onChange
+  const handleStringChange = (setter: React.Dispatch<React.SetStateAction<string>>) => 
+    (field: string, value: string) => setter(value);
+
+  const handleGenericChange = (setterMap: Record<string, Function>) => (field: string, value: any) => {
+    if (setterMap[field]) {
+      setterMap[field](value);
+    }
   };
 
-  const removeCover = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCoverPhoto(null);
+  const aboutSetters = {
+    bio: setBio,
+    industry: setIndustry,
+    experienceLevel: setExperienceLevel,
+  };
+
+  const goalsSetters = {
+    currentGoals: setCurrentGoals,
+    primaryGoal: setPrimaryGoal,
+    goalTimeline: setGoalTimeline,
+  };
+  
+  const basicInfoSetters = {
+    firstName: setFirstName,
+    lastName: setLastName,
+    username: setUsername,
+    location: setLocation,
+  };
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "basic-info":
+        return (
+          <BasicInfoTab
+            coverPhoto={coverPhoto}
+            avatar={avatar}
+            firstName={firstName}
+            lastName={lastName}
+            username={username}
+            location={location}
+            onCoverChange={setCoverPhoto}
+            onAvatarChange={setAvatar}
+            onChange={handleGenericChange(basicInfoSetters)}
+          />
+        );
+      case "about":
+        return (
+          <AboutTab
+            bio={bio}
+            industry={industry}
+            experienceLevel={experienceLevel}
+            onChange={handleGenericChange(aboutSetters)}
+          />
+        );
+      case "skills":
+        return (
+          <SkillsTab
+            skills={skills}
+            onChange={setSkills}
+          />
+        );
+      case "experience":
+        return (
+          <ExperienceTab
+            experiences={experiences}
+            onImportLinkedIn={() => {
+              alert("LinkedIn integration coming soon!");
+            }}
+            onAddExperience={() => {
+              alert("Add experience modal coming soon!");
+            }}
+            onEditExperience={(id) => {
+              alert(`Edit experience ${id} coming soon!`);
+            }}
+            onDeleteExperience={(id) => {
+              if(confirm("Are you sure you want to delete this experience?")) {
+                setExperiences(experiences.filter(exp => exp.id !== id));
+              }
+            }}
+          />
+        );
+      case "goals":
+        return (
+          <GoalsTab
+            currentGoals={currentGoals}
+            primaryGoal={primaryGoal}
+            goalTimeline={goalTimeline}
+            onChange={handleGenericChange(goalsSetters)}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className={styles.editPageContainer}>
+    <div className={styles.pageContainer}>
+      <DashboardHeader filters={filters} onFiltersChange={setFilters} />
 
       {/* Header bar */}
-      <div className={styles.headerBar}>
-        <div className={styles.backButtonArea}>
-          <Link href="/profile" className={styles.backLink}>
+      <div className={styles.pageHeader}>
+        <div className={styles.titleGroup}>
+          <Link href="/profile" className={styles.backButton}>
             <BackIcon />
-            <span className={styles.headerTitle}>Edit Profile</span>
           </Link>
+          <h1 className={styles.pageTitle}>Edit Profile</h1>
         </div>
         <div className={styles.headerActions}>
           <button
@@ -221,162 +287,13 @@ export default function EditProfilePage() {
         </div>
       </div>
 
-      {/* Main Form Area */}
-      <div className={styles.formCard}>
-
-        {/* Avatar and Cover container */}
-        <div className={styles.mediaContainer}>
-
-          {/* Cover Photo */}
-          <div
-            className={styles.coverWrapper}
-            style={{
-              background: coverPhoto && coverPhoto.startsWith("linear-gradient") ? coverPhoto : undefined
-            }}
-            onClick={handleCoverClick}
-          >
-            {coverPhoto && !coverPhoto.startsWith("linear-gradient") ? (
-              <>
-                <Image
-                  src={coverPhoto!}
-                  alt="Cover Preview"
-                  fill
-                  className={styles.coverImage}
-                  unoptimized
-                />
-                <button type="button" className={styles.removeMediaBtn} onClick={removeCover}>
-                  Remove
-                </button>
-              </>
-            ) : (
-              <div className={styles.coverPlaceholder}>
-                <div className={styles.plusCircle}>
-                  <PlusIcon />
-                </div>
-                <span className={styles.uploadText}>Upload Cover Photo</span>
-                <span className={styles.supportText}>Supported formats pdf, mp3, mp4, jpg, png.</span>
-              </div>
-            )}
-            <input
-              type="file"
-              ref={coverInputRef}
-              onChange={handleCoverChange}
-              accept="image/*"
-              className={styles.hiddenInput}
-            />
-          </div>
-
-          {/* Avatar Photo overlapping */}
-          <div className={styles.avatarWrapper} onClick={handleAvatarClick}>
-            {avatar ? (
-              <Image
-                src={avatar!}
-                alt="Avatar Preview"
-                width={80}
-                height={80}
-                className={styles.avatarImage}
-                unoptimized
-              />
-            ) : (
-              <div className={styles.avatarPlaceholder}>
-                <UserSilhouetteIcon />
-              </div>
-            )}
-            <div className={styles.cameraIconWrapper}>
-              <CameraIcon />
-            </div>
-            {avatar && (
-              <button
-                type="button"
-                className={styles.avatarRemoveBtn}
-                onClick={removeAvatar}
-                title="Remove Avatar"
-              >
-                ×
-              </button>
-            )}
-            <input
-              type="file"
-              ref={avatarInputRef}
-              onChange={handleAvatarChange}
-              accept="image/*"
-              className={styles.hiddenInput}
-            />
-          </div>
-
+      {/* Main Content */}
+      <div className={styles.mainContent}>
+        <EditProfileSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        
+        <div className={styles.tabContent}>
+          {renderTabContent()}
         </div>
-
-        {/* Input Fields */}
-        <div className={styles.inputFieldsList}>
-
-          {/* Name Field */}
-          <div className={styles.fieldGroup}>
-            <label className={styles.fieldLabel}>Name</label>
-            <input
-              type="text"
-              className={styles.textInput}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Placeholder"
-            />
-          </div>
-
-          {/* Username Field */}
-          <div className={styles.fieldGroup}>
-            <label className={styles.fieldLabel}>Username</label>
-            <input
-              type="text"
-              className={styles.textInput}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Placeholder"
-            />
-          </div>
-
-          {/* Profession Field */}
-          <div className={styles.fieldGroup}>
-            <label className={styles.fieldLabel}>Profession</label>
-            <input
-              type="text"
-              className={styles.textInput}
-              value={profession}
-              onChange={(e) => setProfession(e.target.value)}
-              placeholder="Placeholder"
-            />
-          </div>
-
-          {/* Short Description Field */}
-          <div className={styles.fieldGroup}>
-            <label className={styles.fieldLabel}>Short Description</label>
-            <input
-              className={styles.textareaInput}
-              value={shortDesc}
-              onChange={(e) => setShortDesc(e.target.value)}
-              placeholder="Placeholder"
-            />
-          </div>
-
-          {/* Industry Field */}
-          <div className={styles.fieldGroup} style={{ paddingRight: '16px', paddingBottom: '16px', overflow: 'visible' }}>
-            <label className={styles.fieldLabel}>Industry</label>
-            <FormMultiSelect
-              label="Select Industry"
-              options={INDUSTRY_OPTIONS}
-              selected={selectedIndustries}
-              onChange={setSelectedIndustries}
-              isOpen={isIndustryOpen}
-              onToggle={() => setIsIndustryOpen(!isIndustryOpen)}
-              isTransparent={true}
-            />
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* Info Tip to helper error test */}
-      <div className={styles.testTip}>
-        💡 <strong>Testing Tip:</strong> Enter <strong>&quot;fail&quot;</strong> or <strong>&quot;error&quot;</strong> in the Name field to test the failure modal. Otherwise, it will succeed.
       </div>
 
       {/* Success Modal */}

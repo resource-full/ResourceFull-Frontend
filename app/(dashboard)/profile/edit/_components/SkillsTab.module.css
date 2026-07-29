@@ -1,0 +1,72 @@
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background: #f8f9fc;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 16px;
+  transition: all 0.2s ease;
+}
+
+.inputWrapper:focus-within {
+  border-color: #024A94;
+  background: white;
+}
+
+.searchIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.skillInput {
+  background: transparent;
+  border: none;
+  padding: 12px 0;
+  font-size: 0.9375rem;
+  color: #11243d;
+  width: 100%;
+  outline: none;
+  font-family: inherit;
+}
+
+.helperText {
+  font-size: 0.8125rem;
+  color: #5a6474;
+}
+
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.skillChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid #024A94;
+  border-radius: 20px;
+  color: #024A94;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: white;
+}
+
+.removeSkillBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #024A94;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+}
+
+.removeSkillBtn:hover {
+  background: #f0f7ff;
+}

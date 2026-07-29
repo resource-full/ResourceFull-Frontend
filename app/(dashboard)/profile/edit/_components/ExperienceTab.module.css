@@ -1,0 +1,195 @@
+.linkedinBanner {
+  background: #f0f7ff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.linkedinInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.linkedinText {
+  display: flex;
+  flex-direction: column;
+}
+
+.linkedinTitle {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #11243d;
+}
+
+.linkedinSubtitle {
+  font-size: 0.8125rem;
+  color: #5a6474;
+}
+
+.linkedinBtn {
+  background: #024A94;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.linkedinBtn:hover {
+  background: #023a73;
+}
+
+.experiencesList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.experienceItem {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.experienceItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.expHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.expMainInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.expTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #11243d;
+  margin: 0;
+}
+
+.expMeta {
+  font-size: 0.875rem;
+  color: #5a6474;
+  margin: 0;
+}
+
+.expActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actionBtn {
+  background: transparent;
+  border: none;
+  color: #5a6474;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.actionBtn:hover {
+  background: #f1f5f9;
+  color: #11243d;
+}
+
+.linkedResourcesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.linkedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.linkedTitle {
+  font-size: 0.875rem;
+  color: #5a6474;
+}
+
+.linkResourceBtn {
+  background: transparent;
+  border: none;
+  color: #024A94;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.linkResourceBtn:hover {
+  text-decoration: underline;
+}
+
+.resourcesTags {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resourceTag {
+  background: #f1f5f9;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  color: #3b4250;
+  width: fit-content;
+}
+
+.addExpBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #024A94;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  padding: 12px;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.addExpBtn:hover {
+  background: #f0f7ff;
+}
+
+@media (max-width: 768px) {
+  .linkedinBanner {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .linkedinInfo {
+    flex-direction: column;
+  }
+}

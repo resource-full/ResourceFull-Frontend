@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -123,6 +123,25 @@ const MoreIcon = () => (
   </svg>
 );
 
+const ShareIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="18" cy="5" r="3" />
+    <circle cx="6" cy="12" r="3" />
+    <circle cx="18" cy="19" r="3" />
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+  </svg>
+);
+
+const TrashIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    <line x1="10" y1="11" x2="10" y2="17" />
+    <line x1="14" y1="11" x2="14" y2="17" />
+  </svg>
+);
+
 const ResourceTypeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M12.7017 13.1802C13.3005 13.1802 13.7858 13.6655 13.7858 14.2643C13.7858 14.863 13.3005 15.3483 12.7017 15.3483H5.13876C4.54004 15.3483 4.05469 14.863 4.05469 14.2643C4.05469 13.6655 4.54004 13.1802 5.13876 13.1802H12.7017Z" fill="#024A94" />
@@ -176,8 +195,34 @@ import { UserProfileStats, UserProfileSocials } from "@/app/lib/types/user";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { displayResources, displayPathways, displayHubs } = useDashboardData();
-  const [activeTab, setActiveTab] = useState("resources");
+  const [activeTab, setActiveTab] = useState<'resources' | 'pathways' | 'hubs' | 'onlyme' | 'drafts'>('resources');
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const {
+    displayResources,
+    displayPathways,
+    displayHubs,
+    isLoadingResources,
+    isLoadingPathways,
+    isLoadingHubs,
+  } = useDashboardData();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if click was outside any element with the dropdown container class
+      const target = event.target as HTMLElement;
+      if (!target.closest(`.${styles.moreDropdownWrapper}`)) {
+        setOpenDropdownId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const [profile, setProfile] = useState({
     name: "Stella Della",
     profession: "Frontend Development",
@@ -399,7 +444,27 @@ export default function ProfilePage() {
                       </Link>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.actionIcon}><MoreIcon /></span>
+                      <div className={styles.moreDropdownWrapper}>
+                        <span 
+                          className={styles.actionIcon} 
+                          onClick={() => setOpenDropdownId(openDropdownId === `resource-${res.id}` ? null : `resource-${res.id}`)}
+                        >
+                          <MoreIcon />
+                        </span>
+                        {openDropdownId === `resource-${res.id}` && (
+                          <div className={styles.moreDropdown}>
+                            <Link href={`/edit-resource/${res.id}`} className={styles.dropdownItem}>
+                              <EditIcon /> Edit
+                            </Link>
+                            <button className={styles.dropdownItem} onClick={() => setOpenDropdownId(null)}>
+                              <ShareIcon /> Share
+                            </button>
+                            <button className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`} onClick={() => setOpenDropdownId(null)}>
+                              <TrashIcon /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -449,7 +514,27 @@ export default function ProfilePage() {
                       </Link>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.actionIcon}><MoreIcon /></span>
+                      <div className={styles.moreDropdownWrapper}>
+                        <span 
+                          className={styles.actionIcon} 
+                          onClick={() => setOpenDropdownId(openDropdownId === `pathway-${pw.id}` ? null : `pathway-${pw.id}`)}
+                        >
+                          <MoreIcon />
+                        </span>
+                        {openDropdownId === `pathway-${pw.id}` && (
+                          <div className={styles.moreDropdown}>
+                            <Link href={`/edit-pathway/${pw.id}`} className={styles.dropdownItem}>
+                              <EditIcon /> Edit
+                            </Link>
+                            <button className={styles.dropdownItem} onClick={() => setOpenDropdownId(null)}>
+                              <ShareIcon /> Share
+                            </button>
+                            <button className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`} onClick={() => setOpenDropdownId(null)}>
+                              <TrashIcon /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -499,7 +584,27 @@ export default function ProfilePage() {
                       </Link>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.actionIcon}><MoreIcon /></span>
+                      <div className={styles.moreDropdownWrapper}>
+                        <span 
+                          className={styles.actionIcon} 
+                          onClick={() => setOpenDropdownId(openDropdownId === `hub-${hub.id}` ? null : `hub-${hub.id}`)}
+                        >
+                          <MoreIcon />
+                        </span>
+                        {openDropdownId === `hub-${hub.id}` && (
+                          <div className={styles.moreDropdown}>
+                            <Link href={`/edit-hub/${hub.id}`} className={styles.dropdownItem}>
+                              <EditIcon /> Edit
+                            </Link>
+                            <button className={styles.dropdownItem} onClick={() => setOpenDropdownId(null)}>
+                              <ShareIcon /> Share
+                            </button>
+                            <button className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`} onClick={() => setOpenDropdownId(null)}>
+                              <TrashIcon /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -548,7 +653,27 @@ export default function ProfilePage() {
                       </Link>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.actionIcon}><MoreIcon /></span>
+                      <div className={styles.moreDropdownWrapper}>
+                        <span 
+                          className={styles.actionIcon} 
+                          onClick={() => setOpenDropdownId(openDropdownId === `mixed-${row.id}` ? null : `mixed-${row.id}`)}
+                        >
+                          <MoreIcon />
+                        </span>
+                        {openDropdownId === `mixed-${row.id}` && (
+                          <div className={styles.moreDropdown}>
+                            <Link href={`/edit-${row.type}/${row.id}`} className={styles.dropdownItem}>
+                              <EditIcon /> Edit
+                            </Link>
+                            <button className={styles.dropdownItem} onClick={() => setOpenDropdownId(null)}>
+                              <ShareIcon /> Share
+                            </button>
+                            <button className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`} onClick={() => setOpenDropdownId(null)}>
+                              <TrashIcon /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
