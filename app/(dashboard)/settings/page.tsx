@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
 import SettingsSidebar, { SettingsTab } from "./_components/SettingsSidebar";
 import PersonalizationTab from "./_components/PersonalizationTab";
 import AudienceFitTab from "./_components/AudienceFitTab";
 import styles from "./page.module.css";
+import { userAPI } from "@/app/lib/api/user";
 
 const TAB_LABELS: Record<SettingsTab, string> = {
   "personalization": "Personalization",
@@ -24,6 +25,23 @@ const BackIcon = () => (
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("personalization");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  
+  // Profile settings state
+  const [formData, setFormData] = useState({
+    username: "",
+    socials: {
+      linkedin: "",
+      x: "",
+      instagram: "",
+      facebook: ""
+    },
+    targetRoles: [] as string[],
+    industry: [] as string[],
+    experience: [] as string[],
+    skills: [] as string[]
+  });
   
   // Header filter state (required by DashboardHeader but maybe unused on Settings page)
   const [filters, setFilters] = useState<DashboardFilters>({
@@ -33,12 +51,67 @@ export default function SettingsPage() {
     experience: [],
   });
 
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const response = await userAPI.getUserProfile();
+        const data = response.data;
+        setFormData({
+          username: data.name || "",
+          socials: {
+            linkedin: data.socials?.linkedin || "",
+            x: data.socials?.x || "",
+            instagram: data.socials?.instagram || "",
+            facebook: data.socials?.facebook || ""
+          },
+          targetRoles: data.targetRoles || [],
+          industry: data.industry ? [data.industry] : [],
+          experience: data.professionalExperience ? [data.professionalExperience] : [],
+          skills: data.skills || []
+        });
+      } catch (error) {
+        console.error("Failed to fetch profile", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchProfile();
+  }, []);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await userAPI.updateUserProfile({
+        name: formData.username,
+        socials: formData.socials,
+        targetRoles: formData.targetRoles,
+        industry: formData.industry[0] || "",
+        professionalExperience: formData.experience[0] || "",
+        skills: formData.skills
+      });
+      alert("Settings saved successfully");
+    } catch (error) {
+      console.error("Failed to save profile", error);
+      alert("Failed to save settings");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const renderTabContent = () => {
+    if (isLoading) {
+      return (
+        <div className={styles.placeholderTab}>
+          Loading...
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case "personalization":
-        return <PersonalizationTab />;
+        return <PersonalizationTab formData={formData} setFormData={setFormData} />;
       case "audience-fit":
-        return <AudienceFitTab />;
+        return <AudienceFitTab formData={formData} setFormData={setFormData} />;
       default:
         return (
           <div className={styles.placeholderTab}>
@@ -62,9 +135,12 @@ export default function SettingsPage() {
           </h1>
         </div>
         
-        {/* Made it look active to match Figma */}
-        <button className={`${styles.saveButton} ${styles.saveButtonActive}`}>
-          Save
+        <button 
+          className={`${styles.saveButton} ${styles.saveButtonActive}`}
+          onClick={handleSave}
+          disabled={isSaving || isLoading}
+        >
+          {isSaving ? "Saving..." : "Save"}
         </button>
       </div>
 

@@ -28,7 +28,22 @@ const FacebookIcon = () => (
   </svg>
 );
 
-export default function PersonalizationTab() {
+interface PersonalizationTabProps {
+  formData: any;
+  setFormData: (data: any) => void;
+}
+
+export default function PersonalizationTab({ formData, setFormData }: PersonalizationTabProps) {
+  const updateSocials = (platform: string, value: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      socials: {
+        ...prev.socials,
+        [platform]: value
+      }
+    }));
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.section}>
@@ -40,7 +55,8 @@ export default function PersonalizationTab() {
             <input 
               type="text" 
               className={styles.input} 
-              defaultValue="rf.co/adaeze" 
+              value={formData.username || ""} 
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
               placeholder="rf.co/yourname"
             />
           </div>
@@ -57,7 +73,13 @@ export default function PersonalizationTab() {
               <div className={styles.iconWrapper}>
                 <LinkedInIcon />
               </div>
-              <input type="text" className={styles.input} placeholder="Paste Link" />
+              <input 
+                type="text" 
+                className={styles.input} 
+                placeholder="Paste Link" 
+                value={formData.socials?.linkedin || ""}
+                onChange={(e) => updateSocials("linkedin", e.target.value)}
+              />
             </div>
           </div>
 
@@ -67,7 +89,13 @@ export default function PersonalizationTab() {
               <div className={styles.iconWrapper} style={{ color: "#11243d" }}>
                 <XIcon />
               </div>
-              <input type="text" className={styles.input} placeholder="Paste Link" />
+              <input 
+                type="text" 
+                className={styles.input} 
+                placeholder="Paste Link"
+                value={formData.socials?.x || ""}
+                onChange={(e) => updateSocials("x", e.target.value)}
+              />
             </div>
           </div>
 
@@ -77,7 +105,13 @@ export default function PersonalizationTab() {
               <div className={styles.iconWrapper} style={{ color: "#11243d" }}>
                 <InstagramIcon />
               </div>
-              <input type="text" className={styles.input} placeholder="Paste Link" />
+              <input 
+                type="text" 
+                className={styles.input} 
+                placeholder="Paste Link"
+                value={formData.socials?.instagram || ""}
+                onChange={(e) => updateSocials("instagram", e.target.value)}
+              />
             </div>
           </div>
 
@@ -87,7 +121,13 @@ export default function PersonalizationTab() {
               <div className={styles.iconWrapper} style={{ color: "#1877F2" }}>
                 <FacebookIcon />
               </div>
-              <input type="text" className={styles.input} placeholder="Paste Link" />
+              <input 
+                type="text" 
+                className={styles.input} 
+                placeholder="Paste Link"
+                value={formData.socials?.facebook || ""}
+                onChange={(e) => updateSocials("facebook", e.target.value)}
+              />
             </div>
           </div>
         </div>
