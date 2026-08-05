@@ -1,6 +1,7 @@
 import AboutHero from "@/app/components/landing/AboutHero";
 import AboutBackstory from "@/app/components/landing/AboutBackstory";
-import AboutTeam from "@/app/components/landing/AboutTeam";
+import AboutBackstory2 from "@/app/components/landing/AboutBackstory2";
+import TopResources from "@/app/components/landing/TopResources";
 import PopularCategories from "@/app/components/landing/PopularCategories";
 import CtaSection from "@/app/components/landing/CtaSection";
 
@@ -11,7 +12,9 @@ export default function About() {
 
             <AboutBackstory />
 
-            <AboutTeam />
+            <AboutBackstory2 />
+
+            <TopResources />
 
             <PopularCategories />
 

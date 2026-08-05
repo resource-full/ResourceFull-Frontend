@@ -11,9 +11,24 @@ export default function AboutBackstory() {
           <h2 className={styles.title}>
             We understood that<br />people need resources...
           </h2>
-          <p className={styles.description}>
-            We understood that people need resources. But more than that, we realized that people are completely exhausted by the hunt for them.
-          </p>
+
+          <div className={styles.descriptionContainer}>
+            <p className={styles.description}>
+              We understood that people need resources. But more than that, we realized that people are completely exhausted by the hunt for them.
+            </p>
+
+            <p className={styles.description}>
+              Take <strong>Abisola</strong>, for example. When she decided to transition away from Investment Research to find a new path, she spent over <strong>60 hours</strong> doing digital detective work. She was exhausted by the hunt.
+            </p>
+
+            <p className={styles.description}>
+              Abisola’s story isn’t unique. Right now, ambitious, brilliant young professionals across emerging economies are spending up to <strong>40% of their career advancement time just trying to find the map,</strong> instead of actually walking the path.
+            </p>
+
+            <p className={styles.description}>
+              That felt wrong to us. So we built the antidote.....
+            </p>
+          </div>
         </div>
         <div className={styles.imageContainer}>
           <Image

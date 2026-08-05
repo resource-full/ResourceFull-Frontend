@@ -15,7 +15,6 @@ export default function LandingPage() {
       <PopularCategories />
       <Pathways />
       <CommunityTestimonials />
-      {/* add the community section here after pathways*/}
       <TopContributors />
       <CtaSection />
     </>

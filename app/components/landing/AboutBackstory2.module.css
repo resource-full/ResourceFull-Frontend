@@ -1,5 +1,5 @@
 .section {
-  background: #D9E7F4;
+  background: #011A34;
   padding: 100px 24px;
 }
 
@@ -16,6 +16,7 @@
 .content {
   flex: 1;
   max-width: 80%;
+  color: white;
 }
 
 .badge {
@@ -31,7 +32,6 @@
 .title {
   font-size: 49px;
   font-weight: 500;
-  color: #011A34;
   margin: 0 0 24px 0;
   line-height: 43px;
   letter-spacing: -1px;
@@ -40,7 +40,6 @@
 .description {
   font-size: 16px;
   font-weight: 400;
-  color: #001D3B;
   line-height: 1.7;
   margin: 0;
 }

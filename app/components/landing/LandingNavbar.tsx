@@ -26,7 +26,7 @@ export default function LandingNavbar() {
       </Link>
 
       <div className={`${styles.navLinks} ${styles.desktopOnly}`}>
-        <Link href="#how-it-works" className={styles.navLink}>
+        <Link href="/" className={styles.navLink}>
           How it works
         </Link>
         <Link href="/about" className={styles.navLink}>
@@ -76,7 +76,7 @@ export default function LandingNavbar() {
       {isMobileMenuOpen && (
         <div className={styles.mobileMenu}>
           <div className={styles.mobileNavLinks}>
-            <Link href="#how-it-works" className={styles.mobileNavLink} onClick={toggleMobileMenu}>
+            <Link href="/" className={styles.mobileNavLink} onClick={toggleMobileMenu}>
               How it works
             </Link>
             <Link href="/about" className={styles.mobileNavLink} onClick={toggleMobileMenu}>

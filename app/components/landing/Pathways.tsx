@@ -102,7 +102,7 @@ export default function Pathways() {
             <h2 className={styles.title}>Your step-by-step<br />journey to the goal</h2>
             <p className={styles.subTitle}>Built by people who walked it. Resources in the right order, with<br />checkpoints at every stage.</p>
           </div>
-          <Link href="/pathways" className={styles.viewAllBtn}>
+          <Link href="/dashboard" className={styles.viewAllBtn}>
             View all pathways
             <ArrowUpRight />
           </Link>
