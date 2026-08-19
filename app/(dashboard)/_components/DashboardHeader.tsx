@@ -7,6 +7,8 @@ import { COUNTRIES, SKILLS_OPTIONS } from "@/app/lib/constants/onboarding";
 import styles from "./DashboardHeader.module.css";
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { notificationAPI } from "@/app/lib/api/notification";
+import { Notification } from "@/app/lib/types/notification";
 
 const SearchIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -109,6 +111,8 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ filters, onFiltersChange }: DashboardHeaderProps) {
   const [isNotifOpen, setIsNotifOpen] = React.useState(false);
+  const [notifications, setNotifications] = React.useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = React.useState(0);
   const notifRef = React.useRef<HTMLDivElement>(null);
 
   const pathname = usePathname()
@@ -122,6 +126,42 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  React.useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await notificationAPI.getNotifications({ limit: 10 });
+        if (res.success && res.data) {
+          setNotifications(res.data.notifications);
+          setUnreadCount(res.data.notifications.filter(n => !n.isRead).length);
+        }
+      } catch (err) {
+        console.error("Failed to fetch notifications", err);
+      }
+    };
+    fetchNotifications();
+  }, []);
+
+  const handleMarkAllRead = async () => {
+    try {
+      await notificationAPI.markAllAsRead();
+      setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+      setUnreadCount(0);
+    } catch (err) {
+      console.error("Failed to mark all as read", err);
+    }
+  };
+
+  const getNotifIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'resource': return <DocumentIcon />;
+      case 'pathway': return <PathwayLineIcon />;
+      case 'save':
+      case 'saved': return <BookmarkIconSmall />;
+      case 'comment': return <CommentIconSmall />;
+      default: return <DocumentIcon />;
+    }
+  };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFiltersChange({ ...filters, searchQuery: e.target.value });
@@ -209,77 +249,28 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
               <div className={styles.notifHeader}>
                 <div className={styles.notifTitleGroup}>
                   <h3 className={styles.notifTitle}>Notifications</h3>
-                  <span className={styles.notifBadge}>16</span>
+                  {unreadCount > 0 && <span className={styles.notifBadge}>{unreadCount}</span>}
                 </div>
-                <button className={styles.notifMarkRead}>Mark all read</button>
+                <button className={styles.notifMarkRead} onClick={handleMarkAllRead}>Mark all read</button>
               </div>
 
               <div className={styles.notifList}>
-                <div className={styles.notifItem}>
-                  <div className={styles.notifIcon}>OM</div>
-                  <div className={styles.notifTextGroup}>
-                    <div className={styles.notifText}>
-                      <strong>Abisola</strong> uploaded a new resource - The Road to Resourcefull
+                {notifications.length === 0 ? (
+                  <div style={{ padding: "20px", textAlign: "center", color: "#666" }}>No notifications</div>
+                ) : notifications.map(notif => (
+                  <div key={notif._id} className={`${styles.notifItem} ${notif.isRead ? "" : styles.unread}`}>
+                    <div className={styles.notifIcon}>
+                      {notif.metadata?.senderName ? notif.metadata.senderName.substring(0, 2).toUpperCase() : "RF"}
                     </div>
-                    <div className={styles.notifTime}>2 minutes ago</div>
-                  </div>
-                  <div className={styles.notifRightIcon}><DocumentIcon /></div>
-                </div>
-
-                <div className={styles.notifItem}>
-                  <div className={styles.notifIcon}>OM</div>
-                  <div className={styles.notifTextGroup}>
-                    <div className={styles.notifText}>
-                      <strong>Jude</strong> uploaded a new resource - The Road to Resourcefull
+                    <div className={styles.notifTextGroup}>
+                      <div className={styles.notifText}>
+                        {notif.message}
+                      </div>
+                      <div className={styles.notifTime}>{new Date(notif.createdAt).toLocaleDateString()}</div>
                     </div>
-                    <div className={styles.notifTime}>2 minutes ago</div>
+                    <div className={styles.notifRightIcon}>{getNotifIcon(notif.type)}</div>
                   </div>
-                  <div className={styles.notifRightIcon}><DocumentIcon /></div>
-                </div>
-
-                <div className={styles.notifItem}>
-                  <div className={styles.notifIcon}>OM</div>
-                  <div className={styles.notifTextGroup}>
-                    <div className={styles.notifText}>
-                      <strong>Promise</strong> uploaded a new pathway - The Road to Resourcefull
-                    </div>
-                    <div className={styles.notifTime}>2 minutes ago</div>
-                  </div>
-                  <div className={styles.notifRightIcon}><PathwayLineIcon /></div>
-                </div>
-
-                <div className={styles.notifItem}>
-                  <div className={styles.notifIcon}>OM</div>
-                  <div className={styles.notifTextGroup}>
-                    <div className={styles.notifText}>
-                      <strong>Ebi</strong> saved your resource
-                    </div>
-                    <div className={styles.notifTime}>2 minutes ago</div>
-                  </div>
-                  <div className={styles.notifRightIcon}><BookmarkIconSmall /></div>
-                </div>
-
-                <div className={styles.notifItem}>
-                  <div className={styles.notifIcon}>OM</div>
-                  <div className={styles.notifTextGroup}>
-                    <div className={styles.notifText}>
-                      <strong>Abisola</strong> commented on your resource - The Road to Resourcefull
-                    </div>
-                    <div className={styles.notifTime}>2 minutes ago</div>
-                  </div>
-                  <div className={styles.notifRightIcon}><CommentIconSmall /></div>
-                </div>
-
-                <div className={styles.notifItem}>
-                  <div className={styles.notifIcon}>OM</div>
-                  <div className={styles.notifTextGroup}>
-                    <div className={styles.notifText}>
-                      <strong>Jide</strong> uploaded a new resource - The Road to Resourcefull
-                    </div>
-                    <div className={styles.notifTime}>2 minutes ago</div>
-                  </div>
-                  <div className={styles.notifRightIcon}><DocumentIcon /></div>
-                </div>
+                ))}
               </div>
             </div>
           )}

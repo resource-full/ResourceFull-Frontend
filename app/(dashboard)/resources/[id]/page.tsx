@@ -8,6 +8,8 @@ import DashboardHeader, { DashboardFilters } from "../../_components/DashboardHe
 import { resourceAPI } from "@/app/lib/api/resource";
 import { Resource } from "@/app/lib/types/resource";
 import { useDashboardData } from "@/app/hooks/useDashboardData";
+import { interactionAPI } from "@/app/lib/api/interaction";
+import { Comment } from "@/app/lib/types/interaction";
 import styles from "./page.module.css";
 
 const BackIcon = () => (
@@ -74,6 +76,36 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
     industry: [],
     experience: [],
   });
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentInput, setCommentInput] = useState("");
+  const [isPostingComment, setIsPostingComment] = useState(false);
+
+  const fetchComments = async () => {
+    try {
+      const res = await interactionAPI.getComments(id);
+      if (res.success && res.data?.comments) {
+        setComments(res.data.comments);
+      }
+    } catch (err) {
+      console.error("Failed to load comments", err);
+    }
+  };
+
+  const handlePostComment = async () => {
+    if (!commentInput.trim() || isPostingComment) return;
+    setIsPostingComment(true);
+    try {
+      const res = await interactionAPI.addComment(id, commentInput);
+      if (res.success) {
+        setCommentInput("");
+        fetchComments();
+      }
+    } catch (err) {
+      console.error("Failed to post comment", err);
+    } finally {
+      setIsPostingComment(false);
+    }
+  };
 
   const formatPrice = (isFree: boolean, price: number | string, currency: string) => {
     if (isFree || !price || price === "0" || price === 0) return "Free";
@@ -117,6 +149,7 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
     
     if (id) {
       fetchResource();
+      fetchComments();
     }
   }, [id]);
 
@@ -282,56 +315,58 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
           <div className={styles.commentsSection}>
             <div className={styles.commentsHeader}>
               <h3 className={styles.commentsTitle}>Comments</h3>
-              <span className={styles.commentsCount}>28K</span>
+              <span className={styles.commentsCount}>{comments.length > 0 ? comments.length : resource.commentCount}</span>
             </div>
 
-            <div className={styles.commentItem}>
-              <div>
-                <Image src="https://i.pravatar.cc/150?u=maude" alt="Maude" width={40} height={40} className={styles.commentAvatar} unoptimized />
-              </div>
-              <div className={styles.commentContent}>
-                <div className={styles.commentAuthor}>Maude Hall</div>
-                <p className={styles.commentText}>That's a fantastic new app feature. You and your team did an excellent job of incorporating user testing feedback.</p>
-                <div className={styles.commentActions}>
-                  <span>14 min</span>
-                  <button className={styles.commentActionBtn}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20" /><path d="M4 4v7a4 4 0 0 0 4 4h12" /></svg>
-                    Reply
-                  </button>
-                  <button className={styles.commentActionBtn} style={{ marginLeft: 'auto' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
-                    2
-                  </button>
+            {comments.map((comment) => (
+              <div key={comment._id} className={styles.commentItem}>
+                <div>
+                  <Image src={comment.user?.avatar || "https://i.pravatar.cc/150"} alt={comment.user?.name || "User"} width={40} height={40} className={styles.commentAvatar} unoptimized />
+                </div>
+                <div className={styles.commentContent}>
+                  <div className={styles.commentAuthor}>{comment.user?.name || "Anonymous"}</div>
+                  <p className={styles.commentText}>{comment.comment || comment.content}</p>
+                  <div className={styles.commentActions}>
+                    <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
+                    <button className={styles.commentActionBtn}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20" /><path d="M4 4v7a4 4 0 0 0 4 4h12" /></svg>
+                      Reply
+                    </button>
+                    <button className={styles.commentActionBtn} style={{ marginLeft: 'auto' }} onClick={() => {
+                       // Optional: If you have a like comment API endpoint later
+                       alert("Comment liked!");
+                    }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
+                      Like
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
 
-            <div className={styles.commentItem} style={{ paddingLeft: '3.5rem' }}>
-              <div>
-                <Image src="https://i.pravatar.cc/150?u=rebecca" alt="Rebecca" width={40} height={40} className={styles.commentAvatar} unoptimized />
-              </div>
-              <div className={styles.commentContent}>
-                <div className={styles.commentAuthor}>
-                  Rebecca Sugar <span className={styles.commentReplyTo}>&lt; Maude Hall</span>
-                </div>
-                <p className={styles.commentText}>That's a fantastic new app feature. You and your team did an excellent job of incorporating user testing feedback.</p>
-                <div className={styles.commentActions}>
-                  <span>14 min</span>
-                  <button className={styles.commentActionBtn}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20" /><path d="M4 4v7a4 4 0 0 0 4 4h12" /></svg>
-                    Reply
-                  </button>
-                  <button className={styles.commentActionBtn} style={{ marginLeft: 'auto' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
-                    2
-                  </button>
-                </div>
-              </div>
-            </div>
+            {comments.length === 0 && (
+              <div style={{ padding: '20px', color: '#666' }}>No comments yet. Be the first to share your thoughts!</div>
+            )}
 
             <div className={styles.commentInputWrapper}>
-              <input type="text" placeholder="Share our thoughts on this resource..." className={styles.commentInput} />
-              <button className={styles.postCommentBtn}>Post</button>
+              <input 
+                type="text" 
+                placeholder="Share your thoughts on this resource..." 
+                className={styles.commentInput} 
+                value={commentInput}
+                onChange={(e) => setCommentInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handlePostComment();
+                }}
+                disabled={isPostingComment}
+              />
+              <button 
+                className={styles.postCommentBtn} 
+                onClick={handlePostComment}
+                disabled={isPostingComment || !commentInput.trim()}
+              >
+                {isPostingComment ? 'Posting...' : 'Post'}
+              </button>
             </div>
           </div>
           </>

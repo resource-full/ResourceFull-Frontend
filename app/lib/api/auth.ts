@@ -58,4 +58,29 @@ export const authAPI = {
         const response = await apiClient.post("/auth/forgot-password", { email });
         return response.data;
     },
+
+    resetPassword: async (payload: { token: string; password?: string }) => {
+        const response = await apiClient.post("/auth/reset-password", payload);
+        return response.data;
+    },
+
+    changePassword: async (payload: { oldPassword?: string; newPassword?: string }) => {
+        const response = await apiClient.post("/auth/change-password", payload);
+        return response.data;
+    },
+
+    getOnboardingStatus: async () => {
+        const response = await apiClient.get("/auth/onboarding/status");
+        return response.data;
+    },
+
+    saveOnboardingStep: async (payload: any) => {
+        const response = await apiClient.post("/auth/onboarding", payload);
+        return response.data;
+    },
+
+    skipOnboardingStep: async (step: number) => {
+        const response = await apiClient.post(`/auth/onboarding/skip/${step}`);
+        return response.data;
+    },
 };

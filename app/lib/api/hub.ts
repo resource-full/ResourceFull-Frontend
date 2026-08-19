@@ -25,5 +25,35 @@ export const hubAPI = {
     deleteHub: async (id: string) => {
         const response = await apiClient.delete(`/hubs/${id}`);
         return response.data;
+    },
+
+    getMyHubs: async (params?: Record<string, any>) => {
+        const response = await apiClient.get(`/hubs/my`, { params });
+        return response.data;
+    },
+
+    changeStatus: async (id: string, status: string) => {
+        const response = await apiClient.patch(`/hubs/${id}/status`, { status });
+        return response.data;
+    },
+
+    addResourceToHub: async (id: string, resourceId: string) => {
+        const response = await apiClient.post(`/hubs/${id}/resources/${resourceId}`);
+        return response.data;
+    },
+
+    removeResourceFromHub: async (id: string, resourceId: string) => {
+        const response = await apiClient.delete(`/hubs/${id}/resources/${resourceId}`);
+        return response.data;
+    },
+
+    addPathwayToHub: async (id: string, pathwayId: string) => {
+        const response = await apiClient.post(`/hubs/${id}/pathways/${pathwayId}`);
+        return response.data;
+    },
+
+    removePathwayFromHub: async (id: string, pathwayId: string) => {
+        const response = await apiClient.delete(`/hubs/${id}/pathways/${pathwayId}`);
+        return response.data;
     }
 };

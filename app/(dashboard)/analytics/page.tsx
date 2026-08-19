@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
 import styles from "./page.module.css";
+import { analyticsAPI } from "@/app/lib/api/analytics";
+import { AnalyticsStats, PerformanceChartData, ProductPerformance } from "@/app/lib/types/analytics";
 import {
   LineChart,
   Line,
@@ -75,86 +77,7 @@ const ArrowDownIcon = () => (
   </svg>
 );
 
-// Mock Data for different ranges
-const MOCK_DATA_RANGES = {
-  "7d": {
-    stats: {
-      earnings: { value: "₦4,500", trend: 12, isUp: true },
-      downloads: { value: "120", trend: 5, isUp: true },
-      saved: { value: "850", trend: 20, isUp: false },
-      confidence: { value: "~92%", trend: 2, isUp: true },
-    },
-    chart: [
-      { name: 'Mon', earnings: 2, downloads: 1, saved: 2 },
-      { name: 'Tue', earnings: 4, downloads: 2, saved: 3 },
-      { name: 'Wed', earnings: 3, downloads: 4, saved: 2 },
-      { name: 'Thu', earnings: 6, downloads: 3, saved: 4 },
-      { name: 'Fri', earnings: 5, downloads: 5, saved: 5 },
-      { name: 'Sat', earnings: 8, downloads: 6, saved: 6 },
-      { name: 'Sun', earnings: 9, downloads: 8, saved: 7 },
-    ]
-  },
-  "30d": {
-    stats: {
-      earnings: { value: "₦18,200", trend: 18, isUp: true },
-      downloads: { value: "400", trend: 18, isUp: true },
-      saved: { value: "3200", trend: 81, isUp: false },
-      confidence: { value: "~94%", trend: 18, isUp: true },
-    },
-    chart: [
-      { name: 'Jan', earnings: 9, downloads: 3, saved: 5 },
-      { name: 'Feb', earnings: 9, downloads: 3, saved: 5 },
-      { name: 'Mar', earnings: 7, downloads: 2, saved: 3 },
-      { name: 'Apr', earnings: 7, downloads: 2, saved: 3 },
-      { name: 'May', earnings: 5, downloads: 5, saved: 2 },
-      { name: 'Jun', earnings: 5, downloads: 5, saved: 2 },
-      { name: 'Jul', earnings: 8, downloads: 7, saved: 2 },
-      { name: 'Aug', earnings: 8, downloads: 5, saved: 4 },
-      { name: 'Sep', earnings: 8, downloads: 5, saved: 4 },
-      { name: 'Oct', earnings: 9, downloads: 3, saved: 5 },
-      { name: 'Nov', earnings: 7, downloads: 3, saved: 5 },
-      { name: 'Dec', earnings: 7, downloads: 5, saved: 4 },
-    ]
-  },
-  "90d": {
-    stats: {
-      earnings: { value: "₦54,100", trend: 32, isUp: true },
-      downloads: { value: "1,250", trend: 24, isUp: true },
-      saved: { value: "9,800", trend: 15, isUp: false },
-      confidence: { value: "~96%", trend: 5, isUp: true },
-    },
-    chart: [
-      { name: 'Week 1', earnings: 15, downloads: 8, saved: 12 },
-      { name: 'Week 4', earnings: 18, downloads: 12, saved: 15 },
-      { name: 'Week 8', earnings: 22, downloads: 18, saved: 20 },
-      { name: 'Week 12', earnings: 26, downloads: 22, saved: 25 },
-    ]
-  },
-  "All time": {
-    stats: {
-      earnings: { value: "₦240,500", trend: 140, isUp: true },
-      downloads: { value: "8,400", trend: 120, isUp: true },
-      saved: { value: "45,200", trend: 60, isUp: true },
-      confidence: { value: "~98%", trend: 10, isUp: true },
-    },
-    chart: [
-      { name: '2023', earnings: 40, downloads: 20, saved: 30 },
-      { name: '2024', earnings: 60, downloads: 45, saved: 50 },
-      { name: '2025', earnings: 85, downloads: 70, saved: 80 },
-      { name: '2026', earnings: 110, downloads: 90, saved: 100 },
-    ]
-  }
-};
 
-// Mock Table Data
-const TABLE_DATA = [
-  { id: 1, type: "resource", name: "Graphic Design CV", price: "Free", desc: "Our Graphic Design...", earnings: "$200", downloads: "24", saves: "24", views: "24", confidence: 96, isUp: true },
-  { id: 2, type: "pathway", name: "Leading text", price: "$250", desc: "Leading text", earnings: "$200", downloads: "300", saves: "300", views: "300", confidence: 96, isUp: false },
-  { id: 3, type: "resource", name: "Leading text", price: "", desc: "Leading text", earnings: "$200", downloads: "700,000", saves: "700,000", views: "700,000", confidence: 96, isUp: true },
-  { id: 4, type: "pathway", name: "Leading text", price: "", desc: "Leading text", earnings: "$200", downloads: "2M", saves: "2M", views: "2M", confidence: 96, isUp: false },
-  { id: 5, type: "resource", name: "Leading text", price: "", desc: "Leading text", earnings: "$200", downloads: "1", saves: "1", views: "1", confidence: 96, isUp: true },
-  { id: 6, type: "pathway", name: "Leading text", price: "", desc: "Leading text", earnings: "$200", downloads: "3", saves: "3", views: "3", confidence: 96, isUp: false },
-];
 
 export default function AnalyticsPage() {
   const [activeDate, setActiveDate] = useState("30d");
@@ -166,7 +89,42 @@ export default function AnalyticsPage() {
     experience: [],
   });
 
-  const currentData = MOCK_DATA_RANGES[activeDate as keyof typeof MOCK_DATA_RANGES];
+  const [stats, setStats] = useState<AnalyticsStats | null>(null);
+  const [chartData, setChartData] = useState<PerformanceChartData[]>([]);
+  const [products, setProducts] = useState<ProductPerformance[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [statsRes, perfRes, prodRes] = await Promise.all([
+          analyticsAPI.getStats(),
+          analyticsAPI.getPerformance(),
+          analyticsAPI.getProducts()
+        ]);
+        if (statsRes.success) setStats(statsRes.data);
+        if (perfRes.success) setChartData(perfRes.data);
+        if (prodRes.success) setProducts(prodRes.data.products);
+      } catch (err) {
+        console.error("Failed to load analytics data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [activeDate]);
+
+  if (loading) {
+    return (
+      <>
+        <DashboardHeader filters={filters} onFiltersChange={setFilters} />
+        <div className={styles.pageContainer}>
+          <div style={{ padding: "40px", textAlign: "center" }}>Loading analytics...</div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -203,9 +161,9 @@ export default function AnalyticsPage() {
               <WalletIcon />
             </div>
             <div className={styles.statTitle1}>Earnings</div>
-            <div className={styles.statValue}>{currentData.stats.earnings.value}</div>
-            <div className={`${styles.statTrend} ${currentData.stats.earnings.isUp ? styles.trendUp : styles.trendDown}`}>
-              {currentData.stats.earnings.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />} {currentData.stats.earnings.trend}% vs last period
+            <div className={styles.statValue}>₦{stats?.earnings?.value?.toLocaleString() || 0}</div>
+            <div className={`${styles.statTrend} ${stats?.earnings?.isUp ? styles.trendUp : styles.trendDown}`}>
+              {stats?.earnings?.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />} {stats?.earnings?.trend || 0}% vs last period
             </div>
           </div>
 
@@ -214,9 +172,9 @@ export default function AnalyticsPage() {
               <DownloadIcon />
             </div>
             <div className={styles.statTitle2}>Downloads</div>
-            <div className={styles.statValue}>{currentData.stats.downloads.value}</div>
-            <div className={`${styles.statTrend} ${currentData.stats.downloads.isUp ? styles.trendUp : styles.trendDown}`}>
-              {currentData.stats.downloads.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />} {currentData.stats.downloads.trend}% vs last period
+            <div className={styles.statValue}>{stats?.downloads?.value?.toLocaleString() || 0}</div>
+            <div className={`${styles.statTrend} ${stats?.downloads?.isUp ? styles.trendUp : styles.trendDown}`}>
+              {stats?.downloads?.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />} {stats?.downloads?.trend || 0}% vs last period
             </div>
           </div>
 
@@ -225,9 +183,9 @@ export default function AnalyticsPage() {
               <BookmarkIcon />
             </div>
             <div className={styles.statTitle3}>Saved</div>
-            <div className={styles.statValue}>{currentData.stats.saved.value}</div>
-            <div className={`${styles.statTrend} ${currentData.stats.saved.isUp ? styles.trendUp : styles.trendDown}`}>
-              {currentData.stats.saved.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />} {currentData.stats.saved.trend}% vs last period
+            <div className={styles.statValue}>{stats?.saved?.value?.toLocaleString() || 0}</div>
+            <div className={`${styles.statTrend} ${stats?.saved?.isUp ? styles.trendUp : styles.trendDown}`}>
+              {stats?.saved?.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />} {stats?.saved?.trend || 0}% vs last period
             </div>
           </div>
 
@@ -236,9 +194,9 @@ export default function AnalyticsPage() {
               <TargetIcon />
             </div>
             <div className={styles.statTitle4}>AVG Confidence</div>
-            <div className={styles.statValue}>{currentData.stats.confidence.value}</div>
-            <div className={`${styles.statTrend} ${currentData.stats.confidence.isUp ? styles.trendUp : styles.trendDown}`}>
-              {currentData.stats.confidence.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />} {currentData.stats.confidence.trend}% vs last period
+            <div className={styles.statValue}>~{stats?.confidence?.value || 0}%</div>
+            <div className={`${styles.statTrend} ${stats?.confidence?.isUp ? styles.trendUp : styles.trendDown}`}>
+              {stats?.confidence?.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />} {stats?.confidence?.trend || 0}% vs last period
             </div>
           </div>
         </div>
@@ -255,7 +213,7 @@ export default function AnalyticsPage() {
           </div>
           <div style={{ width: '100%', height: 280 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={currentData.chart} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+              <LineChart data={Array.isArray(chartData) ? chartData : []} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dx={-10} />
@@ -316,7 +274,9 @@ export default function AnalyticsPage() {
                 </tr>
               </thead>
               <tbody>
-                {TABLE_DATA.map((row) => (
+                {(!Array.isArray(products) || products.length === 0) ? (
+                  <tr><td colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>No performance data available</td></tr>
+                ) : products.map((row) => (
                   <tr key={row.id}>
                     <td>
                       {row.type === 'resource' ? <ResourceTypeIcon /> : <PathwayTypeIcon />}
@@ -327,7 +287,7 @@ export default function AnalyticsPage() {
                         {row.price && <span className={styles.namePrice}>{row.price}</span>}
                       </div>
                     </td>
-                    <td><div className={styles.descText}>{row.desc}</div></td>
+                    <td><div className={styles.descText}>{row.description}</div></td>
                     <td>{row.earnings}</td>
                     <td>{row.downloads}</td>
                     <td>{row.saves}</td>

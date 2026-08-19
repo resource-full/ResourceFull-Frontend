@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./TransactionHistory.module.css";
+import { walletAPI } from "@/app/lib/api/wallet";
+import { Transaction } from "@/app/lib/types/wallet";
 
 // Icons
 const ListIcon = () => (
@@ -12,7 +14,6 @@ const ListIcon = () => (
     <path d="M15.8619 6.84086C16.4607 6.84086 16.946 7.32622 16.946 7.92494C16.946 8.52365 16.4607 9.00901 15.8619 9.00901H5.14773C4.54902 9.009 4.06365 8.52364 4.06365 7.92494C4.06365 7.32623 4.54902 6.84088 5.14773 6.84086H15.8619Z" fill="#024A94" />
     <path d="M15.853 3.68066C16.4517 3.68067 16.9371 4.16602 16.9371 4.76474C16.9371 5.36346 16.4517 5.84881 15.853 5.84882H5.13876C4.54004 5.84882 4.05469 5.36346 4.05469 4.76474C4.05469 4.16602 4.54004 3.68066 5.13876 3.68066H15.853Z" fill="#024A94" />
   </svg>
-
 );
 
 const CardIcon = () => (
@@ -29,64 +30,61 @@ const PathwayIcon = () => (
   </svg>
 );
 
-// Mock Data
-type TransactionStatus = "Successful" | "Failed" | "Pending";
-type TransactionIconType = "list" | "card" | "pathway";
-
-interface Transaction {
-  id: string;
-  icon: TransactionIconType;
-  title: string;
-  subtitle: string;
-  amount: string;
-  status: TransactionStatus;
-}
-
 interface DateGroup {
   dateHeader: string;
   transactions: Transaction[];
 }
 
-const MOCK_DATA: DateGroup[] = [
-  {
-    dateHeader: "May 23rd - $456 Earned",
-    transactions: [
-      { id: "1", icon: "list", title: "Graphic Design CV", subtitle: "Sale - Apr 24, 2025", amount: "$23", status: "Successful" },
-      { id: "2", icon: "card", title: "Withdrawal to GTBank •••• 4821", subtitle: "Withdrawal - May 2, 2023", amount: "$23", status: "Failed" },
-      { id: "3", icon: "pathway", title: "Growth Hacker", subtitle: "Purchase - May 3, 2025", amount: "$43", status: "Pending" },
-      { id: "4", icon: "card", title: "Withdrawal to GTBank •••• 4821", subtitle: "Withdrawal - May 2, 2023", amount: "2M", status: "Successful" },
-      { id: "5", icon: "list", title: "Leading text", subtitle: "1", amount: "↑ 96%", status: "Successful" },
-      { id: "6", icon: "card", title: "Withdrawal to GTBank •••• 4821", subtitle: "Withdrawal - May 2, 2023", amount: "3", status: "Successful" },
-    ]
-  },
-  {
-    dateHeader: "May 23rd - $456 Earned",
-    transactions: [
-      { id: "7", icon: "list", title: "Graphic Design CV", subtitle: "Sale - Apr 24, 2025", amount: "$23", status: "Successful" },
-      { id: "8", icon: "card", title: "Withdrawal to GTBank •••• 4821", subtitle: "Withdrawal - May 2, 2023", amount: "$23", status: "Failed" },
-      { id: "9", icon: "pathway", title: "Growth Hacker", subtitle: "Purchase - May 3, 2025", amount: "$43", status: "Pending" },
-    ]
-  }
-];
-
 export default function TransactionHistory() {
   const [activeTab, setActiveTab] = useState("All");
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const getIcon = (type: TransactionIconType) => {
-    switch (type) {
-      case "list": return <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><ListIcon /></div>;
-      case "card": return <div className={`${styles.iconWrapper} ${styles.iconDark}`}><CardIcon /></div>;
-      case "pathway": return <div className={`${styles.iconWrapper} ${styles.iconCyan}`}><PathwayIcon /></div>;
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const res = await walletAPI.getTransactions();
+        if (res.success && res.data) {
+          setTransactions(res.data.transactions);
+        }
+      } catch (err) {
+        console.error("Failed to load transactions", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTransactions();
+  }, []);
+
+  const getIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "sale": return <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><ListIcon /></div>;
+      case "withdrawal": return <div className={`${styles.iconWrapper} ${styles.iconDark}`}><CardIcon /></div>;
+      case "purchase": return <div className={`${styles.iconWrapper} ${styles.iconCyan}`}><PathwayIcon /></div>;
+      default: return <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><ListIcon /></div>;
     }
   };
 
-  const getBadgeClass = (status: TransactionStatus) => {
-    switch (status) {
-      case "Successful": return styles.badgeSuccess;
-      case "Failed": return styles.badgeFailed;
-      case "Pending": return styles.badgePending;
+  const getBadgeClass = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "successful": return styles.badgeSuccess;
+      case "failed": return styles.badgeFailed;
+      case "pending": return styles.badgePending;
+      default: return "";
     }
   };
+
+  // Group transactions by date
+  const groupedData: DateGroup[] = [];
+  transactions.forEach((txn) => {
+    const dateStr = new Date(txn.createdAt).toLocaleDateString("en-US", { month: 'short', day: 'numeric' });
+    let group = groupedData.find(g => g.dateHeader === dateStr);
+    if (!group) {
+      group = { dateHeader: dateStr, transactions: [] };
+      groupedData.push(group);
+    }
+    group.transactions.push(txn);
+  });
 
   return (
     <div className={styles.container}>
@@ -113,7 +111,11 @@ export default function TransactionHistory() {
       </div>
 
       <div className={styles.list}>
-        {MOCK_DATA.map((group, idx) => (
+        {loading ? (
+          <div style={{ padding: "20px" }}>Loading transactions...</div>
+        ) : groupedData.length === 0 ? (
+          <div style={{ padding: "20px" }}>No transactions found.</div>
+        ) : groupedData.map((group, idx) => (
           <div key={idx} className={styles.dateGroup}>
             <div className={styles.dateGroupHeader}>
               {group.dateHeader}
@@ -121,18 +123,18 @@ export default function TransactionHistory() {
 
             <div className={styles.transactionList}>
               {group.transactions.map(txn => (
-                <div key={txn.id} className={styles.transactionRow}>
+                <div key={txn._id} className={styles.transactionRow}>
                   <div className={styles.rowLeft}>
-                    {getIcon(txn.icon)}
+                    {getIcon(txn.type)}
                     <div className={styles.rowDetails}>
-                      <Link href="#" className={styles.rowTitle}>{txn.title}</Link>
-                      <span className={styles.rowSubtitle}>{txn.subtitle}</span>
+                      <Link href="#" className={styles.rowTitle}>{txn.description}</Link>
+                      <span className={styles.rowSubtitle}>{txn.type} - {new Date(txn.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <div className={styles.rowRight}>
-                    <span className={styles.rowAmount}>{txn.amount}</span>
+                    <span className={styles.rowAmount}>${txn.amount}</span>
                     <div className={`${styles.badge} ${getBadgeClass(txn.status)}`}>
-                      {txn.status === "Successful" && txn.amount.includes("↑") ? "↑ 96%" : txn.status}
+                      {txn.status}
                     </div>
                   </div>
                 </div>
