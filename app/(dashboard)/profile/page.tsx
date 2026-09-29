@@ -436,7 +436,7 @@ export default function ProfilePage() {
                     <td className={styles.td}>{res.viewCount}</td>
                     <td className={styles.td}>{res.viewCount}</td>
                     <td className={styles.td}>
-                      {renderStatus(res.id === MOCK_RESOURCES_TABLE[0].id ? "Active" : "Active")}
+                      {renderStatus("Active")}
                     </td>
                     <td className={styles.td}>
                       <Link href={`/edit-resource/${res.id}`} className={styles.actionIcon}>
@@ -506,7 +506,7 @@ export default function ProfilePage() {
                     <td className={styles.td}>{pw.viewCount}</td>
                     <td className={styles.td}>{pw.viewCount}</td>
                     <td className={styles.td}>
-                      {renderStatus(pw.id === MOCK_PATHWAYS_TABLE[0].id ? "Active" : "Active")}
+                      {renderStatus("Active")}
                     </td>
                     <td className={styles.td}>
                       <Link href={`/edit-pathway/${pw.id}`} className={styles.actionIcon}>
@@ -576,7 +576,7 @@ export default function ProfilePage() {
                     <td className={styles.td}>{hub.viewCount}</td>
                     <td className={styles.td}>{hub.viewCount}</td>
                     <td className={styles.td}>
-                      {renderStatus(hub.id === MOCK_HUBS_TABLE[0].id ? "Active" : "Active")}
+                      {renderStatus("Active")}
                     </td>
                     <td className={styles.td}>
                       <Link href={`/edit-hub/${hub.id}`} className={styles.actionIcon}>
