@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useDashboardData } from "@/app/hooks/useDashboardData";
+import { useState, useMemo } from "react";
+import { useDashboardData, DisplayFilters } from "@/app/hooks/useDashboardData";
 import ResourceCard from "@/app/components/ui/ResourceCard";
 import DashboardTopNav from "../_components/DashboardTopNav";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
@@ -36,6 +36,13 @@ export default function DashboardPage() {
     experience: [],
   });
 
+  const displayFilters: DisplayFilters = useMemo(() => ({
+    searchQuery: filters.searchQuery,
+    worldwide: filters.worldwide,
+    industry: filters.industry,
+    experience: filters.experience,
+  }), [filters]);
+
   const {
     displayResources,
     displayPathways,
@@ -43,9 +50,44 @@ export default function DashboardPage() {
     isLoadingResources,
     isLoadingPathways,
     isLoadingHubs,
-  } = useDashboardData();
+  } = useDashboardData(displayFilters);
 
-  // Dynamic Title Logic
+  const filteredResources = useMemo(() => {
+    let result = displayResources;
+    if (activeTag !== "All") {
+      result = result.filter(r => r.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase().replace(" ", ""))));
+    }
+    if (priceFilters.includes("free") && !priceFilters.includes("paid")) {
+      result = result.filter(r => r.isFree);
+    }
+    if (priceFilters.includes("paid") && !priceFilters.includes("free")) {
+      result = result.filter(r => !r.isFree);
+    }
+    return result;
+  }, [displayResources, activeTag, priceFilters]);
+
+  const filteredPathways = useMemo(() => {
+    let result = displayPathways;
+    if (activeTag !== "All") {
+      result = result.filter(p => p.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase().replace(" ", ""))));
+    }
+    if (priceFilters.includes("free") && !priceFilters.includes("paid")) {
+      result = result.filter(p => p.isFree);
+    }
+    if (priceFilters.includes("paid") && !priceFilters.includes("free")) {
+      result = result.filter(p => !p.isFree);
+    }
+    return result;
+  }, [displayPathways, activeTag, priceFilters]);
+
+  const filteredHubs = useMemo(() => {
+    let result = displayHubs;
+    if (activeTag !== "All") {
+      result = result.filter(h => h.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase().replace(" ", ""))));
+    }
+    return result;
+  }, [displayHubs, activeTag]);
+
   const getDynamicTitle = () => {
     if (filters.searchQuery) {
       return `Results for "${filters.searchQuery}"`;
@@ -53,16 +95,23 @@ export default function DashboardPage() {
 
     const hasFilters = filters.worldwide.length > 0 || filters.industry.length > 0 || filters.experience.length > 0;
     if (hasFilters) {
-      const parts = [];
+      const count = activeTab === "resources" ? filteredResources.length
+        : activeTab === "pathways" ? filteredPathways.length
+        : filteredHubs.length;
+      const parts: string[] = [];
       if (filters.worldwide.length) parts.push(`in ${filters.worldwide.join(" & ")}`);
       if (filters.industry.length) parts.push(`for ${filters.industry.join(" & ")}`);
       if (filters.experience.length) parts.push(`(${filters.experience.join(" & ")})`);
-
-      // Let's use a mock number since we aren't actually filtering the mock array
-      return `267 Results ${parts.join(", ")}`;
+      return `${count} Results ${parts.join(", ")}`;
     }
 
     return "Explore 3000+ resources";
+  };
+
+  const togglePriceFilter = (filter: string) => {
+    setPriceFilters(prev =>
+      prev.includes(filter) ? prev.filter(v => v !== filter) : [...prev, filter]
+    );
   };
 
   return (
@@ -107,10 +156,7 @@ export default function DashboardPage() {
                     type="checkbox"
                     className="hidden"
                     checked={priceFilters.includes('free')}
-                    onChange={(e) => {
-                      if (e.target.checked) setPriceFilters([...priceFilters, 'free']);
-                      else setPriceFilters(priceFilters.filter(v => v !== 'free'));
-                    }}
+                    onChange={() => togglePriceFilter('free')}
                   />
                   <span className="text-gray-800 font-medium">Free</span>
                 </label>
@@ -127,10 +173,7 @@ export default function DashboardPage() {
                     type="checkbox"
                     className="hidden"
                     checked={priceFilters.includes('paid')}
-                    onChange={(e) => {
-                      if (e.target.checked) setPriceFilters([...priceFilters, 'paid']);
-                      else setPriceFilters(priceFilters.filter(v => v !== 'paid'));
-                    }}
+                    onChange={() => togglePriceFilter('paid')}
                   />
                   <span className="text-gray-800 font-medium">Paid</span>
                 </label>
@@ -146,12 +189,12 @@ export default function DashboardPage() {
         <div className={styles.resourceGrid}>
           {isLoadingResources ? (
             <div className="col-span-full text-center py-8 text-gray-500">Loading resources...</div>
-          ) : displayResources.length > 0 ? (
-            displayResources.map((resource) => (
+          ) : filteredResources.length > 0 ? (
+            filteredResources.map((resource) => (
               <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} />
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">No resources found.</div>
+            <div className="col-span-full text-center py-8 text-gray-500">No resources found. Try adjusting your filters.</div>
           )}
         </div>
       )}
@@ -160,12 +203,12 @@ export default function DashboardPage() {
         <div className={styles.pathwayGrid}>
           {isLoadingPathways ? (
             <div className="col-span-full text-center py-8 text-gray-500">Loading pathways...</div>
-          ) : displayPathways.length > 0 ? (
-            displayPathways.map((pathway) => (
+          ) : filteredPathways.length > 0 ? (
+            filteredPathways.map((pathway) => (
               <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">No pathways found.</div>
+            <div className="col-span-full text-center py-8 text-gray-500">No pathways found. Try adjusting your filters.</div>
           )}
         </div>
       )}
@@ -174,12 +217,12 @@ export default function DashboardPage() {
         <div className={styles.hubGrid}>
           {isLoadingHubs ? (
             <div className="col-span-full text-center py-8 text-gray-500">Loading hubs...</div>
-          ) : displayHubs.length > 0 ? (
-            displayHubs.map((hub) => (
+          ) : filteredHubs.length > 0 ? (
+            filteredHubs.map((hub) => (
               <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} />
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">No hubs found.</div>
+            <div className="col-span-full text-center py-8 text-gray-500">No hubs found. Try adjusting your filters.</div>
           )}
         </div>
       )}

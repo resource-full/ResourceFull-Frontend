@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import ResourceCard, { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
+import { useState, useMemo } from "react";
+import ResourceCard from "@/app/components/ui/ResourceCard";
 import DashboardTopNav from "../_components/DashboardTopNav";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
 import HubCard from "@/app/components/ui/HubCard";
 import PathwayCard from "@/app/components/ui/PathwayCard";
 import styles from "./page.module.css";
 
-import { useDashboardData } from "@/app/hooks/useDashboardData";
+import { useDashboardData, DisplayFilters } from "@/app/hooks/useDashboardData";
 
 const TAGS = [
     "All",
@@ -37,6 +37,13 @@ export default function PurchasedPage() {
         experience: [],
     });
 
+    const displayFilters: DisplayFilters = useMemo(() => ({
+        searchQuery: filters.searchQuery,
+        worldwide: filters.worldwide,
+        industry: filters.industry,
+        experience: filters.experience,
+    }), [filters]);
+
     const {
         displayResources,
         displayPathways,
@@ -44,7 +51,7 @@ export default function PurchasedPage() {
         isLoadingResources,
         isLoadingPathways,
         isLoadingHubs
-    } = useDashboardData();
+    } = useDashboardData(displayFilters);
 
     // Dynamic Title Logic
     const getDynamicTitle = () => {
@@ -54,13 +61,14 @@ export default function PurchasedPage() {
 
         const hasFilters = filters.worldwide.length > 0 || filters.industry.length > 0 || filters.experience.length > 0;
         if (hasFilters) {
-            const parts = [];
+            const count = activeTab === "resources" ? displayResources.length
+                : activeTab === "pathways" ? displayPathways.length
+                : displayHubs.length;
+            const parts: string[] = [];
             if (filters.worldwide.length) parts.push(`in ${filters.worldwide.join(" & ")}`);
             if (filters.industry.length) parts.push(`for ${filters.industry.join(" & ")}`);
             if (filters.experience.length) parts.push(`(${filters.experience.join(" & ")})`);
-
-            // Let's use a mock number since we aren't actually filtering the mock array
-            return `267 Results ${parts.join(", ")}`;
+            return `${count} Results ${parts.join(", ")}`;
         }
 
         return "My Purchases";
@@ -81,10 +89,12 @@ export default function PurchasedPage() {
                 <div className={styles.resourceGrid}>
                     {isLoadingResources ? (
                         <div className="col-span-full text-center py-8 text-gray-500">Loading...</div>
-                    ) : (
+                    ) : displayResources.length > 0 ? (
                         displayResources.map((resource) => (
                             <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} isPurchased={true} />
                         ))
+                    ) : (
+                        <div className="col-span-full text-center py-8 text-gray-500">No purchased resources yet. Explore the marketplace to find resources to buy.</div>
                     )}
                 </div>
             )}
@@ -93,10 +103,12 @@ export default function PurchasedPage() {
                 <div className={styles.pathwayGrid}>
                     {isLoadingPathways ? (
                         <div className="col-span-full text-center py-8 text-gray-500">Loading...</div>
-                    ) : (
+                    ) : displayPathways.length > 0 ? (
                         displayPathways.map((pathway) => (
                             <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} isPurchased={true} />
                         ))
+                    ) : (
+                        <div className="col-span-full text-center py-8 text-gray-500">No purchased pathways yet. Explore the marketplace to find pathways to buy.</div>
                     )}
                 </div>
             )}
@@ -105,10 +117,12 @@ export default function PurchasedPage() {
                 <div className={styles.hubGrid}>
                     {isLoadingHubs ? (
                         <div className="col-span-full text-center py-8 text-gray-500">Loading hubs...</div>
-                    ) : (
+                    ) : displayHubs.length > 0 ? (
                         displayHubs.map((hub) => (
                             <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} isPurchased={true} />
                         ))
+                    ) : (
+                        <div className="col-span-full text-center py-8 text-gray-500">No purchased hubs yet. Explore the marketplace to find hubs to join.</div>
                     )}
                 </div>
             )}
