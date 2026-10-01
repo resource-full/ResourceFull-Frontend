@@ -7,9 +7,14 @@ import { authAPI } from "@/app/lib/api/auth";
 import styles from "./ForgotPasswordForm.module.css";
 
 function getErrorMessage(error: unknown): string {
-  if (typeof error === "object" && error !== null && "response" in error) {
-    const response = (error as { response?: { data?: { message?: string } } }).response;
-    if (response?.data?.message) return response.data.message;
+  if (typeof error === "object" && error !== null) {
+    if ("response" in error) {
+      const response = (error as { response?: { data?: { message?: string } } }).response;
+      if (response?.data?.message) return response.data.message;
+    }
+    if ("message" in error && typeof (error as { message?: unknown }).message === "string") {
+      return (error as { message: string }).message;
+    }
   }
   return "We couldn’t start the password reset. Please try again.";
 }
@@ -19,6 +24,7 @@ export default function ForgotPasswordForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [submittedEmail, setSubmittedEmail] = useState("");
+  const [directResetLink, setDirectResetLink] = useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -31,6 +37,10 @@ export default function ForgotPasswordForm() {
         throw new Error(response.message || "Password reset request failed");
       }
 
+      const resetLink = response.data?.resetLink || (response.data?.resetToken
+        ? `${window.location.origin}/reset-password?token=${encodeURIComponent(response.data.resetToken)}`
+        : "");
+      setDirectResetLink(resetLink);
       setSubmittedEmail(email.trim());
     } catch (requestError) {
       setError(getErrorMessage(requestError));
@@ -45,9 +55,13 @@ export default function ForgotPasswordForm() {
         <div className={styles.successIcon} aria-hidden="true">✓</div>
         <h2>Check your inbox</h2>
         <p>
-          If an account exists for <strong>{submittedEmail}</strong>, you&apos;ll receive a password reset link shortly.
+          If an account exists for <strong>{submittedEmail}</strong>, you&apos;ll receive a password reset link shortly. Check your spam or promotions folder if it doesn&apos;t arrive.
         </p>
-        <button type="button" className={styles.secondaryAction} onClick={() => setSubmittedEmail("")}>          Use a different email
+        {directResetLink && (
+          <a href={directResetLink} className={styles.directResetLink}>Open password reset</a>
+        )}
+        <button type="button" className={styles.secondaryAction} onClick={() => { setSubmittedEmail(""); setDirectResetLink(""); }}>
+          Use a different email
         </button>
       </div>
     );
