@@ -143,3 +143,42 @@
   border-radius: 12px;
   border: 1px dashed #e0e0e0;
 }
+
+.loadingState {
+  padding: 40px;
+  text-align: center;
+  color: #888;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px dashed #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #e0e0e0;
+  border-radius: 50%;
+  border-top-color: #024A94;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorBanner {
+  padding: 16px 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #b91c1c;
+  font-size: 14px;
+  margin-bottom: 24px;
+  text-align: center;
+}

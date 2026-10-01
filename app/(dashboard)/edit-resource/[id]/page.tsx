@@ -3,9 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { Resource } from "@/app/lib/types/resource";
 import styles from "./page.module.css";
 
 const ChevronDown = () => (
@@ -62,21 +64,24 @@ const ArrowLeftIcon = () => (
 
 export default function EditResourcePage() {
   const router = useRouter();
-  const [uploadedFile, setUploadedFile] = useState<File | { name: string }>({ name: "Cv Template.pdf" });
-  const [coverPhoto, setCoverPhoto] = useState<string | null>("/assets/plain-pdf.png");
+  const params = useParams();
+  const resourceId = params.id as string;
+
+  const [uploadedFile, setUploadedFile] = useState<File | { name: string }>({ name: "" });
+  const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
 
   // Pre-filled Form State
-  const [name, setName] = useState("My Resource");
-  const [description, setDescription] = useState("Lorem Ipsum");
-  const [locations, setLocations] = useState<string[]>(["angola"]);
-  const [experiences, setExperiences] = useState<string[]>(["undergraduate"]);
-  const [industries, setIndustries] = useState<string[]>(["law"]);
-  const [hubs, setHubs] = useState<string[]>(["cv"]);
-  const [price, setPrice] = useState("$100");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [locations, setLocations] = useState<string[]>([]);
+  const [experiences, setExperiences] = useState<string[]>([]);
+  const [industries, setIndustries] = useState<string[]>([]);
+  const [hubs, setHubs] = useState<string[]>([]);
+  const [price, setPrice] = useState("");
   const [isFree, setIsFree] = useState(true);
 
   // Checkboxes state
-  const [isCvTemplates, setIsCvTemplates] = useState(true);
+  const [isCvTemplates, setIsCvTemplates] = useState(false);
   const [isJsCodes, setIsJsCodes] = useState(false);
   const [exp1, setExp1] = useState(false);
   const [exp2, setExp2] = useState(false);
@@ -91,16 +96,99 @@ export default function EditResourcePage() {
   // Modal State
   const [modalType, setModalType] = useState<"success" | "error" | "draft" | "onlyme" | "back" | null>(null);
 
+  const [isFetching, setIsFetching] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (!resourceId) return;
+    const fetchResource = async () => {
+      try {
+        const res = await resourceAPI.getSingleResource(resourceId);
+        if (res.success && res.data) {
+          const resource: Resource = res.data;
+          setName(resource.name || "");
+          setDescription(resource.description || "");
+          setLocations(resource.applicableLocation ? resource.applicableLocation.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setExperiences(resource.experience ? resource.experience.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setIndustries(resource.industry ? resource.industry.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setHubs(resource.hub ? resource.hub.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setIsFree(resource.isFree);
+          setPrice(resource.price ? String(resource.price) : "");
+          setCoverPhoto(resource.coverPhoto || null);
+          if (resource.resourceFile?.url) {
+            const fileName = resource.resourceFile.url.split("/").pop() || resource.name || "";
+            setUploadedFile({ name: fileName });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch resource:", error);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+    fetchResource();
+  }, [resourceId]);
+
   const toggleDropdown = (dropdownName: string) => {
     setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
   };
 
-  const handleUpdate = () => {
-    // Simulate API call
-    if (name && description) {
-      setModalType("success");
-    } else {
+  const handleUpdate = async () => {
+    if (!name || !description) {
       setModalType("error");
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("applicableLocation", locations.join(","));
+      formData.append("experience", experiences.join(","));
+      formData.append("industry", industries.join(","));
+      formData.append("hub", hubs.join(","));
+      formData.append("isFree", String(isFree));
+      formData.append("price", price.replace(/[^0-9.]/g, ""));
+      if (uploadedFile instanceof File) {
+        formData.append("resourceFile", uploadedFile);
+      }
+      const res = await resourceAPI.updateResource(resourceId, formData);
+      if (res?.data) {
+        setModalType("success");
+      } else {
+        setModalType("error");
+      }
+    } catch (error) {
+      console.error("Failed to update resource:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    setIsSaving(true);
+    try {
+      await resourceAPI.changeStatus(resourceId, "draft");
+      setModalType("draft");
+    } catch (error) {
+      console.error("Failed to save draft:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleMarkAsOnlyMe = async () => {
+    setIsSaving(true);
+    try {
+      await resourceAPI.changeStatus(resourceId, "private");
+      closeModal();
+    } catch (error) {
+      console.error("Failed to mark as only me:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -124,10 +212,10 @@ export default function EditResourcePage() {
           <h1 className={styles.title}>Edit Resource</h1>
         </div>
         <div className={styles.headerActions}>
-          <button className={styles.linkOnlyMe} onClick={() => setModalType("draft")}>Save Draft</button>
-          <button className={styles.btnDraft} onClick={() => setModalType("onlyme")}>Mark as Only Me</button>
-          <button className={`${styles.btnPost} ${!name ? styles.btnPostDisabled : ''}`} onClick={handleUpdate}>
-            Update
+          <button className={styles.linkOnlyMe} onClick={handleSaveDraft} disabled={isFetching || isSaving}>Save Draft</button>
+          <button className={styles.btnDraft} onClick={() => setModalType("onlyme")} disabled={isFetching || isSaving}>Mark as Only Me</button>
+          <button className={`${styles.btnPost} ${(!name || isFetching || isSaving) ? styles.btnPostDisabled : ''}`} onClick={handleUpdate} disabled={isFetching || isSaving}>
+            {isSaving ? "Saving..." : "Update"}
           </button>
         </div>
       </div>
@@ -391,10 +479,7 @@ export default function EditResourcePage() {
                 <p className={styles.modalSubtitle}>Marking this item as Only Me will remove it from the public feed, and associated hubs and pathways!</p>
                 <div className={styles.modalActions}>
                   <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={closeModal}>Cancel</button>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => {
-                    closeModal();
-                    // Implement Mark as Only Me logic here
-                  }}>Proceed</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={handleMarkAsOnlyMe} disabled={isSaving}>Proceed</button>
                 </div>
               </>
             )}

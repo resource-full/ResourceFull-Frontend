@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { hubAPI } from "@/app/lib/api/hub";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { pathwayAPI } from "@/app/lib/api/pathway";
+import { Resource } from "@/app/lib/types/resource";
+import { Pathway } from "@/app/lib/types/pathway";
 import styles from "./page.module.css";
 
 const CheckIcon = () => (
@@ -100,32 +105,133 @@ const DummyPathwayCard = ({ title, variant = "purple" }: { title: string, varian
 
 export default function EditHubPage() {
   const router = useRouter();
+  const params = useParams();
+  const hubId = params.id as string;
 
-  // Form State — Pre-filled
-  const [name, setName] = useState("CV Templates Hub");
-  const [description, setDescription] = useState("A curated collection of high-quality CV templates for various industries and experience levels.");
-  const [locations, setLocations] = useState<string[]>(["angola"]);
-  const [experiences, setExperiences] = useState<string[]>(["undergraduate"]);
-  const [industries, setIndustries] = useState<string[]>(["law"]);
+  // Form State
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [locations, setLocations] = useState<string[]>([]);
+  const [experiences, setExperiences] = useState<string[]>([]);
+  const [industries, setIndustries] = useState<string[]>([]);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  // Selected Items State — Pre-filled
-  const [selectedResources, setSelectedResources] = useState<number[]>([1, 2, 3]);
-  const [selectedPathways, setSelectedPathways] = useState<number[]>([1, 2]);
+  // Available items for the select modal
+  const [availableResources, setAvailableResources] = useState<Resource[]>([]);
+  const [availablePathways, setAvailablePathways] = useState<Pathway[]>([]);
+
+  // Selected Items State — arrays of real IDs (strings)
+  const [selectedResources, setSelectedResources] = useState<string[]>([]);
+  const [selectedPathways, setSelectedPathways] = useState<string[]>([]);
 
   // Modal State
   const [modalType, setModalType] = useState<"success" | "error" | "draft" | "onlyme" | "back" | null>(null);
   const [selectModal, setSelectModal] = useState<"resource" | "pathway" | null>(null);
 
+  const [isFetching, setIsFetching] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (!hubId) return;
+    const fetchHub = async () => {
+      try {
+        const res = await hubAPI.getSingleHub(hubId);
+        if (res.success && res.data) {
+          const hub = res.data;
+          setName(hub.name || "");
+          setDescription(hub.description || "");
+          setLocations(hub.applicableLocation ? hub.applicableLocation.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setExperiences(hub.experience ? hub.experience.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setIndustries(hub.industry ? hub.industry.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setSelectedResources(hub.resources || []);
+          setSelectedPathways(hub.pathways || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch hub:", error);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+    fetchHub();
+  }, [hubId]);
+
+  useEffect(() => {
+    const fetchAvailable = async () => {
+      try {
+        const [resRes, pathRes] = await Promise.all([
+          resourceAPI.getAllResources(),
+          pathwayAPI.getAllPathways(),
+        ]);
+        if (resRes.success && resRes.data.resources) {
+          setAvailableResources(resRes.data.resources);
+        }
+        if (pathRes.success && pathRes.data.pathways) {
+          setAvailablePathways(pathRes.data.pathways);
+        }
+      } catch (error) {
+        console.error("Failed to fetch available resources/pathways:", error);
+      }
+    };
+    fetchAvailable();
+  }, []);
+
   const toggleDropdown = (dropdownName: string) => {
     setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
   };
 
-  const handleUpdate = () => {
-    if (name && description) {
-      setModalType("success");
-    } else {
+  const handleUpdate = async () => {
+    if (!name || !description) {
       setModalType("error");
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const payload = {
+        name,
+        description,
+        industry: industries.join(","),
+        applicableLocation: locations.join(","),
+        experience: experiences.join(","),
+        resources: selectedResources,
+        pathways: selectedPathways,
+      };
+      const res = await hubAPI.updateHub(hubId, payload);
+      if (res?.data) {
+        setModalType("success");
+      } else {
+        setModalType("error");
+      }
+    } catch (error) {
+      console.error("Failed to update hub:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    setIsSaving(true);
+    try {
+      await hubAPI.changeStatus(hubId, "draft");
+      setModalType("draft");
+    } catch (error) {
+      console.error("Failed to save draft:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleMarkAsOnlyMe = async () => {
+    setIsSaving(true);
+    try {
+      await hubAPI.changeStatus(hubId, "private");
+      closeModal();
+    } catch (error) {
+      console.error("Failed to mark as only me:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -141,7 +247,7 @@ export default function EditHubPage() {
     setModalType(null);
   };
 
-  const toggleResource = (id: number) => {
+  const toggleResource = (id: string) => {
     if (selectedResources.includes(id)) {
       setSelectedResources(selectedResources.filter(r => r !== id));
     } else {
@@ -149,7 +255,7 @@ export default function EditHubPage() {
     }
   };
 
-  const togglePathway = (id: number) => {
+  const togglePathway = (id: string) => {
     if (selectedPathways.includes(id)) {
       setSelectedPathways(selectedPathways.filter(p => p !== id));
     } else {
@@ -165,10 +271,10 @@ export default function EditHubPage() {
           <h1 className={styles.title}>Edit Hub</h1>
         </div>
         <div className={styles.headerActions}>
-          <button className={styles.linkOnlyMe} onClick={() => setModalType("draft")}>Save Draft</button>
-          <button className={styles.btnDraft} onClick={() => setModalType("onlyme")}>Mark as Only Me</button>
-          <button className={`${styles.btnPost} ${!name ? styles.btnPostDisabled : ''}`} onClick={handleUpdate}>
-            Update
+          <button className={styles.linkOnlyMe} onClick={handleSaveDraft} disabled={isFetching || isSaving}>Save Draft</button>
+          <button className={styles.btnDraft} onClick={() => setModalType("onlyme")} disabled={isFetching || isSaving}>Mark as Only Me</button>
+          <button className={`${styles.btnPost} ${(!name || isFetching || isSaving) ? styles.btnPostDisabled : ''}`} onClick={handleUpdate} disabled={isFetching || isSaving}>
+            {isSaving ? "Saving..." : "Update"}
           </button>
         </div>
       </div>
@@ -234,35 +340,22 @@ export default function EditHubPage() {
               </button>
             </div>
             <div className={styles.selectedList}>
-              {selectedResources.includes(1) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => toggleResource(1)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
+              {selectedResources.map((resId) => {
+                const res = availableResources.find(r => (r._id || r.id) === resId);
+                if (!res) return null;
+                return (
+                  <div key={resId} className={styles.selectedItem}>
+                    <div className={styles.checkboxContainer}>
+                      <div className={styles.checkbox} onClick={() => toggleResource(resId)} style={{ cursor: 'pointer' }}>
+                        <CheckIcon />
+                      </div>
                     </div>
+                    <DummyResourceCard title={res.name} variant="purple" />
                   </div>
-                  <DummyResourceCard title="Graphic Designer 80% wining rate CV" variant="purple" />
-                </div>
-              )}
-              {selectedResources.includes(2) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => toggleResource(2)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
-                    </div>
-                  </div>
-                  <DummyResourceCard title="Graphic Designer 80% wining rate CV" variant="orange" />
-                </div>
-              )}
-              {selectedResources.includes(3) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => toggleResource(3)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
-                    </div>
-                  </div>
-                  <DummyResourceCard title="Graphic Designer 80% wining rate CV" variant="orange" />
-                </div>
+                );
+              })}
+              {selectedResources.length === 0 && (
+                <div style={{ color: "#8c95a6", fontSize: "0.875rem", padding: "12px" }}>No resources added yet.</div>
               )}
             </div>
           </div>
@@ -276,25 +369,22 @@ export default function EditHubPage() {
               </button>
             </div>
             <div className={styles.selectedList}>
-              {selectedPathways.includes(1) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => togglePathway(1)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
+              {selectedPathways.map((pathId) => {
+                const path = availablePathways.find(p => (p._id || p.id) === pathId);
+                if (!path) return null;
+                return (
+                  <div key={pathId} className={styles.selectedItem}>
+                    <div className={styles.checkboxContainer}>
+                      <div className={styles.checkbox} onClick={() => togglePathway(pathId)} style={{ cursor: 'pointer' }}>
+                        <CheckIcon />
+                      </div>
                     </div>
+                    <DummyPathwayCard title={path.name} variant="purple" />
                   </div>
-                  <DummyPathwayCard title="Become a Full Stack Developer in 3 Months" variant="purple" />
-                </div>
-              )}
-              {selectedPathways.includes(2) && (
-                <div className={styles.selectedItem}>
-                  <div className={styles.checkboxContainer}>
-                    <div className={styles.checkbox} onClick={() => togglePathway(2)} style={{ cursor: 'pointer' }}>
-                      <CheckIcon />
-                    </div>
-                  </div>
-                  <DummyPathwayCard title="Become a Full Stack Developer in 3 Months" variant="orange" />
-                </div>
+                );
+              })}
+              {selectedPathways.length === 0 && (
+                <div style={{ color: "#8c95a6", fontSize: "0.875rem", padding: "12px" }}>No pathways added yet.</div>
               )}
             </div>
           </div>
@@ -309,49 +399,55 @@ export default function EditHubPage() {
             <input type="text" className={styles.selectResourceSearch} placeholder="Search" />
             <div className={styles.selectResourceList}>
               {selectModal === "resource" ? (
-                <>
-                  {[1, 2, 3].map(id => {
-                    const isSelected = selectedResources.includes(id);
+                availableResources.length > 0 ? (
+                  availableResources.map((res, idx) => {
+                    const resId = res._id || res.id;
+                    const isSelected = selectedResources.includes(resId);
                     return (
-                      <label key={id} className={styles.selectResourceItem}>
+                      <label key={resId} className={styles.selectResourceItem}>
                         <div className={`${styles.modalCheckbox} ${isSelected ? styles.modalCheckboxActive : ''}`}>
                           {isSelected && <span style={{ color: '#fff' }}><CheckIcon /></span>}
                         </div>
                         <div style={{ pointerEvents: 'none', width: '100%' }}>
-                          <DummyResourceCard title="Graphic Designer 80% wining rate CV" variant={id === 1 ? "purple" : "orange"} />
+                          <DummyResourceCard title={res.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
                         </div>
                         <input
                           type="checkbox"
                           className="hidden"
                           checked={isSelected}
-                          onChange={() => toggleResource(id)}
+                          onChange={() => toggleResource(resId)}
                         />
                       </label>
                     );
-                  })}
-                </>
+                  })
+                ) : (
+                  <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>No resources found.</div>
+                )
               ) : (
-                <>
-                  {[1, 2].map(id => {
-                    const isSelected = selectedPathways.includes(id);
+                availablePathways.length > 0 ? (
+                  availablePathways.map((path, idx) => {
+                    const pathId = path._id || path.id;
+                    const isSelected = selectedPathways.includes(pathId);
                     return (
-                      <label key={id} className={styles.selectResourceItem}>
+                      <label key={pathId} className={styles.selectResourceItem}>
                         <div className={`${styles.modalCheckbox} ${isSelected ? styles.modalCheckboxActive : ''}`}>
                           {isSelected && <span style={{ color: '#fff' }}><CheckIcon /></span>}
                         </div>
                         <div style={{ pointerEvents: 'none', width: '100%' }}>
-                          <DummyPathwayCard title="Become a Full Stack Developer in 3 Months" variant={id === 1 ? "purple" : "orange"} />
+                          <DummyPathwayCard title={path.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
                         </div>
                         <input
                           type="checkbox"
                           className="hidden"
                           checked={isSelected}
-                          onChange={() => togglePathway(id)}
+                          onChange={() => togglePathway(pathId)}
                         />
                       </label>
                     );
-                  })}
-                </>
+                  })
+                ) : (
+                  <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>No pathways found.</div>
+                )
               )}
             </div>
           </div>
@@ -413,10 +509,7 @@ export default function EditHubPage() {
                 <p className={styles.modalSubtitle}>Marking this item as Only Me will remove it from the public feed!</p>
                 <div className={styles.modalActions}>
                   <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={closeModal}>Cancel</button>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => {
-                    closeModal();
-                    // Implement Mark as Only Me logic here
-                  }}>Proceed</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={handleMarkAsOnlyMe} disabled={isSaving}>Proceed</button>
                 </div>
               </>
             )}

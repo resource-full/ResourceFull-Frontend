@@ -333,6 +333,71 @@
   background-color: white;
 }
 
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 256px;
+  gap: 12px;
+  color: #888;
+}
+
+.loadingContainer .spinner {
+  border: 3px solid #e0e0e0;
+  border-top-color: #024A94;
+}
+
+.errorBanner {
+  padding: 16px 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #b91c1c;
+  font-size: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.interactionStats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.interactionStat {
+  background: #f1f5f9;
+  color: #024A94;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.commentError {
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #b91c1c;
+  font-size: 0.8125rem;
+  margin-bottom: 1rem;
+}
+
+.noComments {
+  padding: 20px;
+  color: #666;
+  font-size: 0.9375rem;
+}
+
+.sidebarLoading {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-size: 0.875rem;
+}
+
 .commentsHeader {
   display: flex;
   align-items: baseline;

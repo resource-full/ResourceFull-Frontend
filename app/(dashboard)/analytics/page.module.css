@@ -80,6 +80,77 @@
   background-color: #023870;
 }
 
+.exportBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Export dropdown */
+.exportWrapper {
+  position: relative;
+}
+
+.exportMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  min-width: 180px;
+  padding: 6px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.exportMenuItem {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #11243d;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  font-family: inherit;
+}
+
+.exportMenuItem:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  color: #024A94;
+}
+
+.exportMenuItem:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Export success / error banners */
+.exportSuccess {
+  background: #e6f7ef;
+  color: #0D5010;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #bbf7be;
+}
+
+.exportError {
+  background: #fee2e2;
+  color: #AB1C3A;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #fecaca;
+}
+
 /* Stats Grid */
 .statsGrid {
   display: grid;

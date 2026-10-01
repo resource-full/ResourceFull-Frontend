@@ -6,6 +6,14 @@ import styles from "./TransactionHistory.module.css";
 import { walletAPI } from "@/app/lib/api/wallet";
 import { Transaction } from "@/app/lib/types/wallet";
 
+function getErrorMessage(err: unknown, fallback: string): string {
+  if (err && typeof err === "object") {
+    const e = err as { response?: { data?: { message?: string } }; message?: string };
+    return e.response?.data?.message || e.message || fallback;
+  }
+  return fallback;
+}
+
 // Icons
 const ListIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,15 +47,20 @@ export default function TransactionHistory() {
   const [activeTab, setActiveTab] = useState("All");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
+        setError(null);
         const res = await walletAPI.getTransactions();
         if (res.success && res.data) {
           setTransactions(res.data.transactions);
+        } else {
+          setError("Failed to load transactions.");
         }
       } catch (err) {
+        setError(getErrorMessage(err, "Failed to load transactions."));
         console.error("Failed to load transactions", err);
       } finally {
         setLoading(false);
@@ -74,9 +87,17 @@ export default function TransactionHistory() {
     }
   };
 
+  // Filter transactions based on active tab
+  const filteredTransactions = transactions.filter((txn) => {
+    if (activeTab === "All") return true;
+    if (activeTab === "Withdrawals") return txn.type.toLowerCase() === "withdrawal";
+    if (activeTab === "Sales") return txn.type.toLowerCase() === "sale";
+    return true;
+  });
+
   // Group transactions by date
   const groupedData: DateGroup[] = [];
-  transactions.forEach((txn) => {
+  filteredTransactions.forEach((txn) => {
     const dateStr = new Date(txn.createdAt).toLocaleDateString("en-US", { month: 'short', day: 'numeric' });
     let group = groupedData.find(g => g.dateHeader === dateStr);
     if (!group) {
@@ -112,9 +133,11 @@ export default function TransactionHistory() {
 
       <div className={styles.list}>
         {loading ? (
-          <div style={{ padding: "20px" }}>Loading transactions...</div>
+          <div className={styles.stateText}>Loading transactions...</div>
+        ) : error ? (
+          <div className={styles.errorMessage} role="alert">{error}</div>
         ) : groupedData.length === 0 ? (
-          <div style={{ padding: "20px" }}>No transactions found.</div>
+          <div className={styles.stateText}>No transactions found.</div>
         ) : groupedData.map((group, idx) => (
           <div key={idx} className={styles.dateGroup}>
             <div className={styles.dateGroupHeader}>

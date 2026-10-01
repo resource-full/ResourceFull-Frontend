@@ -4,10 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "../../setup.module.css";
 import { INITIAL_FORM_DATA, TARGET_ROLES } from "@/app/lib/constants/onboarding";
+import { authAPI, getAuthErrorMessage } from "@/app/lib/api/auth";
 
 export default function GoalsSetupPage() {
   const router = useRouter();
   const [data, setData] = useState({ ...INITIAL_FORM_DATA });
+
+  const [loading, setLoading] = useState(false);
+  const [skipping, setSkipping] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const toggleTargetRole = (role: string) => {
     setData((prev) => {
@@ -22,9 +28,40 @@ export default function GoalsSetupPage() {
     });
   };
 
-  const handleFinish = () => {
-    // In a real app, save to context/store/API
-    router.push("/onboarding/success");
+  const handleFinish = async () => {
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    try {
+      await authAPI.saveOnboardingStep({
+        step: 2,
+        goals: {
+          primaryGoal: data.primaryGoal,
+          targetRoles: data.targetRoles,
+          goalTimeline: data.goalTimeline,
+        },
+      });
+      setSuccess("Goals saved");
+      router.push("/onboarding/success");
+    } catch (err: any) {
+      setError(getAuthErrorMessage(err, "Failed to save goals. Please try again."));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSkip = async () => {
+    setError("");
+    setSuccess("");
+    setSkipping(true);
+    try {
+      await authAPI.skipOnboardingStep(2);
+      router.push("/onboarding/success");
+    } catch (err: any) {
+      setError(getAuthErrorMessage(err, "Failed to skip this step. Please try again."));
+    } finally {
+      setSkipping(false);
+    }
   };
 
   const handleBack = () => {
@@ -37,6 +74,37 @@ export default function GoalsSetupPage() {
         <h1 className={styles.title}>Goals</h1>
         <p className={styles.subtitle}>A little bit about you.</p>
       </div>
+
+      {error && (
+        <div
+          role="alert"
+          style={{
+            color: "#dc2626",
+            fontSize: "0.875rem",
+            padding: "10px 12px",
+            background: "#fef2f2",
+            border: "1px solid #fecaca",
+            borderRadius: "8px",
+          }}
+        >
+          {error}
+        </div>
+      )}
+      {success && (
+        <div
+          role="status"
+          style={{
+            color: "#16a34a",
+            fontSize: "0.875rem",
+            padding: "10px 12px",
+            background: "#f0fdf4",
+            border: "1px solid #bbf7d0",
+            borderRadius: "8px",
+          }}
+        >
+          {success}
+        </div>
+      )}
 
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
@@ -123,12 +191,35 @@ export default function GoalsSetupPage() {
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.backBtn} onClick={handleBack}>
+        <button className={styles.backBtn} onClick={handleBack} disabled={loading || skipping}>
           Back
         </button>
-        <button className={styles.finishBtn} onClick={handleFinish}>
-          Finish
-        </button>
+        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+          <button
+            type="button"
+            onClick={handleSkip}
+            disabled={loading || skipping}
+            style={{
+              background: "transparent",
+              color: "#5a6474",
+              border: "none",
+              fontSize: "14px",
+              fontWeight: 500,
+              cursor: loading || skipping ? "not-allowed" : "pointer",
+              opacity: loading || skipping ? 0.6 : 1,
+            }}
+          >
+            {skipping ? "Skipping..." : "Skip for now"}
+          </button>
+          <button
+            className={styles.finishBtn}
+            onClick={handleFinish}
+            disabled={loading || skipping}
+            style={{ opacity: loading || skipping ? 0.7 : 1, cursor: loading || skipping ? "not-allowed" : "pointer" }}
+          >
+            {loading ? "Saving..." : "Finish"}
+          </button>
+        </div>
       </div>
     </div>
   );
