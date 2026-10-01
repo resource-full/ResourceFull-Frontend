@@ -20,6 +20,23 @@ export interface AuthResponse {
     };
 }
 
+export interface ForgotPasswordResponse {
+    success: boolean;
+    message: string;
+    data?: {
+        message?: string;
+        resetToken?: string;
+    };
+}
+
+export interface ResetPasswordResponse {
+    success: boolean;
+    message: string;
+    data?: {
+        message?: string;
+    };
+}
+
 export interface RegisterPayload {
     firstName: string;
     lastName: string;
@@ -55,12 +72,12 @@ export const authAPI = {
     },
 
     forgotPassword: async (email: string) => {
-        const response = await apiClient.post("/auth/forgot-password", { email });
+        const response = await apiClient.post<ForgotPasswordResponse>("/auth/forgot-password", { email });
         return response.data;
     },
 
-    resetPassword: async (payload: { token: string; password?: string }) => {
-        const response = await apiClient.post("/auth/reset-password", payload);
+    resetPassword: async (payload: { token: string; password: string }) => {
+        const response = await apiClient.post<ResetPasswordResponse>("/auth/reset-password", payload);
         return response.data;
     },
 

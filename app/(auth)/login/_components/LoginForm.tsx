@@ -82,6 +82,10 @@ export default function LoginForm() {
           required
         />
 
+        <Link href="/forgot-password" className={styles.forgotLink}>
+          Forgot password?
+        </Link>
+
         <Button
           type="submit"
           variant="primary"
