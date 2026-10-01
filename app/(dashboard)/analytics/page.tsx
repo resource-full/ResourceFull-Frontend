@@ -94,6 +94,20 @@ export default function AnalyticsPage() {
   const [products, setProducts] = useState<ProductPerformance[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Export state
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [exporting, setExporting] = useState<"pdf" | "png" | null>(null);
+  const [exportSuccess, setExportSuccess] = useState<string | null>(null);
+  const [exportError, setExportError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Close export menu when clicking outside
+    if (!showExportMenu) return;
+    const handleClickOutside = () => setShowExportMenu(false);
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, [showExportMenu]);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -114,6 +128,37 @@ export default function AnalyticsPage() {
     };
     fetchData();
   }, [activeDate]);
+
+  const handleExport = async (format: "pdf" | "png") => {
+    setShowExportMenu(false);
+    setExporting(format);
+    setExportSuccess(null);
+    setExportError(null);
+    try {
+      const blob = format === "pdf" ? await analyticsAPI.exportPDF() : await analyticsAPI.exportPNG();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `analytics-report.${format}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      setExportSuccess(`Analytics report downloaded as ${format.toUpperCase()}.`);
+      // Auto-dismiss success after a few seconds
+      setTimeout(() => setExportSuccess(null), 4000);
+    } catch (err) {
+      const fallback = `Failed to export ${format.toUpperCase()}.`;
+      if (err && typeof err === "object") {
+        const e = err as { response?: { data?: { message?: string } }; message?: string };
+        setExportError(e.response?.data?.message || e.message || fallback);
+      } else {
+        setExportError(fallback);
+      }
+    } finally {
+      setExporting(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -150,9 +195,49 @@ export default function AnalyticsPage() {
                 </button>
               ))}
             </div>
-            <button className={styles.exportBtn}>Export</button>
+            <div className={styles.exportWrapper}>
+              <button
+                className={styles.exportBtn}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExportSuccess(null);
+                  setExportError(null);
+                  setShowExportMenu((v) => !v);
+                }}
+                disabled={!!exporting}
+              >
+                {exporting ? `Exporting ${exporting.toUpperCase()}...` : "Export"}
+              </button>
+              {showExportMenu && (
+                <div className={styles.exportMenu} onClick={(e) => e.stopPropagation()} role="menu">
+                  <button
+                    className={styles.exportMenuItem}
+                    onClick={() => handleExport("pdf")}
+                    disabled={!!exporting}
+                    role="menuitem"
+                  >
+                    Export as PDF
+                  </button>
+                  <button
+                    className={styles.exportMenuItem}
+                    onClick={() => handleExport("png")}
+                    disabled={!!exporting}
+                    role="menuitem"
+                  >
+                    Export as PNG
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+
+        {exportSuccess && (
+          <div className={styles.exportSuccess} role="status">{exportSuccess}</div>
+        )}
+        {exportError && (
+          <div className={styles.exportError} role="alert">{exportError}</div>
+        )}
 
         {/* Stats Grid */}
         <div className={styles.statsGrid}>

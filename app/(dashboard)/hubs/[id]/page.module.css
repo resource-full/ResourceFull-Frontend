@@ -70,6 +70,59 @@
   justify-content: center;
 }
 
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 256px;
+  gap: 12px;
+  color: #888;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #e0e0e0;
+  border-radius: 50%;
+  border-top-color: #024A94;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorBanner {
+  padding: 16px 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #b91c1c;
+  font-size: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.emptyItems {
+  padding: 40px;
+  text-align: center;
+  color: #8c95a6;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px dashed #cbd5e1;
+  font-size: 0.9375rem;
+}
+
+.sidebarLoading {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-size: 0.875rem;
+}
+
 /* Layout */
 .mainLayout {
   display: grid;

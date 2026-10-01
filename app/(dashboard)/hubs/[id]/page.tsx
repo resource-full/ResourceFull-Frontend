@@ -1,9 +1,17 @@
 "use client";
 
-import { useState, use } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, use, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import HubCard from "@/app/components/ui/HubCard";
 import DashboardHeader, { DashboardFilters } from "../../_components/DashboardHeader";
+import { hubAPI } from "@/app/lib/api/hub";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { pathwayAPI } from "@/app/lib/api/pathway";
+import { paymentAPI } from "@/app/lib/api/payment";
+import { interactionAPI } from "@/app/lib/api/interaction";
+import { Hub } from "@/app/lib/types/hub";
+import { useDashboardData, formatPrice } from "@/app/hooks/useDashboardData";
+import { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
 import styles from "./page.module.css";
 
 const BookmarkIcon = () => (
@@ -37,98 +45,48 @@ const PathwayIcon = () => (
   </svg>
 );
 
-const MOCK_HUB = {
-  id: "1",
-  variant: "purple" as const,
-  title: "The Lagos Career Playbook",
-  authorName: "Stella Della",
-  authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-  description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume. Perfect for both beginners and experienced designers, this guide ensures your CV highlights your skills and experience, making a strong impression on potential employers.",
-  tags: ["Design", "CV"],
-  resourceCount: 20,
-  pathwayCount: 5,
-};
+const VARIANTS: ResourceCardVariant[] = ["purple", "orange"];
+function getVariant(index: number): ResourceCardVariant {
+  return VARIANTS[index % VARIANTS.length];
+}
 
-const MOCK_ITEMS = [
-  {
-    id: 1,
-    type: "resource",
-    title: "Graphic Designer 80% wining rate CV",
-    variant: "purple",
-    price: "Free",
-    tags: ["Design", "CV"],
-    fileType: ".pdf",
-  },
-  {
-    id: 2,
-    type: "pathway",
-    title: "Become a Full Stack Developer in 3 Months",
-    variant: "purple", /* Using purple/orange alternately for visual appeal */
-    price: "$120",
-    tags: ["Design", "CV"],
-    resourceCount: 20,
-  },
-  {
-    id: 3,
-    type: "pathway",
-    title: "Become a Full Stack Developer in 3 Months",
-    variant: "orange",
-    price: "$120",
-    tags: ["Design", "CV"],
-    resourceCount: 20,
-  },
-  {
-    id: 4,
-    type: "resource",
-    title: "Graphic Designer 80% wining rate CV",
-    variant: "orange",
-    price: "Free",
-    tags: ["Design", "CV"],
-    fileType: ".pdf",
-  },
-  {
-    id: 5,
-    type: "resource",
-    title: "Graphic Designer 80% wining rate CV",
-    variant: "purple",
-    price: "$120",
-    tags: ["Design", "CV"],
-    fileType: ".pdf",
-  }
-];
-
-const MOCK_SIMILAR_HUBS = Array(3).fill(null).map((_, i) => ({
-  id: i,
-  variant: (i % 2 === 0 ? "purple" : "orange") as "orange" | "purple",
-  authorName: "Stella Della",
-  authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-  previewImageUrl: "/assets/pdf1.png",
-  title: "Become a Full Stack Developer in 3 Months",
-  price: i % 2 === 0 ? "$120" : "Free",
-  description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume...",
-  tags: ["Design", "CV"],
-  resourceCount: 20,
-  pathwayCount: 16,
-  viewCount: "2.5k",
-  commentCount: 2,
-}));
+interface HubItem {
+  id: string;
+  type: "resource" | "pathway";
+  title: string;
+  variant: ResourceCardVariant;
+  price: string;
+  tags: string[];
+  fileType?: string;
+  resourceCount?: number;
+  isFree: boolean;
+  rawPrice: number;
+  currency: string;
+}
 
 export default function HubDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { id } = use(params);
+  const paymentReference = searchParams.get("reference");
+  const paymentType = searchParams.get("type");
+  const paymentItemId = searchParams.get("itemId");
 
   const [activeTab, setActiveTab] = useState("All");
-  const [ownedItems, setOwnedItems] = useState<number[]>([]);
-  const [processingItems, setProcessingItems] = useState<number[]>([]);
+  const [ownedItems, setOwnedItems] = useState<Set<string>>(new Set());
+  const [processingItems, setProcessingItems] = useState<Set<string>>(new Set());
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("Downloaded");
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
-  // Filter items based on active tab
-  const filteredItems = MOCK_ITEMS.filter(item => {
-    if (activeTab === "All") return true;
-    if (activeTab === "Resources") return item.type === "resource";
-    if (activeTab === "Pathways") return item.type === "pathway";
-    return true;
-  });
+  const [hub, setHub] = useState<Hub | null>(null);
+  const [items, setItems] = useState<HubItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  const { displayHubs, isLoadingHubs } = useDashboardData();
 
   const [filters, setFilters] = useState<DashboardFilters>({
     searchQuery: "",
@@ -137,24 +95,211 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
     experience: [],
   });
 
-  const handleAcquireItem = (itemId: number, isFree: boolean) => {
-    if (isFree) {
-      setOwnedItems(prev => [...prev, itemId]);
-      triggerToast();
-    } else {
-      setProcessingItems(prev => [...prev, itemId]);
-      setTimeout(() => {
-        setProcessingItems(prev => prev.filter(id => id !== itemId));
-        setOwnedItems(prev => [...prev, itemId]);
-        triggerToast();
-      }, 1500);
-    }
-  };
-
-  const triggerToast = () => {
+  const triggerToast = (message: string = "Downloaded") => {
+    setToastMessage(message);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
+
+  // Fetch hub details and its resources/pathways
+  const fetchHubData = useCallback(async () => {
+    try {
+      const hubRes = await hubAPI.getSingleHub(id);
+      if (hubRes.success && hubRes.data) {
+        const hubData = hubRes.data;
+        setHub(hubData);
+
+        // Fetch resources that belong to this hub
+        const resourceIds = hubData.resources || [];
+        const pathwayIds = hubData.pathways || [];
+
+        const fetchedItems: HubItem[] = [];
+
+        // Fetch all resources
+        const resourcePromises = resourceIds.map(async (rid, idx) => {
+          try {
+            const res = await resourceAPI.getSingleResource(rid);
+            if (res.success && res.data) {
+              const r = res.data;
+              return {
+                id: r._id || r.id,
+                type: "resource" as const,
+                title: r.name,
+                variant: getVariant(idx),
+                price: formatPrice(r.isFree, r.price, r.currency),
+                tags: r.tags || [],
+                fileType: r.resourceFile?.format ? `.${r.resourceFile.format}` : ".pdf",
+                isFree: r.isFree,
+                rawPrice: r.price,
+                currency: r.currency,
+              } as HubItem;
+            }
+          } catch { /* skip */ }
+          return null;
+        });
+
+        // Fetch all pathways
+        const pathwayPromises = pathwayIds.map(async (pid, idx) => {
+          try {
+            const res = await pathwayAPI.getSinglePathway(pid);
+            if (res.success && res.data) {
+              const p = res.data;
+              return {
+                id: p._id || p.id,
+                type: "pathway" as const,
+                title: p.name,
+                variant: getVariant(idx),
+                price: formatPrice(p.isFree, p.price, p.currency),
+                tags: p.tags || [],
+                resourceCount: p.resourceCount || p.blockCount || 0,
+                isFree: p.isFree,
+                rawPrice: p.price,
+                currency: p.currency,
+              } as HubItem;
+            }
+          } catch { /* skip */ }
+          return null;
+        });
+
+        const [resourceResults, pathwayResults] = await Promise.all([
+          Promise.all(resourcePromises),
+          Promise.all(pathwayPromises),
+        ]);
+
+        resourceResults.forEach(item => { if (item) fetchedItems.push(item); });
+        pathwayResults.forEach(item => { if (item) fetchedItems.push(item); });
+
+        setItems(fetchedItems);
+
+        // Check ownership for each item
+        for (const item of fetchedItems) {
+          const paymentType = item.type === "resource" ? "Resource" : "Pathway";
+          try {
+            const status = await paymentAPI.checkPurchaseStatus(paymentType as "Resource" | "Pathway", item.id);
+            if (status.success && status.data?.hasPurchased) {
+              setOwnedItems(prev => new Set(prev).add(item.id));
+            }
+          } catch { /* skip */ }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch hub details:", err);
+      setFetchError("Failed to load this hub. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    void fetchHubData();
+  }, [fetchHubData]);
+
+  // Handle payment verification when returning from gateway
+  useEffect(() => {
+    if (!paymentReference || !paymentType || !paymentItemId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await paymentAPI.verifyPayment(paymentReference);
+        if (cancelled) return;
+        if (res.success && res.data?.status === "success") {
+          setOwnedItems(prev => new Set(prev).add(paymentItemId));
+          triggerToast("Payment successful!");
+          // Clean up the URL
+          router.replace(`/hubs/${id}`);
+        } else if (res.success && res.data?.status === "pending") {
+          setPaymentError("Your payment is still being processed. Please check back shortly.");
+        } else {
+          setPaymentError("Payment was not completed. Please try again.");
+        }
+      } catch (err) {
+        console.error("Payment verification failed", err);
+        setPaymentError("We could not verify your payment. If you were charged, please contact support.");
+      } finally {
+        if (!cancelled) {
+          setProcessingItems(prev => {
+            const next = new Set(prev);
+            next.delete(paymentItemId);
+            return next;
+          });
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [paymentReference, paymentType, paymentItemId, id, router]);
+
+  const handleSaveToggle = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      await interactionAPI.saveResource(id);
+      setIsSaved(prev => !prev);
+    } catch (err) {
+      console.error("Failed to toggle save", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleAcquireItem = async (item: HubItem) => {
+    if (ownedItems.has(item.id)) {
+      // Open item
+      router.push(item.type === "resource" ? `/resources/${item.id}` : `/pathways/${item.id}`);
+      return;
+    }
+
+    // Free items can be acquired directly
+    if (item.isFree || item.price === "Free") {
+      setOwnedItems(prev => new Set(prev).add(item.id));
+      triggerToast("Added to your library!");
+      return;
+    }
+
+    // Initialize real payment flow
+    setProcessingItems(prev => new Set(prev).add(item.id));
+    setPaymentError(null);
+    try {
+      const paymentTypeStr = item.type === "resource" ? "Resource" : "Pathway";
+      const res = await paymentAPI.initializePayment(paymentTypeStr as "Resource" | "Pathway", item.id);
+      if (res.success && res.data?.authorizationUrl) {
+        // Redirect to payment gateway with return params
+        const returnUrl = `${window.location.origin}/hubs/${id}?reference=${res.data.reference}&type=${paymentTypeStr}&itemId=${item.id}`;
+        const sep = res.data.authorizationUrl.includes("?") ? "&" : "?";
+        const redirectUrl = `${res.data.authorizationUrl}${sep}redirect_url=${encodeURIComponent(returnUrl)}`;
+        window.location.assign(redirectUrl);
+      } else {
+        setPaymentError("Failed to initialize payment. Please try again.");
+      }
+    } catch (err) {
+      console.error("Failed to initialize payment:", err);
+      setPaymentError("Failed to initialize payment. Please try again.");
+    } finally {
+      setProcessingItems(prev => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
+    }
+  };
+
+  // Filter items based on active tab
+  const filteredItems = items.filter(item => {
+    if (activeTab === "All") return true;
+    if (activeTab === "Resources") return item.type === "resource";
+    if (activeTab === "Pathways") return item.type === "pathway";
+    return true;
+  });
+
+  const hubName = hub?.name || "Hub";
+  const hubDescription = hub?.description || "";
+  const hubIndustry = hub?.industry || "";
+  const resourceCount = hub?.resources?.length || 0;
+  const pathwayCount = hub?.pathways?.length || 0;
+
+  const mainColor = "#6a359c"; // default purple
+
+  // Filter similar hubs to exclude current
+  const similarHubs = displayHubs.filter(h => h.id !== id).slice(0, 3);
 
   return (
     <div className={styles.pageContainer}>
@@ -167,7 +312,7 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          Downloaded
+          {toastMessage}
         </div>
       )}
 
@@ -182,146 +327,174 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
 
       <div className={styles.mainLayout}>
         <div className={styles.mainContent}>
-
-          <div className={styles.heroCard} style={{ backgroundColor: MOCK_HUB.variant === 'purple' ? '#6a359c' : '#c4452a' }}>
-            <div className={styles.heroHeader}>
-              <div className={styles.authorInfo}>
-                <img src={MOCK_HUB.authorAvatarUrl} alt={MOCK_HUB.authorName} width={32} height={32} className={styles.authorAvatar} />
-                <span className={styles.authorName}>{MOCK_HUB.authorName}</span>
-              </div>
-              <div className={styles.heroActions}>
-                <button className={styles.iconBtn} aria-label="Share">
-                  <ShareIcon />
-                </button>
-                <button className={styles.iconBtn} aria-label="Bookmark">
-                  <BookmarkIcon />
-                </button>
-              </div>
+          {isLoading ? (
+            <div className={styles.loadingContainer}>
+              <div className={styles.spinner}></div>
+              <span>Loading hub...</span>
             </div>
+          ) : fetchError ? (
+            <div className={styles.errorBanner}>{fetchError}</div>
+          ) : (
+            <>
+              {/* Payment error banner */}
+              {paymentError && (
+                <div className={styles.errorBanner}>{paymentError}</div>
+              )}
 
-            <h1 className={styles.heroTitle}>{MOCK_HUB.title}</h1>
-            <p className={styles.heroDesc}>{MOCK_HUB.description}</p>
-
-            <div className={styles.heroStats}>
-              <div className={styles.statItem}>
-                <ResourceIcon />
-                {MOCK_HUB.resourceCount} Resources
-              </div>
-              <div className={styles.statItem}>
-                <PathwayIcon />
-                {MOCK_HUB.pathwayCount} Pathways
-              </div>
-            </div>
-
-            <div className={styles.heroTags}>
-              {MOCK_HUB.tags.map(tag => (
-                <span key={tag} className={styles.heroTag} style={{ color: MOCK_HUB.variant === 'purple' ? '#6a359c' : '#c4452a' }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.filterRow}>
-            <div className={styles.tagsContainer}>
-              {["All", "Resources", "Pathways"].map(tab => (
-                <button
-                  key={tab}
-                  className={`${styles.exploreTag} ${activeTab === tab ? styles.exploreTagActive : ''}`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab === "Resources" && <ResourceIcon />}
-                  {tab === "Pathways" && <PathwayIcon />}
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            <button className={styles.filterBtn} aria-label="Filter">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-              </svg>
-            </button>
-          </div>
-
-          <div className={styles.itemList}>
-            {filteredItems.map(item => (
-              <div key={item.id} className={styles.listItem}>
-                <div className={`${styles.itemCard} ${item.variant === 'purple' ? styles.variantPurple : styles.variantOrange}`}>
-                  <div className={styles.itemLeft}>
-                    <h3 className={styles.itemTitle}>
-                      {item.type === 'resource' ? <ResourceIcon /> : <PathwayIcon />}
-                      {item.title}
-                    </h3>
-                    <div className={styles.itemPrice}>{item.price}</div>
-
-                    <div className={styles.itemTags}>
-                      {item.tags.map(tag => (
-                        <span key={tag} className={styles.itemTag}>{tag}</span>
-                      ))}
-                    </div>
+              <div className={styles.heroCard} style={{ backgroundColor: mainColor }}>
+                <div className={styles.heroHeader}>
+                  <div className={styles.authorInfo}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="https://i.pravatar.cc/150?u=stella" alt="Author" width={32} height={32} className={styles.authorAvatar} />
+                    <span className={styles.authorName}>{hub?.author?.email || "Author"}</span>
                   </div>
-
-                  <div className={styles.itemFooterIcon}>
-                    {item.type === 'resource' ? (
-                      <>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                          <polyline points="14 2 14 8 20 8" />
-                          <line x1="16" y1="13" x2="8" y2="13" />
-                          <line x1="16" y1="17" x2="8" y2="17" />
-                          <polyline points="10 9 9 9 8 9" />
-                        </svg>
-                        {item.fileType}
-                      </>
-                    ) : (
-                      <>
-                        <ResourceIcon />
-                        {item.resourceCount} Resources
-                      </>
-                    )}
+                  <div className={styles.heroActions}>
+                    <button className={styles.iconBtn} aria-label="Share">
+                      <ShareIcon />
+                    </button>
+                    <button
+                      className={styles.iconBtn}
+                      aria-label="Bookmark"
+                      onClick={handleSaveToggle}
+                      disabled={isSaving}
+                      style={isSaved ? { background: 'rgba(237, 253, 2, 0.3)' } : undefined}
+                    >
+                      <BookmarkIcon />
+                    </button>
                   </div>
                 </div>
 
-                <div className={styles.itemAction}>
-                  {!ownedItems.includes(item.id) && (
-                    <span className={styles.actionPrice}>{item.price === "Free" ? "Free" : item.price}</span>
+                <h1 className={styles.heroTitle}>{hubName}</h1>
+                <p className={styles.heroDesc}>{hubDescription}</p>
+
+                <div className={styles.heroStats}>
+                  <div className={styles.statItem}>
+                    <ResourceIcon />
+                    {resourceCount} Resources
+                  </div>
+                  <div className={styles.statItem}>
+                    <PathwayIcon />
+                    {pathwayCount} Pathways
+                  </div>
+                </div>
+
+                <div className={styles.heroTags}>
+                  {hubIndustry && (
+                    <span key={hubIndustry} className={styles.heroTag} style={{ color: mainColor }}>
+                      {hubIndustry}
+                    </span>
                   )}
-                  <button
-                    className={`${styles.actionBtn} ${ownedItems.includes(item.id) ? styles.actionBtnOutline : ''}`}
-                    onClick={() => {
-                      if (!ownedItems.includes(item.id)) {
-                        handleAcquireItem(item.id, item.price === "Free");
-                      } else {
-                        // Open item
-                        router.push(item.type === 'resource' ? `/resources/${item.id}` : `/pathways/${item.id}`);
-                      }
-                    }}
-                    disabled={processingItems.includes(item.id)}
-                  >
-                    {processingItems.includes(item.id) ? (
-                      "..."
-                    ) : ownedItems.includes(item.id) ? (
-                      "Open"
-                    ) : item.price === "Free" ? (
-                      "Get"
-                    ) : (
-                      "Buy"
-                    )}
-                  </button>
                 </div>
               </div>
-            ))}
-          </div>
 
+              <div className={styles.filterRow}>
+                <div className={styles.tagsContainer}>
+                  {["All", "Resources", "Pathways"].map(tab => (
+                    <button
+                      key={tab}
+                      className={`${styles.exploreTag} ${activeTab === tab ? styles.exploreTagActive : ''}`}
+                      onClick={() => setActiveTab(tab)}
+                    >
+                      {tab === "Resources" && <ResourceIcon />}
+                      {tab === "Pathways" && <PathwayIcon />}
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+
+                <button className={styles.filterBtn} aria-label="Filter">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className={styles.itemList}>
+                {filteredItems.length === 0 ? (
+                  <div className={styles.emptyItems}>
+                    {items.length === 0
+                      ? "This hub doesn't have any resources or pathways yet."
+                      : "No items match this filter."}
+                  </div>
+                ) : (
+                  filteredItems.map(item => (
+                    <div key={item.id} className={styles.listItem}>
+                      <div className={`${styles.itemCard} ${item.variant === 'purple' ? styles.variantPurple : styles.variantOrange}`}>
+                        <div className={styles.itemLeft}>
+                          <h3 className={styles.itemTitle}>
+                            {item.type === 'resource' ? <ResourceIcon /> : <PathwayIcon />}
+                            {item.title}
+                          </h3>
+                          <div className={styles.itemPrice}>{item.price}</div>
+
+                          <div className={styles.itemTags}>
+                            {item.tags.map(tag => (
+                              <span key={tag} className={styles.itemTag}>{tag}</span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className={styles.itemFooterIcon}>
+                          {item.type === 'resource' ? (
+                            <>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                                <polyline points="10 9 9 9 8 9" />
+                              </svg>
+                              {item.fileType || ".pdf"}
+                            </>
+                          ) : (
+                            <>
+                              <ResourceIcon />
+                              {item.resourceCount || 0} Resources
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className={styles.itemAction}>
+                        {!ownedItems.has(item.id) && (
+                          <span className={styles.actionPrice}>{item.price === "Free" ? "Free" : item.price}</span>
+                        )}
+                        <button
+                          className={`${styles.actionBtn} ${ownedItems.has(item.id) ? styles.actionBtnOutline : ''}`}
+                          onClick={() => handleAcquireItem(item)}
+                          disabled={processingItems.has(item.id)}
+                        >
+                          {processingItems.has(item.id) ? (
+                            "..."
+                          ) : ownedItems.has(item.id) ? (
+                            "Open"
+                          ) : item.isFree || item.price === "Free" ? (
+                            "Get"
+                          ) : (
+                            "Buy"
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         <div className={styles.sidebar}>
           <h2 className={styles.sidebarTitle}>See Similar</h2>
           <div className={styles.similarGrid}>
-            {MOCK_SIMILAR_HUBS.map((hub) => (
-              <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} />
-            ))}
+            {isLoadingHubs ? (
+              <div className={styles.sidebarLoading}>Loading similar hubs...</div>
+            ) : similarHubs.length > 0 ? (
+              similarHubs.map((hub) => (
+                <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} />
+              ))
+            ) : (
+              <div className={styles.sidebarLoading}>No similar hubs found.</div>
+            )}
           </div>
         </div>
       </div>

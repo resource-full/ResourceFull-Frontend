@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, use, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import PathwayCard from "@/app/components/ui/PathwayCard";
 import DashboardHeader, { DashboardFilters } from "../../_components/DashboardHeader";
 import { pathwayAPI } from "@/app/lib/api/pathway";
+import { interactionAPI } from "@/app/lib/api/interaction";
+import { paymentAPI } from "@/app/lib/api/payment";
+import { Comment, InteractionStats } from "@/app/lib/types/interaction";
 import { useDashboardData } from "@/app/hooks/useDashboardData";
+import { formatPrice } from "@/app/hooks/useDashboardData";
 import styles from "./page.module.css";
 
 const BackIcon = () => (
@@ -64,13 +68,19 @@ const MOCK_PATHWAY = {
   ] as any[],
 };
 
-// Note: MOCK_SIMILAR has been replaced by data from the API via useDashboardData
-
 export default function PathwayDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const paymentReference = searchParams.get("reference");
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [stats, setStats] = useState<InteractionStats | null>(null);
   const { displayPathways, isLoadingPathways } = useDashboardData();
   const [pathway, setPathway] = useState(MOCK_PATHWAY);
   const [filters, setFilters] = useState<DashboardFilters>({
@@ -79,20 +89,110 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
     industry: [],
     experience: [],
   });
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentInput, setCommentInput] = useState("");
+  const [isPostingComment, setIsPostingComment] = useState(false);
+  const [commentError, setCommentError] = useState<string | null>(null);
 
-  const formatPrice = (isFree: boolean, price: number | string, currency: string) => {
-    if (isFree || !price || price === "0" || price === 0) return "Free";
-    
-    let symbol = currency || "$";
-    if (symbol.toUpperCase() === "USD") symbol = "$";
-    else if (symbol.toUpperCase() === "NGN") symbol = "₦";
-    
-    return `${symbol}${price}`;
+  const fetchComments = useCallback(async () => {
+    try {
+      // The interaction API is resource-scoped; we attempt to fetch comments
+      // using the pathway id in case the backend supports it.
+      const res = await interactionAPI.getComments(id);
+      if (res.success && res.data?.comments) {
+        setComments(res.data.comments);
+      }
+    } catch (err) {
+      // Non-fatal — comments may not be supported for pathways yet
+      console.error("Failed to load comments", err);
+    }
+  }, [id]);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await interactionAPI.getInteractionStats(id);
+      if (res.success && res.data) {
+        setStats(res.data);
+      }
+    } catch (err) {
+      console.error("Failed to load interaction stats", err);
+    }
+  }, [id]);
+
+  const checkOwnership = useCallback(async () => {
+    try {
+      const status = await paymentAPI.checkPurchaseStatus("Pathway", id);
+      if (status.success && status.data) {
+        setPathway(prev => ({ ...prev, isOwned: status.data.hasPurchased }));
+      }
+    } catch (err) {
+      console.error("Failed to check purchase status", err);
+    }
+  }, [id]);
+
+  // If returning from payment gateway with a reference, verify payment
+  useEffect(() => {
+    if (!paymentReference) return;
+    let cancelled = false;
+    (async () => {
+      setIsProcessing(true);
+      setPaymentError(null);
+      try {
+        const res = await paymentAPI.verifyPayment(paymentReference);
+        if (cancelled) return;
+        if (res.success && res.data?.status === "success") {
+          setPathway(prev => ({ ...prev, isOwned: true }));
+          router.replace(`/pathways/${id}/success`);
+        } else if (res.success && res.data?.status === "pending") {
+          setPaymentError("Your payment is still being processed. Please check back shortly.");
+        } else {
+          setPaymentError("Payment was not completed. Please try again.");
+        }
+      } catch (err) {
+        console.error("Payment verification failed", err);
+        setPaymentError("We could not verify your payment. If you were charged, please contact support.");
+      } finally {
+        if (!cancelled) setIsProcessing(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [paymentReference, id, router]);
+
+  const handlePostComment = async () => {
+    if (!commentInput.trim() || isPostingComment) return;
+    setIsPostingComment(true);
+    setCommentError(null);
+    try {
+      const res = await interactionAPI.addComment(id, commentInput);
+      if (res.success) {
+        setCommentInput("");
+        fetchComments();
+        fetchStats();
+      }
+    } catch (err) {
+      console.error("Failed to post comment", err);
+      setCommentError("Failed to post comment. Please try again.");
+    } finally {
+      setIsPostingComment(false);
+    }
+  };
+
+  const handleSaveToggle = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      // Save uses the resource-scoped endpoint; pathway ids may or may not be accepted
+      await interactionAPI.saveResource(id);
+      setIsSaved(prev => !prev);
+    } catch (err) {
+      console.error("Failed to toggle save", err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   useEffect(() => {
     const fetchPathway = async () => {
-      setIsLoading(true);
       try {
         const res = await pathwayAPI.getSinglePathway(id);
         if (res.success && res.data) {
@@ -108,39 +208,62 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
             tags: data.tags || [],
             resourceCount: data.resourceCount || data.blockCount || 0,
             viewCount: data.viewCount?.toString() || "0",
-            commentCount: 0,
+            commentCount: stats?.comments ?? 0,
             isOwned: false,
             blocks: data.blocks || [],
           });
         }
       } catch (error) {
         console.error("Failed to fetch pathway details:", error);
+        setFetchError("Failed to load this pathway. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     if (id) {
-      fetchPathway();
+      void fetchPathway();
+      void fetchComments();
+      void fetchStats();
+      void checkOwnership();
     }
-  }, [id]);
+  }, [id, fetchComments, fetchStats, checkOwnership, stats?.comments]);
 
   const mainColor = pathway.variant === "purple" ? "#6a359c" : "#c4452a";
   const bgLightColor = pathway.variant === "purple" ? "rgba(106, 53, 156, 0.08)" : "rgba(196, 69, 42, 0.08)";
 
-  const handleBuyClick = () => {
+  const handleBuyClick = async () => {
     if (pathway.isOwned) {
       router.push(`/pathways/${id}/view`);
       return;
     }
 
-    // Simulate payment processing
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
+    // Free pathways can be opened directly
+    if (pathway.price === "Free") {
+      setPathway(prev => ({ ...prev, isOwned: true }));
       router.push(`/pathways/${id}/success`);
-    }, 1500); // 1.5s simulated delay
+      return;
+    }
+
+    // Initialize real payment flow
+    setIsProcessing(true);
+    setPaymentError(null);
+    try {
+      const res = await paymentAPI.initializePayment("Pathway", id);
+      if (res.success && res.data?.authorizationUrl) {
+        window.location.href = res.data.authorizationUrl;
+      } else {
+        setPaymentError("Failed to initialize payment. Please try again.");
+        setIsProcessing(false);
+      }
+    } catch (err) {
+      console.error("Failed to initialize payment:", err);
+      setPaymentError("Failed to initialize payment. Please try again.");
+      setIsProcessing(false);
+    }
   };
+
+  const commentCount = comments.length > 0 ? comments.length : (stats?.comments ?? pathway.commentCount);
 
   return (
     <div className={styles.pageContainer}>
@@ -155,11 +278,19 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
       <div className={styles.mainLayout}>
         <div className={styles.mainContent}>
           {isLoading ? (
-            <div className="flex justify-center items-center h-64">
+            <div className={styles.loadingContainer}>
               <div className={styles.spinner}></div>
+              <span>Loading pathway...</span>
             </div>
+          ) : fetchError ? (
+            <div className={styles.errorBanner}>{fetchError}</div>
           ) : (
             <>
+          {/* Payment error banner */}
+          {paymentError && (
+            <div className={styles.errorBanner}>{paymentError}</div>
+          )}
+
           <div className={styles.pathwayInfoCard}>
             <div className={styles.infoHeader}>
               <div className={styles.authorInfo}>
@@ -168,7 +299,15 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
               </div>
               <div className={styles.headerActions}>
                 <button className={styles.iconBtn} aria-label="Share"><ShareIcon /></button>
-                <button className={styles.iconBtn} aria-label="Bookmark"><BookmarkIcon /></button>
+                <button
+                  className={styles.iconBtn}
+                  aria-label="Bookmark"
+                  onClick={handleSaveToggle}
+                  disabled={isSaving}
+                  style={isSaved ? { background: 'rgba(237, 253, 2, 0.3)' } : undefined}
+                >
+                  <BookmarkIcon />
+                </button>
               </div>
             </div>
 
@@ -181,7 +320,7 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
                 <span key={tag} className={styles.tag} style={{ backgroundColor: mainColor }}>{tag}</span>
               ))}
             </div>
-            
+
             <div className={styles.resourceCount}>
               <DocumentIcon />
               <span>{pathway.resourceCount} Resources</span>
@@ -198,16 +337,11 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
                       { name: "Set Up VS Code", order: 4 },
                       { name: "CV Template", order: 5 },
                     ]
-                ).map((block: any, idx: number, arr: any[]) => (
-                  <>
-                    <div key={`block-${idx}`} className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                      <div className={styles.sequenceNumber} style={{ color: mainColor }}>{block.order || idx + 1}</div>
-                      {block.name}
-                    </div>
-                    {idx < arr.length - 1 && (
-                      <div key={`dash-${idx}`} className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
-                    )}
-                  </>
+                ).map((block: any, idx: number) => (
+                  <div key={`block-${idx}`} className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
+                    <div className={styles.sequenceNumber} style={{ color: mainColor }}>{block.order || idx + 1}</div>
+                    {block.name}
+                  </div>
                 ))}
               </div>
             </div>
@@ -224,13 +358,23 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
               {isProcessing ? (
                 <>
                   <div className={styles.spinner}></div>
-                  Processing Payment...
+                  {paymentReference ? "Verifying Payment..." : "Redirecting to payment..."}
                 </>
               ) : (
-                pathway.isOwned ? 'Open Pathway' : 'Get'
+                pathway.isOwned ? 'Open Pathway' : (pathway.price === "Free" ? 'Get' : 'Get')
               )}
             </button>
           </div>
+
+          {/* Interaction Stats */}
+          {(stats || isSaved) && (
+            <div className={styles.interactionStats}>
+              {stats && <span className={styles.interactionStat}>{stats.likes} likes</span>}
+              {stats && <span className={styles.interactionStat}>{stats.saves} saves</span>}
+              {stats && <span className={styles.interactionStat}>{stats.shares} shares</span>}
+              {isSaved && <span className={styles.interactionStat}>You saved this</span>}
+            </div>
+          )}
 
           {/* Stats Row */}
           <div className={styles.statsRow}>
@@ -297,56 +441,73 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
           <div className={styles.commentsSection}>
             <div className={styles.commentsHeader}>
               <h3 className={styles.commentsTitle}>Comments</h3>
-              <span className={styles.commentsCount}>28K</span>
+              <span className={styles.commentsCount}>{commentCount}</span>
             </div>
 
-            <div className={styles.commentItem}>
-              <div>
-                <Image src="https://i.pravatar.cc/150?u=maude" alt="Maude" width={40} height={40} className={styles.commentAvatar} unoptimized />
-              </div>
-              <div className={styles.commentContent}>
-                <div className={styles.commentAuthor}>Maude Hall</div>
-                <p className={styles.commentText}>That's a fantastic new app feature. You and your team did an excellent job of incorporating user testing feedback.</p>
-                <div className={styles.commentActions}>
-                  <span>14 min</span>
-                  <button className={styles.commentActionBtn}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20" /><path d="M4 4v7a4 4 0 0 0 4 4h12" /></svg>
-                    Reply
-                  </button>
-                  <button className={styles.commentActionBtn} style={{ marginLeft: 'auto' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
-                    2
-                  </button>
-                </div>
-              </div>
-            </div>
+            {commentError && (
+              <div className={styles.commentError}>{commentError}</div>
+            )}
 
-            <div className={styles.commentItem} style={{ paddingLeft: '3.5rem' }}>
-              <div>
-                <Image src="https://i.pravatar.cc/150?u=rebecca" alt="Rebecca" width={40} height={40} className={styles.commentAvatar} unoptimized />
-              </div>
-              <div className={styles.commentContent}>
-                <div className={styles.commentAuthor}>
-                  Rebecca Sugar <span className={styles.commentReplyTo}>&lt; Maude Hall</span>
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <div key={comment._id} className={styles.commentItem}>
+                  <div>
+                    <Image src={comment.user?.avatar || "https://i.pravatar.cc/150"} alt={comment.user?.name || "User"} width={40} height={40} className={styles.commentAvatar} unoptimized />
+                  </div>
+                  <div className={styles.commentContent}>
+                    <div className={styles.commentAuthor}>{comment.user?.name || "Anonymous"}</div>
+                    <p className={styles.commentText}>{comment.comment || comment.content}</p>
+                    <div className={styles.commentActions}>
+                      <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
+                      <button className={styles.commentActionBtn}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20" /><path d="M4 4v7a4 4 0 0 0 4 4h12" /></svg>
+                        Reply
+                      </button>
+                      <button
+                        className={styles.commentActionBtn}
+                        style={{ marginLeft: 'auto' }}
+                        onClick={async () => {
+                          try {
+                            if (comment._id) {
+                              await interactionAPI.deleteComment(comment._id);
+                              fetchComments();
+                              fetchStats();
+                            }
+                          } catch (err) {
+                            console.error("Failed to delete comment", err);
+                          }
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <p className={styles.commentText}>That's a fantastic new app feature. You and your team did an excellent job of incorporating user testing feedback.</p>
-                <div className={styles.commentActions}>
-                  <span>14 min</span>
-                  <button className={styles.commentActionBtn}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20" /><path d="M4 4v7a4 4 0 0 0 4 4h12" /></svg>
-                    Reply
-                  </button>
-                  <button className={styles.commentActionBtn} style={{ marginLeft: 'auto' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
-                    2
-                  </button>
-                </div>
-              </div>
-            </div>
+              ))
+            ) : (
+              <div className={styles.noComments}>No comments yet. Be the first to share your thoughts!</div>
+            )}
 
             <div className={styles.commentInputWrapper}>
-              <input type="text" placeholder="Share our thoughts on this resource..." className={styles.commentInput} />
-              <button className={styles.postCommentBtn}>Post</button>
+              <input
+                type="text"
+                placeholder="Share your thoughts on this pathway..."
+                className={styles.commentInput}
+                value={commentInput}
+                onChange={(e) => setCommentInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handlePostComment();
+                }}
+                disabled={isPostingComment}
+              />
+              <button
+                className={styles.postCommentBtn}
+                onClick={handlePostComment}
+                disabled={isPostingComment || !commentInput.trim()}
+              >
+                {isPostingComment ? 'Posting...' : 'Post'}
+              </button>
             </div>
           </div>
           </>
@@ -358,11 +519,16 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
           <h3 className={styles.sidebarTitle}>See Similar</h3>
           <div className={styles.similarGrid}>
             {isLoadingPathways ? (
-              <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>Loading...</div>
+              <div className={styles.sidebarLoading}>Loading similar pathways...</div>
+            ) : displayPathways.length > 0 ? (
+              displayPathways
+                .filter(p => p.id !== id)
+                .slice(0, 3)
+                .map(pathway => (
+                  <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
+                ))
             ) : (
-              displayPathways.slice(0, 3).map(pathway => (
-                <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
-              ))
+              <div className={styles.sidebarLoading}>No similar pathways found.</div>
             )}
           </div>
         </aside>

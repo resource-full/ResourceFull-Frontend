@@ -6,7 +6,7 @@ import FilterDropdown, { FilterOption } from "@/app/components/ui/FilterDropdown
 import { COUNTRIES, SKILLS_OPTIONS } from "@/app/lib/constants/onboarding";
 import styles from "./DashboardHeader.module.css";
 import React from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { notificationAPI } from "@/app/lib/api/notification";
 import { Notification } from "@/app/lib/types/notification";
 
@@ -113,6 +113,9 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
   const [isNotifOpen, setIsNotifOpen] = React.useState(false);
   const [notifications, setNotifications] = React.useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = React.useState(0);
+  const [isLoadingNotifs, setIsLoadingNotifs] = React.useState(false);
+  const [notifError, setNotifError] = React.useState<string | null>(null);
+  const [markingReadIds, setMarkingReadIds] = React.useState<Set<string>>(new Set());
   const notifRef = React.useRef<HTMLDivElement>(null);
 
   const pathname = usePathname()
@@ -129,6 +132,8 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
 
   React.useEffect(() => {
     const fetchNotifications = async () => {
+      setIsLoadingNotifs(true);
+      setNotifError(null);
       try {
         const res = await notificationAPI.getNotifications({ limit: 10 });
         if (res.success && res.data) {
@@ -137,6 +142,9 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
         }
       } catch (err) {
         console.error("Failed to fetch notifications", err);
+        setNotifError("Failed to load notifications");
+      } finally {
+        setIsLoadingNotifs(false);
       }
     };
     fetchNotifications();
@@ -149,6 +157,27 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
       setUnreadCount(0);
     } catch (err) {
       console.error("Failed to mark all as read", err);
+      setNotifError("Failed to mark all as read");
+    }
+  };
+
+  const handleMarkOneRead = async (notifId: string) => {
+    const notif = notifications.find(n => n._id === notifId);
+    if (!notif || notif.isRead) return;
+    setMarkingReadIds(prev => new Set(prev).add(notifId));
+    try {
+      await notificationAPI.markAsRead(notifId);
+      setNotifications(prev => prev.map(n => n._id === notifId ? { ...n, isRead: true } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error("Failed to mark notification as read", err);
+      setNotifError("Failed to mark notification as read");
+    } finally {
+      setMarkingReadIds(prev => {
+        const next = new Set(prev);
+        next.delete(notifId);
+        return next;
+      });
     }
   };
 
@@ -255,10 +284,19 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
               </div>
 
               <div className={styles.notifList}>
-                {notifications.length === 0 ? (
-                  <div style={{ padding: "20px", textAlign: "center", color: "#666" }}>No notifications</div>
+                {isLoadingNotifs ? (
+                  <div className={styles.notifEmpty}>Loading notifications...</div>
+                ) : notifError ? (
+                  <div className={styles.notifError}>{notifError}</div>
+                ) : notifications.length === 0 ? (
+                  <div className={styles.notifEmpty}>No notifications</div>
                 ) : notifications.map(notif => (
-                  <div key={notif._id} className={`${styles.notifItem} ${notif.isRead ? "" : styles.unread}`}>
+                  <div
+                    key={notif._id}
+                    className={`${styles.notifItem} ${notif.isRead ? "" : styles.unread}`}
+                    onClick={() => handleMarkOneRead(notif._id)}
+                    style={{ opacity: markingReadIds.has(notif._id) ? 0.6 : 1 }}
+                  >
                     <div className={styles.notifIcon}>
                       {notif.metadata?.senderName ? notif.metadata.senderName.substring(0, 2).toUpperCase() : "RF"}
                     </div>

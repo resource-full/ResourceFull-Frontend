@@ -233,6 +233,24 @@
   border-bottom: none;
 }
 
+.unread {
+  background: #f0f7ff;
+}
+
+.notifEmpty {
+  padding: 24px 20px;
+  text-align: center;
+  color: #8c95a6;
+  font-size: 0.875rem;
+}
+
+.notifError {
+  padding: 16px 20px;
+  text-align: center;
+  color: #ef4444;
+  font-size: 0.8125rem;
+}
+
 .notifIcon {
   width: 40px;
   height: 40px;

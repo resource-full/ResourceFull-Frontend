@@ -106,6 +106,26 @@
   font-size: 1rem;
 }
 
+.stateMessage {
+  padding: 40px;
+  text-align: center;
+  color: #8c95a6;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px dashed #cbd5e1;
+  font-size: 1rem;
+}
+
+.errorState {
+  padding: 24px;
+  text-align: center;
+  color: #b91c1c;
+  background: #fef2f2;
+  border-radius: 16px;
+  border: 1px solid #fecaca;
+  font-size: 0.9375rem;
+}
+
 .resourceGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

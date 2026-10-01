@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Input, PasswordInput, Button } from "@/app/components/ui";
 import styles from "./LoginForm.module.css";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { authAPI } from "@/app/lib/api/auth";
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24">
@@ -49,7 +50,26 @@ export default function LoginForm() {
     
     try {
       await login({ email, password });
-      router.push("/dashboard"); // Assuming this is the authenticated route
+
+      // Route based on onboarding completion (fall back to dashboard if check fails)
+      let redirectTo = "/dashboard";
+      try {
+        const statusRes = await authAPI.getOnboardingStatus();
+        const statusData = statusRes?.data;
+        const completed =
+          statusData?.completed ??
+          statusData?.onboardingCompleted ??
+          statusData?.isOnboarded;
+        if (!completed) {
+          const currentStep =
+            typeof statusData?.currentStep === "number" ? statusData.currentStep : 1;
+          redirectTo = currentStep >= 2 ? "/onboarding/goals" : "/onboarding/profile";
+        }
+      } catch (statusErr) {
+        // Status check failed; default to dashboard
+      }
+
+      router.push(redirectTo);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to log in. Please try again.");
     } finally {
@@ -81,6 +101,10 @@ export default function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
+        <Link href="/forgot-password" className={styles.forgotLink}>
+          Forgot password?
+        </Link>
 
         <Button
           type="submit"

@@ -1,0 +1,78 @@
+.page { width: 100%; max-width: 1120px; margin: 0 auto; color: #2c2c2c; }
+.profileHero { overflow: hidden; border-radius: 24px; background: #fff; }
+.cover { height: 142px; background-color: #46708b; background-position: center; background-size: cover; }
+.profileBody { margin-top: -1px; padding: 0 32px 18px; }
+.identityRow { position: relative; display: flex; align-items: center; min-height: 112px; border-bottom: 1px solid #f0f0f0; }
+.avatar { width: 82px; height: 82px; flex: 0 0 auto; margin-top: -50px; border: 4px solid #fff; border-radius: 50%; object-fit: cover; background: #e8eef1; }
+.identity { min-width: 0; padding: 8px 0 11px 14px; }
+.nameRow { display: flex; align-items: center; gap: 10px; }
+.nameRow h1 { margin: 0; font-size: 22px; line-height: 1.1; font-weight: 600; }
+.nameRow span { padding: 5px 9px; border-radius: 5px; background: #e7e7e7; color: #707070; font-size: 11px; }
+.identity > b { display: block; margin-top: 3px; color: #024a94; font-size: 11px; }
+.identity p { max-width: 430px; margin: 4px 0 0; color: #707070; font-size: 11px; line-height: 1.25; }
+.profileActions { align-self: flex-start; display: flex; align-items: center; gap: 18px; margin-left: auto; padding-top: 16px; }
+.socials { display: flex; gap: 10px; color: #707070; }
+.socials a { display: grid; place-items: center; transition: color .2s ease, transform .2s ease; }
+.socials a:hover { color: #024a94; transform: translateY(-2px); }
+.profileActions button { display: flex; align-items: center; gap: 7px; padding: 9px 13px; border: 0; border-radius: 18px; background: #f5f6f7; color: #024a94; font: inherit; font-size: 11px; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+.profileActions button:hover { background: #e8f1fa; transform: translateY(-1px); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); padding-top: 11px; }
+.stats > div { display: flex; flex-direction: column; align-items: center; gap: 1px; border-right: 1px solid #f0f0f0; }
+.stats > div:last-child { border-right: 0; }
+.stats strong { font-size: 18px; line-height: 1.1; }
+.stats span { color: #8c8c8c; font-size: 10px; }
+.tabsBar { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; border-bottom: 1px solid #cfe0ef; }
+.tabs { display: flex; align-items: center; gap: 24px; }
+.tabs button, .experienceButton, .experienceActive { display: flex; align-items: center; gap: 7px; padding: 11px 5px 10px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #707070; font: inherit; font-size: 11px; cursor: pointer; }
+.tabs button:hover, .tabs .activeTab { color: #024a94; }
+.tabs .activeTab { border-bottom-color: #024a94; }
+.tabs button b, .experienceButton b, .experienceActive b { min-width: 20px; padding: 2px 5px; border-radius: 9px; background: #e7e7e7; color: #2c2c2c; font-size: 9px; font-weight: 500; }
+.tabs .activeTab b, .experienceActive b { background: #024a94; color: #fff; }
+.experienceActive { border: 1px solid #024a94; border-bottom-width: 1px; margin-bottom: 8px; padding: 7px 10px; border-radius: 5px; color: #024a94; }
+.content { padding-top: 14px; }
+.cardGrid { display: grid; gap: 14px; }
+.resourcesGrid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.pathwaysGrid, .hubsGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.card { position: relative; min-width: 0; overflow: hidden; padding: 17px 13px 11px; border-radius: 12px; background: #f7f7f7; color: #2c2c2c; box-shadow: inset 0 0 0 1px rgba(0,0,0,.03); transition: transform .25s ease, box-shadow .25s ease; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(17,36,61,.12); }
+.cardTopLine { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: #5420a4; }
+.orange .cardTopLine { background: #bf410c; }
+.green .cardTopLine { background: #188b50; }
+.cardAuthor { display: flex; align-items: center; gap: 5px; color: #707070; font-size: 9px; }
+.cardAuthor img { width: 16px; height: 16px; border-radius: 50%; object-fit: cover; }
+.cardAuthor svg { width: 14px; height: 14px; margin-left: auto; }
+.card h3 { min-height: 35px; margin: 13px 0 2px; color: #5420a4; font-size: 13px; line-height: 1.15; font-weight: 600; }
+.orange h3 { color: #bf410c; }
+.green h3 { color: #188b50; }
+.card > strong { display: block; color: #5420a4; font-size: 12px; font-weight: 500; }
+.orange > strong { color: #bf410c; }
+.green > strong { color: #188b50; }
+.card p { display: -webkit-box; min-height: 47px; margin: 7px 0; overflow: hidden; color: #969696; font-size: 9px; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 4; }
+.tagRow { display: flex; gap: 5px; margin-bottom: 8px; }
+.tagRow span { padding: 2px 7px; border-radius: 6px; background: #5420a4; color: #fff; font-size: 8px; }
+.orange .tagRow span { background: #bf410c; }
+.green .tagRow span { background: #188b50; }
+.preview { position: relative; height: 128px; overflow: hidden; border-radius: 6px; background: #fff; }
+.preview img { object-fit: cover; object-position: top; }
+.pathwayPreview { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-height: 70px; padding: 10px; border-radius: 6px; background: #eee4f9; color: #5420a4; font-size: 8px; }
+.orange .pathwayPreview { background: #fcedea; color: #bf410c; }
+.pathwayPreview span { padding: 3px 5px; border-radius: 4px; background: #fff; }
+.pathwayPreview i { width: 9px; border-top: 1px dashed currentColor; }
+.hubPreview { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; min-height: 55px; padding: 9px; border-radius: 6px; background: #eaf5ee; color: #188b50; font-size: 9px; }
+.hubPreview div { display: flex; align-items: center; gap: 4px; padding: 7px 5px; border-radius: 5px; background: #fff; }
+.cardFooter { display: flex; justify-content: space-between; align-items: center; margin-top: 9px; color: #707070; font-size: 9px; }
+.cardFooter > span { display: flex; align-items: center; gap: 2px; }
+.avatarDot, .avatarDotAlt { width: 15px; height: 15px; display: inline-block; border: 1px solid #fff; border-radius: 50%; background: #173d4d; }
+.avatarDotAlt { margin-left: -6px; background: #d26c43; }
+.rs { margin-left: 4px; padding: 2px 5px; border: 1px solid #49ad53; border-radius: 7px; color: #188b50; font-size: 8px; }
+.experienceGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.experienceCard { min-height: 170px; padding: 16px; border-radius: 14px; background: #f7f7f7; }
+.experienceCard h3 { margin: 0 0 3px; color: #bf410c; font-size: 13px; }
+.experienceCard p { margin: 0; color: #707070; font-size: 10px; line-height: 1.4; }
+.experienceCard hr { margin: 10px 0 8px; border: 0; border-top: 1px solid #c9c9c9; }
+.experienceCard strong { color: #707070; font-size: 10px; font-weight: 500; }
+.experienceCard div { display: flex; flex-direction: column; gap: 5px; margin-top: 7px; }
+.experienceCard span { width: max-content; max-width: 100%; padding: 4px 7px; overflow: hidden; border-radius: 4px; background: #e6e6e6; color: #555; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 1050px) { .resourcesGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } .pathwaysGrid, .hubsGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .profileHero { border-radius: 16px; }.cover { height: 110px; }.profileBody { padding: 0 16px 16px; }.identityRow { align-items: flex-start; flex-wrap: wrap; padding-bottom: 12px; }.avatar { width: 68px; height: 68px; margin-top: -36px; }.identity { width: calc(100% - 68px); padding-top: 7px; }.nameRow { align-items: flex-start; flex-direction: column; gap: 4px; }.nameRow h1 { font-size: 18px; }.profileActions { width: 100%; align-items: center; justify-content: space-between; padding-top: 10px; }.stats { margin-top: 8px; }.tabsBar { align-items: flex-end; overflow-x: auto; }.tabs { gap: 10px; flex-shrink: 0; }.experienceButton, .experienceActive { flex-shrink: 0; margin-left: 12px; }.resourcesGrid, .pathwaysGrid, .hubsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }.experienceGrid { grid-template-columns: 1fr; } }
+@media (max-width: 450px) { .cardGrid { grid-template-columns: 1fr; }.preview { height: 190px; } }

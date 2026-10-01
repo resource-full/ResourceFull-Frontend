@@ -20,6 +20,23 @@ export interface AuthResponse {
     };
 }
 
+export interface ForgotPasswordResponse {
+    success: boolean;
+    message: string;
+    data?: {
+        message?: string;
+        resetToken?: string;
+    };
+}
+
+export interface ResetPasswordResponse {
+    success: boolean;
+    message: string;
+    data?: {
+        message?: string;
+    };
+}
+
 export interface RegisterPayload {
     firstName: string;
     lastName: string;
@@ -30,6 +47,25 @@ export interface RegisterPayload {
 export interface LoginPayload {
     email: string;
     password?: string;
+}
+
+export interface OnboardingStatusResponse {
+    success: boolean;
+    message?: string;
+    data?: {
+        completed?: boolean;
+        onboardingCompleted?: boolean;
+        isOnboarded?: boolean;
+        currentStep?: number;
+        steps?: Record<string, boolean> | string[];
+        [key: string]: any;
+    };
+}
+
+export interface OnboardingSaveResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
 }
 
 export const authAPI = {
@@ -55,12 +91,12 @@ export const authAPI = {
     },
 
     forgotPassword: async (email: string) => {
-        const response = await apiClient.post("/auth/forgot-password", { email });
+        const response = await apiClient.post<ForgotPasswordResponse>("/auth/forgot-password", { email });
         return response.data;
     },
 
-    resetPassword: async (payload: { token: string; password?: string }) => {
-        const response = await apiClient.post("/auth/reset-password", payload);
+    resetPassword: async (payload: { token: string; password: string }) => {
+        const response = await apiClient.post<ResetPasswordResponse>("/auth/reset-password", payload);
         return response.data;
     },
 
@@ -69,18 +105,28 @@ export const authAPI = {
         return response.data;
     },
 
-    getOnboardingStatus: async () => {
-        const response = await apiClient.get("/auth/onboarding/status");
+    getOnboardingStatus: async (): Promise<OnboardingStatusResponse> => {
+        const response = await apiClient.get<OnboardingStatusResponse>("/auth/onboarding/status");
         return response.data;
     },
 
-    saveOnboardingStep: async (payload: any) => {
-        const response = await apiClient.post("/auth/onboarding", payload);
+    saveOnboardingStep: async (payload: any): Promise<OnboardingSaveResponse> => {
+        const response = await apiClient.post<OnboardingSaveResponse>("/auth/onboarding", payload);
         return response.data;
     },
 
-    skipOnboardingStep: async (step: number) => {
-        const response = await apiClient.post(`/auth/onboarding/skip/${step}`);
+    skipOnboardingStep: async (step: number): Promise<OnboardingSaveResponse> => {
+        const response = await apiClient.post<OnboardingSaveResponse>(`/auth/onboarding/skip/${step}`);
         return response.data;
     },
 };
+
+/** Extract a human-readable message from an axios-like auth error. */
+export function getAuthErrorMessage(err: any, fallback: string): string {
+    return (
+        err?.response?.data?.message ||
+        err?.response?.data?.errors?.[0]?.message ||
+        err?.message ||
+        fallback
+    );
+}

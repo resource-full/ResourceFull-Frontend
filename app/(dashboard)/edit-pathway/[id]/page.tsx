@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { resourceAPI } from "@/app/lib/api/resource";
+import { pathwayAPI } from "@/app/lib/api/pathway";
 import { Resource } from "@/app/lib/types/resource";
+import { Pathway } from "@/app/lib/types/pathway";
 import styles from "./page.module.css";
 
 const CheckIcon = () => (
@@ -77,24 +79,22 @@ interface PathwayNode {
 
 export default function EditPathwayPage() {
   const router = useRouter();
+  const params = useParams();
+  const pathwayId = params.id as string;
   const [step, setStep] = useState<1 | 2>(1);
 
-  // Step 1: Builder State — Pre-filled with existing data
-  const [nodes, setNodes] = useState<PathwayNode[]>([
-    { id: "1", type: "text", title: "Introduction", content: "Welcome to this pathway. We'll walk through the essential steps to build your career." },
-    { id: "2", type: "resource", title: "Use this CV Template", content: "", resourceId: "dummy-id", resourceTitle: "Graphic Designer 80% wining rate CV" },
-    { id: "3", type: "text", title: "Next Steps", content: "After completing the above, continue with the following resources." }
-  ]);
+  // Step 1: Builder State
+  const [nodes, setNodes] = useState<PathwayNode[]>([]);
   const [selectResourceModalNodeId, setSelectResourceModalNodeId] = useState<string | null>(null);
 
-  // Step 2: Form State — Pre-filled
-  const [name, setName] = useState("Graphic Design Career Path");
-  const [description, setDescription] = useState("A comprehensive pathway for aspiring graphic designers covering CV preparation, portfolio building, and interview techniques.");
-  const [locations, setLocations] = useState<string[]>(["angola"]);
-  const [experiences, setExperiences] = useState<string[]>(["undergraduate"]);
-  const [industries, setIndustries] = useState<string[]>(["law"]);
-  const [hubs, setHubs] = useState<string[]>(["cv"]);
-  const [price, setPrice] = useState("$120");
+  // Step 2: Form State
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [locations, setLocations] = useState<string[]>([]);
+  const [experiences, setExperiences] = useState<string[]>([]);
+  const [industries, setIndustries] = useState<string[]>([]);
+  const [hubs, setHubs] = useState<string[]>([]);
+  const [price, setPrice] = useState("");
   const [isFree, setIsFree] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [resources, setResources] = useState<Resource[]>([]);
@@ -102,6 +102,48 @@ export default function EditPathwayPage() {
 
   // Modal State
   const [modalType, setModalType] = useState<"success" | "error" | "draft" | "onlyme" | "back" | null>(null);
+
+  const [isFetching, setIsFetching] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (!pathwayId) return;
+    const fetchPathway = async () => {
+      try {
+        const res = await pathwayAPI.getSinglePathway(pathwayId);
+        if (res.success && res.data) {
+          const pathway: Pathway = res.data;
+          setName(pathway.name || "");
+          setDescription(pathway.description || "");
+          setLocations(pathway.applicableLocation ? pathway.applicableLocation.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setExperiences(pathway.experience ? pathway.experience.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setIndustries(pathway.industry ? pathway.industry.split(",").map((s) => s.trim()).filter(Boolean) : []);
+          setIsFree(pathway.isFree);
+          setPrice(pathway.price ? String(pathway.price) : "");
+          if (pathway.hub?._id) {
+            setHubs([pathway.hub._id]);
+          }
+          if (pathway.blocks && pathway.blocks.length > 0) {
+            setNodes(
+              pathway.blocks.map((block, index) => ({
+                id: block._id || String(index + 1),
+                type: block.type === "resource" ? "resource" : "text",
+                title: block.name || "",
+                content: block.shortDescription || "",
+                resourceId: block.resource || undefined,
+                resourceTitle: block.resource || undefined,
+              }))
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch pathway:", error);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+    fetchPathway();
+  }, [pathwayId]);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -151,11 +193,69 @@ export default function EditPathwayPage() {
     }
   };
 
-  const handleUpdate = () => {
-    if (name && description) {
-      setModalType("success");
-    } else {
+  const handleUpdate = async () => {
+    if (!name || !description) {
       setModalType("error");
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const payload = {
+        name,
+        description,
+        blocks: nodes.map((node, index) => ({
+          type: node.type,
+          name: node.title,
+          shortDescription: node.content,
+          order: index + 1,
+          resource: node.type === "resource" ? node.resourceId : undefined,
+        })),
+        applicableLocation: locations.join(","),
+        experience: experiences.join(","),
+        industry: industries.join(","),
+        isFree,
+        price: Number(price.replace(/[^0-9.]/g, "")) || 0,
+        currency: "USD",
+        tags: [],
+        hubId: hubs[0],
+      };
+      const res = await pathwayAPI.updatePathway(pathwayId, payload);
+      if (res?.data) {
+        setModalType("success");
+      } else {
+        setModalType("error");
+      }
+    } catch (error) {
+      console.error("Failed to update pathway:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    setIsSaving(true);
+    try {
+      await pathwayAPI.changeStatus(pathwayId, "draft");
+      setModalType("draft");
+    } catch (error) {
+      console.error("Failed to save draft:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleMarkAsOnlyMe = async () => {
+    setIsSaving(true);
+    try {
+      await pathwayAPI.changeStatus(pathwayId, "private");
+      closeModal();
+    } catch (error) {
+      console.error("Failed to mark as only me:", error);
+      setModalType("error");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -179,15 +279,15 @@ export default function EditPathwayPage() {
           <h1 className={styles.title}>Edit Pathway</h1>
         </div>
         <div className={styles.headerActions}>
-          <button className={styles.linkOnlyMe} onClick={() => setModalType("draft")}>Save Draft</button>
-          <button className={styles.btnDraft} onClick={() => setModalType("onlyme")}>Mark as Only Me</button>
+          <button className={styles.linkOnlyMe} onClick={handleSaveDraft} disabled={isFetching || isSaving}>Save Draft</button>
+          <button className={styles.btnDraft} onClick={() => setModalType("onlyme")} disabled={isFetching || isSaving}>Mark as Only Me</button>
           {step === 1 ? (
-            <button className={styles.btnPost} onClick={() => setStep(2)}>Next</button>
+            <button className={styles.btnPost} onClick={() => setStep(2)} disabled={isFetching}>Next</button>
           ) : (
             <>
               <button className={styles.linkOnlyMe} onClick={() => setStep(1)}>Back</button>
-              <button className={`${styles.btnPost} ${!name ? styles.btnPostDisabled : ''}`} onClick={handleUpdate}>
-                Update
+              <button className={`${styles.btnPost} ${(!name || isFetching || isSaving) ? styles.btnPostDisabled : ''}`} onClick={handleUpdate} disabled={isFetching || isSaving}>
+                {isSaving ? "Saving..." : "Update"}
               </button>
             </>
           )}
@@ -439,10 +539,7 @@ export default function EditPathwayPage() {
                 <p className={styles.modalSubtitle}>Marking this item as Only Me will remove it from the public feed, and associated hubs!</p>
                 <div className={styles.modalActions}>
                   <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={closeModal}>Cancel</button>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => {
-                    closeModal();
-                    // Implement Mark as Only Me logic here
-                  }}>Proceed</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={handleMarkAsOnlyMe} disabled={isSaving}>Proceed</button>
                 </div>
               </>
             )}

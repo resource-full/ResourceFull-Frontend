@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import styles from "../../setup.module.css";
 import { INITIAL_FORM_DATA, COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
+import { authAPI, getAuthErrorMessage } from "@/app/lib/api/auth";
 
 export default function ProfileSetupPage() {
   const router = useRouter();
@@ -22,6 +23,11 @@ export default function ProfileSetupPage() {
 
   // Role location state (for Professional Experience)
   const [roleLocation, setRoleLocation] = useState<string[]>([]);
+
+  const [loading, setLoading] = useState(false);
+  const [skipping, setSkipping] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -48,8 +54,45 @@ export default function ProfileSetupPage() {
     }));
   };
 
-  const handleNext = () => {
-    router.push("/onboarding/goals");
+  const handleNext = async () => {
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    try {
+      await authAPI.saveOnboardingStep({
+        step: 1,
+        profile: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          location: personalLocation,
+          experienceLevel: data.experienceLevel,
+          currentRole: data.currentRole,
+          industry,
+          roleLocation,
+          skills: data.skills,
+        },
+      });
+      setSuccess("Profile saved");
+      router.push("/onboarding/goals");
+    } catch (err: any) {
+      setError(getAuthErrorMessage(err, "Failed to save profile. Please try again."));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSkip = async () => {
+    setError("");
+    setSuccess("");
+    setSkipping(true);
+    try {
+      await authAPI.skipOnboardingStep(1);
+      router.push("/onboarding/goals");
+    } catch (err: any) {
+      setError(getAuthErrorMessage(err, "Failed to skip this step. Please try again."));
+    } finally {
+      setSkipping(false);
+    }
   };
 
   return (
@@ -58,6 +101,37 @@ export default function ProfileSetupPage() {
         <h1 className={styles.title}>Profile</h1>
         <p className={styles.subtitle}>A little bit about you.</p>
       </div>
+
+      {error && (
+        <div
+          role="alert"
+          style={{
+            color: "#dc2626",
+            fontSize: "0.875rem",
+            padding: "10px 12px",
+            background: "#fef2f2",
+            border: "1px solid #fecaca",
+            borderRadius: "8px",
+          }}
+        >
+          {error}
+        </div>
+      )}
+      {success && (
+        <div
+          role="status"
+          style={{
+            color: "#16a34a",
+            fontSize: "0.875rem",
+            padding: "10px 12px",
+            background: "#f0fdf4",
+            border: "1px solid #bbf7d0",
+            borderRadius: "8px",
+          }}
+        >
+          {success}
+        </div>
+      )}
 
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
@@ -187,8 +261,25 @@ export default function ProfileSetupPage() {
         <p style={{ fontSize: "12px", color: "#A0A0A0", marginTop: "-8px" }}>Click &quot;Enter&quot; to add skill</p>
       </div>
 
-      <button className={styles.submitBtn} onClick={handleNext}>
-        Next
+      <button className={styles.submitBtn} onClick={handleNext} disabled={loading || skipping}>
+        {loading ? "Saving..." : "Next"}
+      </button>
+      <button
+        type="button"
+        onClick={handleSkip}
+        disabled={loading || skipping}
+        style={{
+          background: "transparent",
+          color: "#5a6474",
+          border: "none",
+          padding: "12px 0",
+          fontSize: "14px",
+          fontWeight: 500,
+          cursor: loading || skipping ? "not-allowed" : "pointer",
+          opacity: loading || skipping ? 0.6 : 1,
+        }}
+      >
+        {skipping ? "Skipping..." : "Skip for now"}
       </button>
     </div>
   );

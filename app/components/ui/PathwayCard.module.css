@@ -131,6 +131,8 @@
 
 /* Sequence Block */
 .sequenceBlock {
+  min-width: 0;
+  overflow: hidden;
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -144,18 +146,34 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .sequenceItem {
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+  max-width: 100%;
   padding: 6px 12px 6px 6px;
   border-radius: 100px;
   color: #ffffff;
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sequenceItem > :last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sequenceNumber {
+  flex: 0 0 18px;
 }
 
 .sequenceNumber {
@@ -169,7 +187,8 @@
 }
 
 .sequenceDash {
-  flex: 1;
+  flex: 1 1 16px;
+  min-width: 8px;
   height: 2px;
   opacity: 0.3;
 }
