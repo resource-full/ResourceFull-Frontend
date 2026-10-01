@@ -111,12 +111,12 @@ export default function PathwayCard({
         <div className={styles.sequenceRow}>
           <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
             <div className={styles.sequenceNumber} style={{ color: mainColor }}>1</div>
-            Intro
+            <span>Intro</span>
           </div>
           <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
           <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
             <div className={styles.sequenceNumber} style={{ color: mainColor }}>2</div>
-            Tools
+            <span>Tools</span>
           </div>
           <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
         </div>
@@ -124,7 +124,7 @@ export default function PathwayCard({
         <div className={styles.sequenceRow}>
           <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
             <div className={styles.sequenceNumber} style={{ color: mainColor }}>3</div>
-            Projects
+            <span>Projects</span>
           </div>
           <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
         </div>
@@ -132,12 +132,12 @@ export default function PathwayCard({
         <div className={styles.sequenceRow}>
           <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
             <div className={styles.sequenceNumber} style={{ color: mainColor }}>4</div>
-            Set Up VS Code
+            <span>Set Up VS Code</span>
           </div>
           <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
           <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
             <div className={styles.sequenceNumber} style={{ color: mainColor }}>5</div>
-            CV Template
+            <span>CV Template</span>
           </div>
         </div>
       </div>
