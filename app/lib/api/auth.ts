@@ -26,6 +26,7 @@ export interface ForgotPasswordResponse {
     data?: {
         message?: string;
         resetToken?: string;
+        resetLink?: string;
     };
 }
 
