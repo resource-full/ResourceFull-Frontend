@@ -58,8 +58,8 @@
 
 @theme {
   /* Brand */
-  --color-primary: #1565d8;
-  --color-primary-hover: #1252b0;
+  --color-primary: #024a94;
+  --color-primary-hover: #024385;
   --color-primary-light: #e8f0fe;
 
   /* Sidebar */
@@ -72,12 +72,14 @@
   --color-white: #ffffff;
   --color-bg: #ffffff;
   --color-surface: #f8f9fc;
+  --color-input-bg: #f6f6f6;
   --color-border: #d6d9e1;
-  --color-border-focus: #1565d8;
+  --color-border-focus: #024a94;
+  --color-text-heading: #2c2c2c;
   --color-text-primary: #11243d;
-  --color-text-secondary: #5a6474;
+  --color-text-secondary: #707070;
   --color-text-muted: #8c95a6;
-  --color-text-placeholder: #a0a9b8;
+  --color-text-placeholder: #98a2b3;
 
   /* Feedback */
   --color-error: #e53e3e;

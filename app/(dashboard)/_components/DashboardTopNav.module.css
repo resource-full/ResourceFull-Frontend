@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 32px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #b6d3f2;
   margin-bottom: 32px;
 }
 
@@ -11,23 +11,24 @@
   align-items: center;
   gap: 8px;
   padding: 12px 0;
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-family: inherit;
   font-weight: 500;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 1px solid #eaeaea;
+  margin-bottom: -1px;
   transition: all 150ms ease;
   cursor: pointer;
 }
 
 .tab:hover {
-  color: #11243d;
+  color: var(--color-text-heading);
 }
 
 .tabActive {
-  color: #024A94;
-  font-weight: 600;
-  border-bottom-color: #024A94;
+  color: #023b76;
+  font-weight: 500;
+  border-bottom-color: #023b76;
 }

@@ -78,10 +78,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  border-radius: 12px;
-  color: #5a6474;
+  border-radius: 4px;
+  color: var(--color-text-heading);
   font-size: 0.9375rem;
-  font-weight: 500;
+  font-weight: 400;
   text-decoration: none;
   transition: all 150ms ease;
   white-space: nowrap;
@@ -109,7 +109,7 @@
 }
 
 .badge {
-  background: #f0f4f8;
+  background: #f0f2f5;
   color: #344054;
   font-size: 12px;
   font-weight: 500;
@@ -119,13 +119,29 @@
 
 .navLink:hover {
   background: #f0f4f8;
-  color: #11243d;
+  color: var(--color-text-heading);
 }
 
 .navLinkActive {
-  background: #f0f7ff;
-  color: #024A94;
-  font-weight: 600;
+  background: #b6d3f2;
+  color: #012143;
+  font-weight: 500;
+}
+
+.navLinkActive:hover {
+  background: #b6d3f2;
+  color: #012143;
+}
+
+.bottomNav .navLink .navLinkText {
+  font-size: 14px;
+  font-weight: 400;
+  color: #344054;
+}
+
+.bottomNav .navLinkActive .navLinkText {
+  color: #012143;
+  font-weight: 500;
 }
 
 .addBtn {
@@ -134,13 +150,13 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 14px;
-  background: #024A94;
+  padding: 16px 24px;
+  background: var(--color-primary-hover);
   color: #ffffff;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background 150ms ease;
   margin-top: 16px;
@@ -152,7 +168,7 @@
 }
 
 .addBtn:hover {
-  background: #013a75;
+  background: #012c5c;
 }
 
 .addIcon {
@@ -233,9 +249,9 @@
 .shareCard {
   margin-top: 266px;
   margin-bottom: 32px;
-  background: #F6F6F6;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  background: var(--color-input-bg);
+  border: none;
+  border-radius: var(--radius-lg);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -270,6 +286,7 @@
   font-size: 20px;
   font-weight: 500;
   color: #02386F;
+  letter-spacing: -0.8px;
 }
 
 .shareDesc {
@@ -297,7 +314,7 @@
 
 .shareLinkText {
   font-size: 0.8125rem;
-  color: #1565d8;
+  color: var(--color-primary);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;

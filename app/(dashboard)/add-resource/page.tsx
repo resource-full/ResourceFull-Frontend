@@ -21,10 +21,18 @@ const CheckIcon = () => (
 );
 
 const UploadIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-    <polyline points="17 8 12 3 7 8" />
-    <line x1="12" y1="3" x2="12" y2="15" />
+  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <path d="M12 11v6" />
+    <polyline points="9.5 14.5 12 17 14.5 14.5" />
+  </svg>
+);
+
+const ArrowLongLeftIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="21" y1="12" x2="3" y2="12" />
+    <polyline points="10 5 3 12 10 19" />
   </svg>
 );
 
@@ -180,7 +188,12 @@ export default function AddResourcePage() {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Add Resource</h1>
+        <div className={styles.titleRow}>
+          <Link href="/dashboard" className={styles.backLink} aria-label="Back">
+            <ArrowLongLeftIcon />
+          </Link>
+          <h1 className={styles.title}>Add Resource</h1>
+        </div>
         {uploadedFile && (
           <div className={styles.headerActions}>
             <button className={styles.btnDraft} onClick={handleSaveDraft} disabled={isLoading}>

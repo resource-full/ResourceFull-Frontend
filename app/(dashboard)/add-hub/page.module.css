@@ -8,13 +8,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-heading);
+  flex-shrink: 0;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #11243d;
+  font-size: 31px;
+  font-weight: 500;
+  color: #011a34;
 }
 
 .headerActions {
@@ -26,31 +40,31 @@
 .btnDraft {
   background: transparent;
   border: none;
-  color: #8c95a6;
-  font-size: 0.9375rem;
+  color: var(--color-text-placeholder);
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 150ms ease;
 }
 
 .btnDraft:hover {
-  color: #11243d;
+  color: var(--color-text-heading);
 }
 
 .btnNext {
-  background: #024A94;
+  background: var(--color-primary-hover);
   border: none;
   color: #ffffff;
-  padding: 10px 32px;
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
   transition: background 150ms ease;
 }
 
 .btnNext:hover {
-  background: #013a75;
+  background: #012c5c;
 }
 
 .formContainer {
@@ -74,30 +88,30 @@
 .label {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #11243d;
+  color: var(--color-text-primary);
 }
 
 .input,
 .textarea {
   width: 100%;
   padding: 14px 16px;
-  background: #f8f9fc;
+  background: var(--color-input-bg);
   border: 1px solid transparent;
   border-radius: 12px;
   font-size: 0.9375rem;
-  color: #11243d;
+  color: var(--color-text-primary);
   transition: all 150ms ease;
   outline: none;
 }
 
 .input::placeholder,
 .textarea::placeholder {
-  color: #8c95a6;
+  color: var(--color-text-placeholder);
 }
 
 .input:focus,
 .textarea:focus {
-  border-color: #024A94;
+  border-color: var(--color-primary);
   background: #ffffff;
 }
 
@@ -125,13 +139,13 @@
   justify-content: space-between;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #11243d;
+  color: var(--color-text-primary);
 }
 
 .addBtn {
   background: transparent;
   border: none;
-  color: #024A94;
+  color: var(--color-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -165,8 +179,8 @@
   align-items: center;
   justify-content: center;
   transition: all 150ms ease;
-  background: #024A94;
-  border-color: #024A94;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* Modals */
@@ -215,13 +229,13 @@
 .modalTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #11243d;
+  color: var(--color-text-primary);
   margin-bottom: 12px;
 }
 
 .modalSubtitle {
   font-size: 1rem;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   margin-bottom: 32px;
 }
 
@@ -244,21 +258,21 @@
 .modalBtnOutline {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  color: #11243d;
+  color: var(--color-text-primary);
 }
 
 .modalBtnOutline:hover {
-  background: #f8f9fc;
+  background: var(--color-input-bg);
 }
 
 .modalBtnPrimary {
-  background: #024A94;
-  border: 1px solid #024A94;
+  background: var(--color-primary-hover);
+  border: 1px solid var(--color-primary-hover);
   color: #ffffff;
 }
 
 .modalBtnPrimary:hover {
-  background: #013a75;
+  background: #012c5c;
 }
 
 /* Select Resource Modal */
@@ -276,14 +290,14 @@
 .selectResourceTitle {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #11243d;
+  color: var(--color-text-primary);
   margin-bottom: 16px;
 }
 
 .selectResourceSearch {
   width: 100%;
   padding: 12px 16px 12px 40px;
-  background: #f8f9fc;
+  background: var(--color-input-bg);
   border: 1px solid transparent;
   border-radius: 12px;
   font-size: 0.9375rem;
@@ -295,7 +309,7 @@
 }
 
 .selectResourceSearch:focus {
-  border-color: #024A94;
+  border-color: var(--color-primary);
   background-color: #ffffff;
 }
 
@@ -327,8 +341,8 @@
 }
 
 .modalCheckboxActive {
-  background: #024A94;
-  border-color: #024A94;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* Responsive */

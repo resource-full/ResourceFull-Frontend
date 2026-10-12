@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { resourceAPI } from "@/app/lib/api/resource";
@@ -10,6 +11,13 @@ import { CreateHubRequest } from "@/app/lib/types/hub";
 import { Resource } from "@/app/lib/types/resource";
 import { Pathway } from "@/app/lib/types/pathway";
 import styles from "./page.module.css";
+
+const ArrowLongLeftIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="21" y1="12" x2="3" y2="12" />
+    <polyline points="10 5 3 12 10 19" />
+  </svg>
+);
 
 const CheckIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -33,7 +41,7 @@ const PlusIcon = () => (
 
 // Dummy resource card for selected lists
 const DummyResourceCard = ({ title, variant = "purple" }: { title: string, variant?: "purple" | "orange" }) => {
-  const bg = variant === "purple" ? "#6a359c" : "#c4452a";
+  const bg = variant === "purple" ? "#58169c" : "#ad3307";
   return (
     <div style={{ background: bg, color: '#fff', borderRadius: '12px', padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -60,7 +68,7 @@ const DummyResourceCard = ({ title, variant = "purple" }: { title: string, varia
 
 // Dummy pathway card for selected lists
 const DummyPathwayCard = ({ title, variant = "purple" }: { title: string, variant?: "purple" | "orange" }) => {
-  const color = variant === "purple" ? "#6a359c" : "#c4452a";
+  const color = variant === "purple" ? "#58169c" : "#ad3307";
   return (
     <div style={{ background: '#fff', border: `1px solid #e2e8f0`, borderRadius: '12px', padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color }}>
@@ -201,7 +209,12 @@ export default function AddHubPage() {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Create Hub</h1>
+        <div className={styles.titleRow}>
+          <Link href="/dashboard" className={styles.backLink} aria-label="Back">
+            <ArrowLongLeftIcon />
+          </Link>
+          <h1 className={styles.title}>Create Hub</h1>
+        </div>
         <div className={styles.headerActions}>
           <button className={styles.btnDraft} onClick={handleSaveDraft}>Back</button>
           <button className={styles.btnNext} onClick={handlePost}>Done</button>

@@ -45,7 +45,7 @@
 
 .withdrawBtn {
   background: #F6F6F6;
-  color: #024A94;
+  color: var(--color-primary);
   border: none;
   padding: 16px 24px;
   border-radius: 16px;
@@ -151,7 +151,7 @@
   max-width: 440px;
   max-height: 90vh;
   overflow-y: auto;
-  color: #11243d;
+  color: var(--color-text-primary);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
@@ -175,14 +175,14 @@
   border: none;
   font-size: 26px;
   line-height: 1;
-  color: #707070;
+  color: var(--color-text-secondary);
   cursor: pointer;
   padding: 0 4px;
   transition: color 0.2s;
 }
 
 .modalClose:hover {
-  color: #2C2C2C;
+  color: var(--color-text-heading);
 }
 
 .modalBody {
@@ -205,7 +205,7 @@
 .formLabel {
   font-size: 13px;
   font-weight: 500;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
 }
 
 .formInput,
@@ -215,7 +215,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   font-size: 14px;
-  color: #11243d;
+  color: var(--color-text-primary);
   background: #ffffff;
   outline: none;
   transition: border-color 0.2s;
@@ -224,7 +224,7 @@
 
 .formInput:focus,
 .formSelect:focus {
-  border-color: #024A94;
+  border-color: var(--color-primary);
 }
 
 .formSelect {
@@ -238,7 +238,7 @@
 
 .formHint {
   font-size: 12px;
-  color: #707070;
+  color: var(--color-text-secondary);
   font-weight: 400;
 }
 
@@ -254,7 +254,7 @@
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   background: #ffffff;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -269,7 +269,7 @@
   padding: 12px 18px;
   border-radius: 12px;
   border: none;
-  background: #024A94;
+  background: var(--color-primary);
   color: #ffffff;
   font-size: 14px;
   font-weight: 500;
@@ -278,7 +278,7 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: #023870;
+  background: #012c5c;
 }
 
 .submitBtn:disabled,

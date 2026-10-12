@@ -97,7 +97,7 @@
 
 .subtitle {
   font-size: 0.9375rem;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   line-height: 1.5;
   margin-bottom: 8px;
 }
@@ -115,12 +115,10 @@
   justify-content: center;
   flex: 1;
   height: 52px;
-  background: #f1f5f9;
-  /* Light grey */
-  color: #024A94;
-  /* Match active theme text color */
+  background: var(--color-input-bg);
+  color: var(--color-primary);
   border: none;
-  border-radius: 8px;
+  border-radius: 16px;
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -129,7 +127,7 @@
 }
 
 .secondaryButton:hover {
-  background: #e2e8f0;
+  background: #eeeeee;
 }
 
 .primaryButton {
@@ -138,10 +136,10 @@
   justify-content: center;
   flex: 1;
   height: 52px;
-  background: #024A94;
+  background: var(--color-primary-hover);
   color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 14px;
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -150,7 +148,7 @@
 }
 
 .primaryButton:hover {
-  background: #013a75;
+  background: #012c5c;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(2, 74, 148, 0.3);
 }

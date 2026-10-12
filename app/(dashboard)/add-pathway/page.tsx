@@ -1,12 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { pathwayAPI } from "@/app/lib/api/pathway";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { Resource } from "@/app/lib/types/resource";
 import styles from "./page.module.css";
+
+const ArrowLongLeftIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="21" y1="12" x2="3" y2="12" />
+    <polyline points="10 5 3 12 10 19" />
+  </svg>
+);
 
 const CheckIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -235,7 +243,12 @@ export default function AddPathwayPage() {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Add Pathway</h1>
+        <div className={styles.titleRow}>
+          <Link href="/dashboard" className={styles.backLink} aria-label="Back">
+            <ArrowLongLeftIcon />
+          </Link>
+          <h1 className={styles.title}>Add Pathway</h1>
+        </div>
         <div className={styles.headerActions}>
           <button className={styles.btnDraft} onClick={handleSaveDraft} disabled={isLoading}>
             {isLoading ? 'Saving...' : 'Save Draft'}

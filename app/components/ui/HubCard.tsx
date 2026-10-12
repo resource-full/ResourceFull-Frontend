@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./HubCard.module.css";
 
-export type HubCardVariant = "purple" | "orange";
+export type HubCardVariant = "purple" | "orange" | "pink" | "green";
 
 interface HubCardProps {
   id: string | number;
@@ -74,7 +74,13 @@ export default function HubCard({
   isPurchased,
   isSaved,
 }: HubCardProps) {
-  const tabColor = variant === "purple" ? "#6a359c" : "#c4452a";
+  const TAB_COLORS: Record<HubCardVariant, string> = {
+    purple: "#58169c",
+    orange: "#ad3307",
+    pink: "#9c1658",
+    green: "#52b114",
+  };
+  const tabColor = TAB_COLORS[variant];
 
   const cardContent = (
     <div className={styles.cardWrapper}>

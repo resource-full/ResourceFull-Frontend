@@ -1,11 +1,11 @@
 .linkedinBanner {
-  background: #f0f7ff;
+  background: #d9e4ef;
   border-radius: 12px;
-  padding: 16px 20px;
+  padding: 20px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .linkedinInfo {
@@ -17,34 +17,36 @@
 .linkedinText {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
 .linkedinTitle {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #11243d;
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: -0.8px;
+  color: #02386f;
 }
 
 .linkedinSubtitle {
-  font-size: 0.8125rem;
-  color: #5a6474;
+  font-size: 14px;
+  color: rgba(2, 74, 148, 0.81);
 }
 
 .linkedinBtn {
-  background: #024A94;
+  background: var(--color-primary-hover);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
+  border-radius: 14px;
+  padding: 16px 24px;
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.2s;
 }
 
 .linkedinBtn:hover {
-  background: #023a73;
+  background: #012c5c;
 }
 
 .experiencesList {
@@ -80,14 +82,14 @@
 
 .expTitle {
   font-size: 1rem;
-  font-weight: 600;
-  color: #11243d;
+  font-weight: 500;
+  color: var(--color-text-heading);
   margin: 0;
 }
 
 .expMeta {
-  font-size: 0.875rem;
-  color: #5a6474;
+  font-size: 13px;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -135,7 +137,7 @@
 .linkResourceBtn {
   background: transparent;
   border: none;
-  color: #024A94;
+  color: var(--color-primary);
   font-weight: 500;
   font-size: 0.875rem;
   cursor: pointer;
@@ -168,7 +170,7 @@
   gap: 8px;
   background: transparent;
   border: 1px solid transparent;
-  color: #024A94;
+  color: var(--color-primary);
   font-weight: 500;
   font-size: 0.9375rem;
   padding: 12px;
@@ -179,7 +181,7 @@
 }
 
 .addExpBtn:hover {
-  background: #f0f7ff;
+  background: var(--color-input-bg);
 }
 
 @media (max-width: 768px) {

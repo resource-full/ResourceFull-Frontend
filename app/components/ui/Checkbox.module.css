@@ -28,12 +28,12 @@
 }
 
 .checkboxWrapper:hover .box {
-  border-color: #1565d8;
+  border-color: var(--color-primary);
 }
 
 .input:checked ~ .box {
-  background-color: #1565d8;
-  border-color: #1565d8;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .checkIcon {

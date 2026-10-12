@@ -1,5 +1,5 @@
 .pageContainer {
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-family);
   display: flex;
   flex-direction: column;
 }
@@ -20,7 +20,7 @@
   padding: 0.5rem;
   border-radius: 50%;
   transition: background-color 0.2s;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .backBtn:hover {
@@ -46,7 +46,7 @@
 .checkCircle {
   width: 56px;
   height: 56px;
-  background-color: #34C759;
+  background-color: var(--color-success);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -57,13 +57,13 @@
 .title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text-heading);
   margin-bottom: 0.5rem;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin-bottom: 2.5rem;
   line-height: 1.5;
 }
@@ -75,7 +75,7 @@
   width: 100%;
   max-width: 500px;
   text-align: left;
-  color: #1a1a1a;
+  color: var(--color-text-heading);
   margin-bottom: 2.5rem;
   padding: 24px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -95,7 +95,7 @@
 .authorName {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #5a6474;
+  color: var(--color-text-secondary);
 }
 
 .resourceTitle {
@@ -114,7 +114,7 @@
 .resourceDesc {
   font-size: 0.875rem;
   line-height: 1.5;
-  color: #707070;
+  color: var(--color-text-secondary);
   margin-bottom: 1.5rem;
 }
 
@@ -138,7 +138,7 @@
   gap: 0.375rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #8c95a6;
+  color: var(--color-text-placeholder);
   margin-bottom: 1.5rem;
 }
 
@@ -197,11 +197,11 @@
 }
 
 .primaryBtn {
-  background-color: #024A94;
+  background-color: var(--color-primary-hover);
   color: white;
   font-weight: 500;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
   cursor: pointer;
   font-size: 14px;
@@ -210,15 +210,15 @@
 }
 
 .primaryBtn:hover {
-  background-color: #023870;
+  background-color: #012c5c;
 }
 
 .secondaryBtn {
-  background-color: #F6F6F6;
-  color: #024A94;
+  background-color: var(--color-input-bg);
+  color: var(--color-primary);
   font-weight: 500;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 16px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
@@ -226,5 +226,5 @@
 }
 
 .secondaryBtn:hover {
-  background-color: #f8f9fa;
+  background-color: #eeeeee;
 }

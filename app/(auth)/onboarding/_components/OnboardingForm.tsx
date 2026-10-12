@@ -137,7 +137,7 @@ export default function OnboardingForm() {
         </div>
 
         {apiError && (
-          <div style={{ color: "red", marginBottom: "16px", fontSize: "14px", textAlign: "center" }}>
+          <div style={{ background: "#fee2e2", border: "1px solid #fecaca", borderRadius: "10px", color: "#AB1C3A", marginBottom: "16px", padding: "12px 16px", fontSize: "14px", textAlign: "center" }}>
             {apiError}
           </div>
         )}
@@ -207,8 +207,8 @@ export default function OnboardingForm() {
 
         {/* Footer link */}
         <div style={{ textAlign: "center" }}>
-          <Link href="/login" style={{ color: "#1565d8", fontWeight: 500, fontSize: "14px", textDecoration: "none" }}>
-            Already have an account? Log in.
+          <Link href="/login" style={{ color: "var(--color-primary-hover)", fontWeight: 500, fontSize: "14px", textDecoration: "none" }}>
+            Have an account? Log In.
           </Link>
         </div>
       </div>

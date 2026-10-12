@@ -15,6 +15,14 @@ function getErrorMessage(err: unknown, fallback: string): string {
 }
 
 // Icons
+const ExportIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </svg>
+);
+
 const ListIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M12.7017 13.1812C13.3005 13.1812 13.7858 13.6665 13.7858 14.2652C13.7858 14.8639 13.3005 15.3493 12.7017 15.3493H5.13876C4.54004 15.3493 4.05469 14.8639 4.05469 14.2652C4.05469 13.6665 4.54004 13.1812 5.13876 13.1812H12.7017Z" fill="#024A94" />
@@ -48,6 +56,12 @@ export default function TransactionHistory() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showExportToast, setShowExportToast] = useState(false);
+
+  const handleExport = () => {
+    setShowExportToast(true);
+    setTimeout(() => setShowExportToast(false), 3000);
+  };
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -109,6 +123,13 @@ export default function TransactionHistory() {
 
   return (
     <div className={styles.container}>
+      {showExportToast && (
+        <div className={styles.toastAlert}>
+          <span className={styles.toastIcon}><ExportIcon /></span>
+          Exported Successfully
+        </div>
+      )}
+
       <div className={styles.header}>
         <h3 className={styles.title}>Transaction History</h3>
 
@@ -125,7 +146,7 @@ export default function TransactionHistory() {
             ))}
           </div>
 
-          <button className={styles.exportBtn}>
+          <button className={styles.exportBtn} onClick={handleExport}>
             Export
           </button>
         </div>

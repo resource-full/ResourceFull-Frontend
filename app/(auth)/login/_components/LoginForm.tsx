@@ -81,7 +81,11 @@ export default function LoginForm() {
 
   return (
     <div className={styles.loginForm}>
-      {error && <div style={{ color: 'red', marginBottom: '16px', fontSize: '14px', textAlign: 'center' }}>{error}</div>}
+      {error && (
+        <div style={{ background: '#fee2e2', border: '1px solid #fecaca', borderRadius: '10px', color: '#AB1C3A', marginBottom: '16px', padding: '12px 16px', fontSize: '14px', textAlign: 'center' }}>
+          {error}
+        </div>
+      )}
       <form onSubmit={handleSubmit} className={styles.loginForm}>
         <Input
           id="email"
@@ -131,7 +135,7 @@ export default function LoginForm() {
       <div className={styles.footerLinks}>
         <p className={styles.signupText}>
           <Link href="/onboarding" className={styles.signupLink}>
-            Don&apos;t have an account? Sign up
+            No account? Create one
           </Link>
         </p>
       </div>

@@ -1,6 +1,6 @@
 .pageContainer {
-  font-family: var(--font-inter), sans-serif;
-  color: #11243d;
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -24,7 +24,7 @@
 .headerSubtitle {
   font-size: 16px;
   font-weight: 400;
-  color: #707070;
+  color: var(--color-text-secondary);
 }
 
 .headerControls {
@@ -48,7 +48,7 @@
   border: none;
   font-size: 13px;
   font-weight: 500;
-  color: #707070;
+  color: var(--color-text-secondary);
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -56,16 +56,16 @@
 }
 
 .segmentBtn:hover {
-  color: #11243d;
+  color: var(--color-text-primary);
 }
 
 .segmentBtn.active {
-  background-color: #f1f5f9;
-  color: #024A94;
+  background-color: var(--color-input-bg);
+  color: var(--color-primary);
 }
 
 .exportBtn {
-  background-color: #024A94;
+  background-color: var(--color-primary-hover);
   color: white;
   border: none;
   border-radius: 14px;
@@ -77,7 +77,7 @@
 }
 
 .exportBtn:hover {
-  background-color: #023870;
+  background-color: #012c5c;
 }
 
 .exportBtn:disabled {
@@ -114,7 +114,7 @@
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #11243d;
+  color: var(--color-text-primary);
   cursor: pointer;
   transition: background-color 0.15s;
   font-family: inherit;
@@ -122,7 +122,7 @@
 
 .exportMenuItem:hover:not(:disabled) {
   background-color: #f1f5f9;
-  color: #024A94;
+  color: var(--color-primary);
 }
 
 .exportMenuItem:disabled {
@@ -240,7 +240,7 @@
 .statValue {
   font-size: 21.7px;
   font-weight: 600;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   margin-bottom: 0.75rem;
 }
 
@@ -261,7 +261,7 @@
 }
 
 .trendText {
-  color: #9ca3af;
+  color: var(--color-text-placeholder);
   font-weight: 400;
 }
 
@@ -283,7 +283,7 @@
 .cardTitle {
   font-size: 20px;
   font-weight: 500;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
 }
 
 .chartLegend {
@@ -292,7 +292,7 @@
   gap: 1rem;
   font-size: 12px;
   font-weight: 500;
-  color: #707070;
+  color: var(--color-text-secondary);
 }
 
 .legendDot {
@@ -319,7 +319,7 @@
 .searchIcon {
   position: absolute;
   left: 12px;
-  color: #9ca3af;
+  color: var(--color-text-placeholder);
 }
 
 .searchInput {
@@ -333,7 +333,7 @@
 }
 
 .searchInput:focus {
-  border-color: #024A94;
+  border-color: var(--color-primary);
 }
 
 .sortWrapper {
@@ -341,7 +341,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 13px;
-  color: #707070;
+  color: var(--color-text-secondary);
 }
 
 .sortSelect {
@@ -350,7 +350,7 @@
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #11243d;
+  color: var(--color-text-primary);
   appearance: none;
   background: white url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23707070%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") no-repeat right 8px center;
   outline: none;
@@ -371,7 +371,7 @@
 .performanceTable th {
   font-size: 13px;
   font-weight: 500;
-  color: #707070;
+  color: var(--color-text-secondary);
   padding: 1rem 1rem 1rem 0;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -380,7 +380,7 @@
   padding: 1rem 1rem 1rem 0;
   font-size: 14px;
   font-weight: 500;
-  color: #11243d;
+  color: var(--color-text-primary);
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
 }
@@ -390,7 +390,7 @@
 }
 
 .typeIcon {
-  color: #024A94;
+  color: var(--color-primary);
 }
 
 .typeIcon.pathway {
@@ -404,18 +404,18 @@
 }
 
 .nameTitle {
-  color: #024A94;
+  color: var(--color-primary);
   font-weight: 500;
 }
 
 .namePrice {
-  color: #707070;
+  color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 400;
 }
 
 .descText {
-  color: #707070;
+  color: var(--color-text-secondary);
   font-weight: 400;
   max-width: 180px;
   white-space: nowrap;

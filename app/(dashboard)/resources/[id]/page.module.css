@@ -1,5 +1,5 @@
 .pageContainer {
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-family);
 }
 
 .backHeader {
@@ -18,7 +18,7 @@
   padding: 0.5rem;
   border-radius: 50%;
   transition: background-color 0.2s;
-  color: #666;
+  color: var(--color-text-heading);
 }
 
 .backBtn:hover {
@@ -184,21 +184,21 @@
 }
 
 .buyBtnPrimary {
-  background-color: #024A94;
+  background-color: var(--color-primary-hover);
   color: white;
 }
 
 .buyBtnPrimary:hover {
-  background-color: #023870;
+  background-color: #012c5c;
 }
 
 .buyBtnOwned {
-  background-color: #f1f5f9;
-  color: #024A94;
+  background-color: var(--color-input-bg);
+  color: var(--color-primary);
 }
 
 .buyBtnOwned:hover {
-  background-color: #e2e8f0;
+  background-color: #eeeeee;
 }
 
 .spinner {
@@ -259,7 +259,7 @@
 .statCard h4 {
   font-size: 20px;
   font-weight: 500;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   margin-bottom: 1.5rem;
 }
 
@@ -273,7 +273,7 @@
 
 .statLabel {
   font-size: 14px;
-  color: #707070;
+  color: var(--color-text-secondary);
   width: 125px;
 }
 
@@ -291,14 +291,14 @@
 .progressBarFill {
   display: block;
   height: 100%;
-  background-color: #024385;
+  background-color: var(--color-primary-hover);
   border-radius: 100px;
 }
 
 .statValue {
   font-size: 14px;
   font-weight: 400;
-  color: #707070;
+  color: var(--color-text-secondary);
   width: 36px;
   text-align: right;
 }
@@ -312,18 +312,18 @@
 .scoreValue {
   font-size: 64px;
   font-weight: 700;
-  color: #024385;
+  color: var(--color-primary-hover);
   line-height: 1;
 }
 
 .scoreBadge {
-  background-color: transparent;
-  color: #34C759;
-  border: 1px solid #34C759;
+  background-color: #E9FCEA;
+  color: #1CAB22;
+  border: 0.5px solid #1CAB22;
   font-weight: 600;
   font-size: 12px;
-  padding: 2px 8px;
-  border-radius: 100px;
+  padding: 4px;
+  border-radius: 6px;
 }
 
 /* Comments Section */
@@ -346,7 +346,7 @@
 
 .loadingContainer .spinner {
   border: 3px solid #e0e0e0;
-  border-top-color: #024A94;
+  border-top-color: var(--color-primary);
 }
 
 .errorBanner {
@@ -368,8 +368,8 @@
 }
 
 .interactionStat {
-  background: #f1f5f9;
-  color: #024A94;
+  background: var(--color-input-bg);
+  color: var(--color-primary);
   padding: 6px 14px;
   border-radius: 100px;
   font-size: 0.8125rem;
@@ -408,13 +408,13 @@
 
 .commentsTitle {
   font-size: 16px;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-weight: 500;
 }
 
 .commentsCount {
   font-size: 13px;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-weight: 500;
 }
 
@@ -437,7 +437,7 @@
   font-weight: 500;
   font-size: 13px;
   margin-bottom: 0.25rem;
-  color: #707070;
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -451,7 +451,7 @@
 .commentText {
   font-size: 16px;
   line-height: 1.5;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-weight: 400;
   margin-bottom: 0.5rem;
 }
@@ -485,7 +485,7 @@
 
 .commentInput {
   width: 100%;
-  background: #f8f9fa;
+  background: var(--color-input-bg);
   border: 1px solid #eaeaea;
   border-radius: 12px;
   padding: 1rem 4rem 1rem 1rem;
@@ -495,7 +495,7 @@
 }
 
 .commentInput:focus {
-  border-color: #024A94;
+  border-color: var(--color-primary);
 }
 
 .postCommentBtn {
@@ -506,7 +506,7 @@
   background: none;
   border: none;
   font-size: 14px;
-  color: #024385;
+  color: var(--color-primary-hover);
   font-weight: 500;
   cursor: pointer;
 }
@@ -515,7 +515,7 @@
 /* Sidebar */
 .sidebarTitle {
   font-size: 16px;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-weight: 500;
   margin-bottom: 1.5rem;
 }

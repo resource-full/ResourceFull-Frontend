@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./ResourceCard.module.css";
 
-export type ResourceCardVariant = "purple" | "orange";
+export type ResourceCardVariant = "purple" | "orange" | "pink" | "green";
 
 interface ResourceCardProps {
   variant: ResourceCardVariant;
@@ -36,7 +36,7 @@ const BookmarkedIcon = () => (
 );
 
 const DocumentIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
     <polyline points="14 2 14 8 20 8" />
     <line x1="16" y1="13" x2="8" y2="13" />
@@ -67,7 +67,13 @@ export default function ResourceCard({
   isPurchased,
   isSaved,
 }: ResourceCardProps) {
-  const variantClass = variant === "purple" ? styles.variantPurple : styles.variantOrange;
+  const VARIANT_CLASSES: Record<ResourceCardVariant, string> = {
+    purple: styles.variantPurple,
+    orange: styles.variantOrange,
+    pink: styles.variantPink,
+    green: styles.variantGreen,
+  };
+  const variantClass = VARIANT_CLASSES[variant];
 
   const cardContent = (
     <div className={`${styles.card} ${variantClass}`}>

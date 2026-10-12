@@ -7,23 +7,24 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.9375rem;
-  color: #5a6474;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
   cursor: pointer;
   background: transparent;
   border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 6px 8px 6px 12px;
+  border-radius: var(--radius-sm);
   transition: all 150ms ease;
 }
 
 .dropdownTrigger:hover {
-  color: #11243d;
+  color: var(--color-text-heading);
   background: #f0f4f8;
 }
 
 .triggerIcon {
-  color: #8c95a6;
+  color: var(--color-text-secondary);
   display: flex;
   margin-top: -3px;
   align-items: center;

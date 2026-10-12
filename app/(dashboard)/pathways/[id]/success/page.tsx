@@ -53,7 +53,7 @@ export default function PathwaySuccessPage({ params }: { params: Promise<{ id: s
     experience: [],
   });
 
-  const mainColor = MOCK_PATHWAY.variant === "purple" ? "#6a359c" : "#c4452a";
+  const mainColor = MOCK_PATHWAY.variant === "purple" ? "#58169c" : "#ad3307";
   const bgLightColor = MOCK_PATHWAY.variant === "purple" ? "rgba(106, 53, 156, 0.08)" : "rgba(196, 69, 42, 0.08)";
 
   const handleOpenResource = () => {

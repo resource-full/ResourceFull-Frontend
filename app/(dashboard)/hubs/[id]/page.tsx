@@ -45,7 +45,7 @@ const PathwayIcon = () => (
   </svg>
 );
 
-const VARIANTS: ResourceCardVariant[] = ["purple", "orange"];
+const VARIANTS: ResourceCardVariant[] = ["purple", "orange", "pink", "green"];
 function getVariant(index: number): ResourceCardVariant {
   return VARIANTS[index % VARIANTS.length];
 }
@@ -296,7 +296,7 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
   const resourceCount = hub?.resources?.length || 0;
   const pathwayCount = hub?.pathways?.length || 0;
 
-  const mainColor = "#6a359c"; // default purple
+  const mainColor = "#58169c"; // default purple
 
   // Filter similar hubs to exclude current
   const similarHubs = displayHubs.filter(h => h.id !== id).slice(0, 3);
@@ -419,7 +419,12 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
                 ) : (
                   filteredItems.map(item => (
                     <div key={item.id} className={styles.listItem}>
-                      <div className={`${styles.itemCard} ${item.variant === 'purple' ? styles.variantPurple : styles.variantOrange}`}>
+                      <div className={`${styles.itemCard} ${
+                        item.variant === 'purple' ? styles.variantPurple :
+                        item.variant === 'orange' ? styles.variantOrange :
+                        item.variant === 'pink' ? styles.variantPink :
+                        styles.variantGreen
+                      }`}>
                         <div className={styles.itemLeft}>
                           <h3 className={styles.itemTitle}>
                             {item.type === 'resource' ? <ResourceIcon /> : <PathwayIcon />}

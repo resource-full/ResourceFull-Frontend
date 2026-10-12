@@ -14,7 +14,7 @@
 .title {
   font-size: 20px;
   font-weight: 500;
-  color: #000000;
+  color: var(--color-text-heading);
   margin-bottom: 24px;
 }
 
@@ -44,7 +44,7 @@
   width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: #f8f9fc;
+  background: var(--color-input-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,12 +62,12 @@
 
 .bankName {
   font-weight: 500;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-size: 14px;
 }
 
 .accountNumber {
-  color: #707070;
+  color: var(--color-text-secondary);
   font-size: 14px;
   font-weight: 500;
 }
@@ -79,7 +79,7 @@
 }
 
 .defaultBadge {
-  background: #024A94;
+  background: var(--color-primary);
   color: #ffffff;
   padding: 2px 8px;
   border-radius: 10px;
@@ -88,7 +88,7 @@
 }
 
 .setDefault {
-  color: #024385;
+  color: var(--color-primary-hover);
   font-size: 14px;
   font-weight: 500;
   background: none;
@@ -100,7 +100,7 @@
 .deleteBtn {
   background: none;
   border: none;
-  color: #8c95a6;
+  color: var(--color-text-placeholder);
   cursor: pointer;
   padding: 4px;
   display: flex;
@@ -118,7 +118,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #024385;
+  color: var(--color-primary-hover);
   font-weight: 500;
   font-size: 14px;
   background: none;
@@ -143,13 +143,13 @@
 }
 
 .scheduleLabel {
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-size: 14px;
   font-weight: 400;
 }
 
 .scheduleValue {
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-weight: 500;
   font-size: 14px;
 }
@@ -167,19 +167,19 @@
 }
 
 .progressLabel {
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-size: 14px;
   font-weight: 400;
 }
 
 .progressValue {
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-weight: 500;
   font-size: 14px;
 }
 
 .progressValues {
-  color: #024A94;
+  color: var(--color-primary);
   font-weight: 400;
   font-size: 10px;
 }
@@ -193,7 +193,7 @@
 
 .progressFill {
   height: 100%;
-  background: #024A94;
+  background: var(--color-primary);
   border-radius: 100px;
 }
 
@@ -217,7 +217,7 @@
 .formLabel {
   font-size: 13px;
   font-weight: 500;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
 }
 
 .formInput,
@@ -227,7 +227,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 14px;
-  color: #11243d;
+  color: var(--color-text-primary);
   background: #ffffff;
   outline: none;
   transition: border-color 0.2s;
@@ -236,7 +236,7 @@
 
 .formInput:focus,
 .formSelect:focus {
-  border-color: #024A94;
+  border-color: var(--color-primary);
 }
 
 .formSelect {
@@ -259,7 +259,7 @@
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   background: #ffffff;
-  color: #2C2C2C;
+  color: var(--color-text-heading);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -274,7 +274,7 @@
   padding: 10px 16px;
   border-radius: 10px;
   border: none;
-  background: #024A94;
+  background: var(--color-primary);
   color: #ffffff;
   font-size: 14px;
   font-weight: 500;
@@ -283,7 +283,7 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: #023870;
+  background: #012c5c;
 }
 
 .submitBtn:disabled,
@@ -299,7 +299,7 @@
 }
 
 .stateText {
-  color: #707070;
+  color: var(--color-text-secondary);
   font-size: 14px;
   padding: 8px 0;
 }

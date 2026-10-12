@@ -229,7 +229,7 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
     }
   }, [id, fetchComments, fetchStats, checkOwnership, stats?.comments]);
 
-  const mainColor = pathway.variant === "purple" ? "#6a359c" : "#c4452a";
+  const mainColor = pathway.variant === "purple" ? "#58169c" : "#ad3307";
   const bgLightColor = pathway.variant === "purple" ? "rgba(106, 53, 156, 0.08)" : "rgba(196, 69, 42, 0.08)";
 
   const handleBuyClick = async () => {
@@ -432,7 +432,7 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
               <h4>Relevancy Score</h4>
               <div className={styles.scoreWrapper}>
                 <span className={styles.scoreValue}>96%</span>
-                <span className={styles.scoreBadge}>R.S</span>
+                <span className={styles.scoreBadge}>C.S</span>
               </div>
             </div>
           </div>

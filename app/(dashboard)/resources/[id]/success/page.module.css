@@ -1,5 +1,5 @@
 .pageContainer {
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-family);
   display: flex;
   flex-direction: column;
 }
@@ -20,7 +20,7 @@
   padding: 0.5rem;
   border-radius: 50%;
   transition: background-color 0.2s;
-  color: #666;
+  color: var(--color-text-heading);
 }
 
 .backBtn:hover {
@@ -47,7 +47,7 @@
 .checkCircle {
   width: 56px;
   height: 56px;
-  background-color: #34C759;
+  background-color: var(--color-success);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -58,20 +58,20 @@
 .title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text-heading);
   margin-bottom: 0.5rem;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin-bottom: 2.5rem;
   line-height: 1.5;
 }
 
 /* Mock Card */
 .resourceCardMock {
-  background-color: #5D2E8C;
+  background-color: #58169c;
   border-radius: 16px;
   width: 100%;
   max-width: 650px;
@@ -187,11 +187,11 @@
 }
 
 .primaryBtn {
-  background-color: #024A94;
+  background-color: var(--color-primary-hover);
   color: white;
   font-weight: 500;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
   cursor: pointer;
   font-size: 14px;
@@ -200,15 +200,15 @@
 }
 
 .primaryBtn:hover {
-  background-color: #023870;
+  background-color: #012c5c;
 }
 
 .secondaryBtn {
-  background-color: #F6F6F6;
-  color: #024A94;
+  background-color: var(--color-input-bg);
+  color: var(--color-primary);
   font-weight: 500;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 16px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
@@ -216,5 +216,5 @@
 }
 
 .secondaryBtn:hover {
-  background-color: #f8f9fa;
+  background-color: #eeeeee;
 }

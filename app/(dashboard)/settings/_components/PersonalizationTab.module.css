@@ -17,7 +17,7 @@
 .sectionTitle {
   font-size: 1.125rem;
   font-weight: 500;
-  color: #11243d;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: #f8f9fc;
+  background: var(--color-input-bg);
   padding: 16px;
   border-radius: 8px;
 }
@@ -33,7 +33,7 @@
 .label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #5a6474;
+  color: var(--color-text-secondary);
 }
 
 .inputWrapper {
@@ -46,14 +46,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #024A94;
+  color: var(--color-primary);
 }
 
 .input {
   background: transparent;
   border: none;
   font-size: 0.9375rem;
-  color: #11243d;
+  color: var(--color-text-primary);
   font-weight: 500;
   width: 100%;
   outline: none;
