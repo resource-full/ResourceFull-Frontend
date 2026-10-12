@@ -205,7 +205,7 @@
 .viewCount {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   margin-left: 12px;
 }
 
@@ -213,7 +213,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #5a6474;
+  color: var(--color-text-secondary);
 }
 
 .commentCount {

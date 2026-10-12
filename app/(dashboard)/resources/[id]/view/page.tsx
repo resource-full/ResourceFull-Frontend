@@ -26,6 +26,7 @@ const MOCK_RESOURCE = {
   title: "Graphic Designer 80% wining rate CV",
   authorName: "Stella Della",
   authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
+  variant: "purple" as "purple" | "orange",
   // fileType: ".pdf", // Change to ".mp4" or ".mp3" to test different views
   fileType: ".pdf",
   contentUrl: "/assets/pdf.jpg",
@@ -40,10 +41,11 @@ export default function ResourceViewPage({ params }: { params: Promise<{ id: str
 
   // We can switch this to see different views based on fileType
   const fileType = MOCK_RESOURCE.fileType;
+  const mainColor = MOCK_RESOURCE.variant === "purple" ? "#58169c" : "#ad3307";
 
   return (
     <div className={styles.viewerContainer}>
-      <header className={styles.viewerHeader}>
+      <header className={styles.viewerHeader} style={{ backgroundColor: mainColor }}>
         <button onClick={() => router.back()} className={styles.closeBtn} aria-label="Close viewer">
           <CloseIcon />
         </button>
@@ -62,11 +64,29 @@ export default function ResourceViewPage({ params }: { params: Promise<{ id: str
       </header>
 
       <div className={styles.contentArea}>
-        <div className={styles.pdfPreview}>
-          <img src={MOCK_RESOURCE.contentUrl} alt="PDF Document" className={styles.pdfPage} />
-          <img src={MOCK_RESOURCE.videoUrl} alt="Video Document" className={styles.pdfPage} />
-          <img src={MOCK_RESOURCE.audioUrl} alt="Audio Document" className={styles.pdfPage} />
-        </div>
+        {fileType === ".pdf" && (
+          <div className={styles.pdfPreview}>
+            <img src={MOCK_RESOURCE.contentUrl} alt="PDF Document" className={styles.pdfPage} />
+          </div>
+        )}
+
+        {fileType === ".mp4" && (
+          <div className={styles.videoContainer}>
+            <div className={styles.videoPlayerWrapper}>
+              <video src={MOCK_RESOURCE.videoUrl} controls className={styles.videoPlayer} />
+            </div>
+          </div>
+        )}
+
+        {fileType === ".mp3" && (
+          <div className={styles.audioContainer}>
+            <AudioIcon />
+            <div className={styles.audioControls}>
+              <div className={styles.audioTitle}>{MOCK_RESOURCE.audioTitle}</div>
+              <audio src={MOCK_RESOURCE.audioUrl} controls className={styles.audioPlayer} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

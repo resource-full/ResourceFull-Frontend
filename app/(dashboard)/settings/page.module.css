@@ -23,7 +23,7 @@
 .backButton {
   background: transparent;
   border: none;
-  color: #11243d;
+  color: var(--color-text-heading);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,9 +33,9 @@
 }
 
 .pageTitle {
-  font-size: 1.5rem;
+  font-size: 31px;
   font-weight: 500;
-  color: #11243d;
+  color: #011A34;
   margin: 0;
   display: flex;
   align-items: center;
@@ -44,28 +44,28 @@
 
 .activeTabName {
   font-weight: 600;
-  color: #024A94;
+  color: var(--color-primary);
 }
 
 .saveButton {
   background: #e2e8f0;
   color: #ffffff;
   border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 /* Make it look active/clickable for demo purposes */
 .saveButtonActive {
-  background: #024A94;
+  background: var(--color-primary-hover);
 }
 
 .saveButtonActive:hover {
-  background: #023B76;
+  background: #012c5c;
 }
 
 .mainContent {
@@ -84,7 +84,7 @@
   border-radius: 16px;
   padding: 48px;
   text-align: center;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   font-size: 1.125rem;
   font-weight: 500;
   border: 1px dashed #e2e8f0;

@@ -17,7 +17,30 @@ import { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
 import { formatPrice } from "@/app/hooks/useDashboardData";
 import styles from "./page.module.css";
 
-const VARIANTS: ResourceCardVariant[] = ["orange", "purple"];
+const TAGS = [
+  "All",
+  "CV Templates",
+  "Templates",
+  "Fellowships",
+  "Prompts",
+  "Career Advice"
+];
+
+const FilterIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+  </svg>
+);
+
+const EmptyStateIcon = () => (
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="15" y2="18" />
+  </svg>
+);
+
+const VARIANTS: ResourceCardVariant[] = ["orange", "purple", "pink", "green"];
 function getVariant(index: number): ResourceCardVariant {
   return VARIANTS[index % VARIANTS.length];
 }
@@ -36,6 +59,9 @@ export default function SavedPage() {
     const [savedHubs, setSavedHubs] = useState<Hub[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [activeTag, setActiveTag] = useState("All");
+    const [priceFilters, setPriceFilters] = useState<string[]>([]);
+    const [isPriceDropdownOpen, setIsPriceDropdownOpen] = useState(false);
 
     const fetchSaved = useCallback(async () => {
         try {
@@ -186,6 +212,48 @@ export default function SavedPage() {
         return mapped.filter(h => h.title.toLowerCase().includes(q) || h.description.toLowerCase().includes(q));
     }, [savedHubs, filters.searchQuery]);
 
+    const filteredResources = useMemo(() => {
+        let result = displayResources;
+        if (activeTag !== "All") {
+            result = result.filter(r => r.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase().replace(" ", ""))));
+        }
+        if (priceFilters.includes("free") && !priceFilters.includes("paid")) {
+            result = result.filter(r => r.isFree);
+        }
+        if (priceFilters.includes("paid") && !priceFilters.includes("free")) {
+            result = result.filter(r => !r.isFree);
+        }
+        return result;
+    }, [displayResources, activeTag, priceFilters]);
+
+    const filteredPathways = useMemo(() => {
+        let result = displayPathways;
+        if (activeTag !== "All") {
+            result = result.filter(p => p.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase().replace(" ", ""))));
+        }
+        if (priceFilters.includes("free") && !priceFilters.includes("paid")) {
+            result = result.filter(p => p.isFree);
+        }
+        if (priceFilters.includes("paid") && !priceFilters.includes("free")) {
+            result = result.filter(p => !p.isFree);
+        }
+        return result;
+    }, [displayPathways, activeTag, priceFilters]);
+
+    const filteredHubs = useMemo(() => {
+        let result = displayHubs;
+        if (activeTag !== "All") {
+            result = result.filter(h => h.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase().replace(" ", ""))));
+        }
+        return result;
+    }, [displayHubs, activeTag]);
+
+    const togglePriceFilter = (filter: string) => {
+        setPriceFilters(prev =>
+            prev.includes(filter) ? prev.filter(v => v !== filter) : [...prev, filter]
+        );
+    };
+
     const totalCount = displayResources.length + displayPathways.length + displayHubs.length;
 
     // Dynamic Title Logic
@@ -209,51 +277,61 @@ export default function SavedPage() {
         return "My Saves";
     };
 
+    const emptyState = (title: string) => (
+        <div className={styles.emptyState}>
+            <span className={styles.emptyIcon}><EmptyStateIcon /></span>
+            <div>
+                <p className={styles.emptyTitle}>{title}</p>
+                <p className={styles.emptySubtitle}>Seems we don&apos;t have that right now. Try again later</p>
+            </div>
+        </div>
+    );
+
     const renderTab = (tab: string) => {
         if (isLoading) {
-            return <div className={styles.stateMessage}>Loading your saved {tab}...</div>;
+            return <div className={styles.loadingState}>Loading your saved {tab}...</div>;
         }
         if (error) {
             return <div className={styles.errorState}>{error}</div>;
         }
 
         if (tab === "resources") {
-            if (displayResources.length > 0) {
+            if (filteredResources.length > 0) {
                 return (
                     <div className={styles.resourceGrid}>
-                        {displayResources.map((resource) => (
+                        {filteredResources.map((resource) => (
                             <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} isSaved={true} />
                         ))}
                     </div>
                 );
             }
-            return <div className={styles.stateMessage}>No saved resources yet. Browse and bookmark resources to find them here.</div>;
+            return emptyState("No saved resources yet");
         }
 
         if (tab === "pathways") {
-            if (displayPathways.length > 0) {
+            if (filteredPathways.length > 0) {
                 return (
                     <div className={styles.pathwayGrid}>
-                        {displayPathways.map((pathway) => (
+                        {filteredPathways.map((pathway) => (
                             <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} isSaved={true} />
                         ))}
                     </div>
                 );
             }
-            return <div className={styles.stateMessage}>No saved pathways yet. Browse and bookmark pathways to find them here.</div>;
+            return emptyState("No saved pathways yet");
         }
 
         if (tab === "hubs") {
-            if (displayHubs.length > 0) {
+            if (filteredHubs.length > 0) {
                 return (
                     <div className={styles.hubGrid}>
-                        {displayHubs.map((hub) => (
+                        {filteredHubs.map((hub) => (
                             <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} isSaved={true} />
                         ))}
                     </div>
                 );
             }
-            return <div className={styles.stateMessage}>No saved hubs yet. Browse and bookmark hubs to find them here.</div>;
+            return emptyState("No saved hubs yet");
         }
 
         return null;
@@ -268,6 +346,68 @@ export default function SavedPage() {
                 <p className={styles.exploreDesc}>
                     {isLoading ? "Loading..." : error ? "Could not load saved items." : `${totalCount} item${totalCount !== 1 ? "s" : ""} saved across resources, pathways, and hubs`}
                 </p>
+            </div>
+
+            <div className={styles.filterRow}>
+                <div className={styles.tagsContainer}>
+                    {TAGS.map(tag => (
+                        <button
+                            key={tag}
+                            onClick={() => setActiveTag(tag)}
+                            className={`${styles.exploreTag} ${activeTag === tag ? styles.exploreTagActive : ''}`}
+                        >
+                            {tag}
+                        </button>
+                    ))}
+                </div>
+                <div className={styles.filterWrapper}>
+                    <button
+                        className={styles.filterBtn}
+                        aria-label="Filter"
+                        onClick={() => setIsPriceDropdownOpen(!isPriceDropdownOpen)}
+                    >
+                        <span>Filter by:</span>
+                        <FilterIcon />
+                    </button>
+
+                    {isPriceDropdownOpen && (
+                        <div className={styles.filterDropdown}>
+                            <label className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-50 rounded-lg">
+                                <div className={`w-5 h-5 border-[1.5px] rounded flex items-center justify-center transition-colors ${priceFilters.includes('free') ? 'bg-[#024A94] border-[#024A94]' : 'border-gray-300 bg-white'}`}>
+                                    {priceFilters.includes('free') && (
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                    )}
+                                </div>
+                                <input
+                                    type="checkbox"
+                                    className="hidden"
+                                    checked={priceFilters.includes('free')}
+                                    onChange={() => togglePriceFilter('free')}
+                                />
+                                <span className="text-gray-800 font-medium">Free</span>
+                            </label>
+
+                            <label className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-50 rounded-lg">
+                                <div className={`w-5 h-5 border-[1.5px] rounded flex items-center justify-center transition-colors ${priceFilters.includes('paid') ? 'bg-[#024A94] border-[#024A94]' : 'border-gray-300 bg-white'}`}>
+                                    {priceFilters.includes('paid') && (
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                    )}
+                                </div>
+                                <input
+                                    type="checkbox"
+                                    className="hidden"
+                                    checked={priceFilters.includes('paid')}
+                                    onChange={() => togglePriceFilter('paid')}
+                                />
+                                <span className="text-gray-800 font-medium">Paid</span>
+                            </label>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <DashboardTopNav activeTab={activeTab} onTabChange={setActiveTab} />

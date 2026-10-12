@@ -4,7 +4,7 @@
   height: 100vh;
   background-color: #f6f8fb;
   /* Light background for the viewer */
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-family);
   position: relative;
 }
 
@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background-color: #5D2E8C;
+  background-color: #58169c;
   /* Purple header */
   color: white;
   flex-shrink: 0;
@@ -134,7 +134,7 @@
   bottom: 1rem;
   left: 20px;
   width: 2px;
-  background-color: #024A94;
+  background-color: var(--color-primary);
   /* Blue line */
   z-index: 0;
 }
@@ -151,7 +151,7 @@
 .stepNumber {
   width: 42px;
   height: 42px;
-  background-color: #024A94;
+  background-color: var(--color-primary);
   /* Blue circle */
   color: white;
   border-radius: 50%;
@@ -180,7 +180,7 @@
 .stepTitle {
   font-size: 1rem;
   font-weight: 500;
-  color: #1a1a1a;
+  color: var(--color-text-heading);
   margin-bottom: 1rem;
 }
 
@@ -188,7 +188,7 @@
   background-color: #f5f5f5;
   border-radius: 12px;
   padding: 2rem 1.5rem;
-  color: #707070;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   min-height: 80px;
 }
@@ -196,7 +196,7 @@
 /* Resource Card */
 .resourcePrompt {
   font-size: 0.875rem;
-  color: #1a1a1a;
+  color: var(--color-text-heading);
   margin-bottom: 1rem;
   font-weight: 500;
 }
@@ -209,7 +209,7 @@
 
 .embeddedResourceCard {
   flex: 1;
-  background-color: #5D2E8C;
+  background-color: #58169c;
   /* Purple resource */
   border-radius: 12px;
   padding: 1.5rem;
@@ -220,7 +220,7 @@
 }
 
 .embeddedResourceCard.variantOrange {
-  background-color: #c4452a;
+  background-color: #ad3307;
 }
 
 .embeddedLeft {
@@ -251,14 +251,14 @@
   font-size: 0.75rem;
   font-weight: 600;
   background-color: white;
-  color: #5D2E8C;
+  color: #58169c;
   /* Text matches card bg */
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
 }
 
 .variantOrange .embeddedTag {
-  color: #c4452a;
+  color: #ad3307;
 }
 
 .fileTypeIcon {
@@ -279,11 +279,11 @@
 .actionPrice {
   font-size: 1rem;
   font-weight: 500;
-  color: #1a1a1a;
+  color: var(--color-text-heading);
 }
 
 .actionBtn {
-  background-color: #024A94;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -295,15 +295,15 @@
 }
 
 .actionBtn:hover {
-  background-color: #023870;
+  background-color: #012c5c;
 }
 
 .actionBtnOutline {
   background-color: white;
-  color: #024A94;
+  color: var(--color-primary);
   border: 1px solid #eaeaea;
 }
 
 .actionBtnOutline:hover {
-  background-color: #f8f9fa;
+  background-color: #eeeeee;
 }

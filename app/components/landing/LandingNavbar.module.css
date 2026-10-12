@@ -28,13 +28,13 @@
 .navLink {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: color 150ms ease;
 }
 
 .navLink:hover {
-  color: #11243d;
+  color: var(--color-text-heading);
 }
 
 .actions {
@@ -44,33 +44,32 @@
 }
 
 .loginBtn {
-  padding: 12px 24px;
+  padding: 16px 24px;
   font-size: 14px;
   font-weight: 500;
-  color: #024A94;
-  background: #F9F9F9;
-  border: 1px solid #EAEAEA;
-  border-radius: 16px;
+  color: var(--color-primary);
+  background: var(--color-input-bg);
+  border: none;
+  border-radius: var(--radius-xl);
   cursor: pointer;
   transition: all 150ms ease;
 }
 
 .loginBtn:hover {
-  background: #f0f7ff;
-  border-color: #024A94;
+  background: #eeeeee;
 }
 
 .getStartedBtn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 16px 24px;
   font-size: 14px;
   font-weight: 500;
   color: #ffffff;
-  background: #02386F;
+  background: var(--color-primary-hover);
   border: none;
-  border-radius: 16px;
+  border-radius: 14px;
   cursor: pointer;
   transition: all 150ms ease;
 }
@@ -85,7 +84,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #11243d;
+  color: var(--color-text-heading);
   padding: 8px;
   z-index: 100;
 }
@@ -125,13 +124,13 @@
 .mobileNavLink {
   font-size: 24px;
   font-weight: 500;
-  color: #11243d;
+  color: var(--color-text-heading);
   text-decoration: none;
   transition: color 150ms ease;
 }
 
 .mobileNavLink:hover {
-  color: #024A94;
+  color: var(--color-primary);
 }
 
 .mobileActions {

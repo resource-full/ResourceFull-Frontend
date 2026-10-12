@@ -38,7 +38,7 @@
 .authorName {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #5a6474;
+  color: var(--color-text-secondary);
 }
 
 .bookmarkBtn {
@@ -223,7 +223,7 @@
 .viewCount {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   margin-left: 12px;
 }
 
@@ -231,7 +231,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #5a6474;
+  color: var(--color-text-secondary);
 }
 
 .commentCount {

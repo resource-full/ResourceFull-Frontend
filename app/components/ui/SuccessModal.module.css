@@ -95,7 +95,7 @@
 
 .subtitle {
   font-size: 0.9375rem;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   line-height: 1.5;
 }
 
@@ -106,11 +106,11 @@
   width: 100%;
   height: 52px;
   margin-top: 12px;
-  background: #024A94;
+  background: var(--color-primary-hover);
   color: #ffffff;
   border: none;
-  border-radius: 8px;
-  font-family: "Vastago Grotesk", system-ui, sans-serif;
+  border-radius: 14px;
+  font-family: var(--font-family);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -118,7 +118,7 @@
 }
 
 .actionButton:hover {
-  background: #013a75;
+  background: #012c5c;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(2, 74, 148, 0.3);
 }

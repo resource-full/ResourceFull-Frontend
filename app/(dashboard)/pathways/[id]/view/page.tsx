@@ -41,6 +41,7 @@ const MOCK_PATHWAY = {
   title: "Become a Full Stack Developer in 3 Months",
   authorName: "Stella Della",
   authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
+  variant: "purple" as "purple" | "orange",
   steps: [
     { type: "intro", id: 1, title: "Introduction", description: "Description" },
     { type: "resource", id: 2, resourceTitle: "Graphic Designer 80% wining rate CV", variant: "purple", price: "$120", tags: ["Design", "CV"], fileType: ".pdf", isFree: true, externalPrice: "Free" },
@@ -83,9 +84,11 @@ export default function PathwayViewPage({ params }: { params: Promise<{ id: stri
     }, 3000);
   };
 
+  const mainColor = MOCK_PATHWAY.variant === "purple" ? "#58169c" : "#ad3307";
+
   return (
     <div className={styles.viewerContainer}>
-      <header className={styles.viewerHeader}>
+      <header className={styles.viewerHeader} style={{ backgroundColor: mainColor }}>
         <div className={styles.headerLeft}>
           <button onClick={handleClose} className={styles.closeBtn} aria-label="Close viewer">
             <CloseIcon />

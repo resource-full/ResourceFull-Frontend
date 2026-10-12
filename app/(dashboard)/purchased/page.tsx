@@ -17,7 +17,15 @@ import { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
 import { formatPrice } from "@/app/hooks/useDashboardData";
 import styles from "./page.module.css";
 
-const VARIANTS: ResourceCardVariant[] = ["orange", "purple"];
+const EmptyStateIcon = () => (
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="15" y2="18" />
+  </svg>
+);
+
+const VARIANTS: ResourceCardVariant[] = ["orange", "purple", "pink", "green"];
 function getVariant(index: number): ResourceCardVariant {
   return VARIANTS[index % VARIANTS.length];
 }
@@ -180,9 +188,19 @@ export default function PurchasedPage() {
         return "My Purchases";
     };
 
-    const renderTab = (tab: string) => {
+        const emptyState = (title: string) => (
+            <div className={styles.emptyState}>
+                <span className={styles.emptyIcon}><EmptyStateIcon /></span>
+                <div>
+                    <p className={styles.emptyTitle}>{title}</p>
+                    <p className={styles.emptySubtitle}>Seems we don&apos;t have that right now. Try again later</p>
+                </div>
+            </div>
+        );
+
+        const renderTab = (tab: string) => {
         if (isLoading) {
-            return <div className={styles.stateMessage}>Loading your purchased {tab}...</div>;
+            return <div className={styles.loadingState}>Loading your purchased {tab}...</div>;
         }
         if (error) {
             return <div className={styles.errorState}>{error}</div>;
@@ -198,7 +216,7 @@ export default function PurchasedPage() {
                     </div>
                 );
             }
-            return <div className={styles.stateMessage}>No purchased resources yet. Explore the marketplace to find resources to buy.</div>;
+            return emptyState("No purchased resources yet");
         }
 
         if (tab === "pathways") {
@@ -211,7 +229,7 @@ export default function PurchasedPage() {
                     </div>
                 );
             }
-            return <div className={styles.stateMessage}>No purchased pathways yet. Explore the marketplace to find pathways to buy.</div>;
+            return emptyState("No purchased pathways yet");
         }
 
         if (tab === "hubs") {
@@ -224,7 +242,7 @@ export default function PurchasedPage() {
                     </div>
                 );
             }
-            return <div className={styles.stateMessage}>No purchased hubs yet. Explore the marketplace to find hubs to join.</div>;
+            return emptyState("No purchased hubs yet");
         }
 
         return null;

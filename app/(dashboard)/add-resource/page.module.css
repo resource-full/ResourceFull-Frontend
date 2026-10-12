@@ -8,13 +8,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-heading);
+  flex-shrink: 0;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #11243d;
+  font-size: 31px;
+  font-weight: 500;
+  color: #011a34;
 }
 
 .headerActions {
@@ -26,7 +40,7 @@
 .btnDraft {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   padding: 10px 24px;
   border-radius: 8px;
   font-size: 0.9375rem;
@@ -36,18 +50,18 @@
 }
 
 .btnDraft:hover {
-  background: #f8f9fc;
-  color: #11243d;
+  background: var(--color-input-bg);
+  color: var(--color-text-primary);
 }
 
 .btnPost {
-  background: #024A94;
+  background: var(--color-primary-hover);
   border: none;
   color: #ffffff;
   padding: 10px 32px;
-  border-radius: 8px;
+  border-radius: 14px;
   font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background 150ms ease;
   display: flex;
@@ -56,7 +70,7 @@
 }
 
 .btnPost:hover {
-  background: #013a75;
+  background: #012c5c;
 }
 
 .btnPostDisabled {
@@ -68,50 +82,49 @@
 /* State 1: Upload Zone */
 .uploadZone {
   flex: 1;
-  background: #f0f4f8;
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 60px;
 }
 
 .uploadDashed {
   width: 100%;
-  max-width: 800px;
-  height: 400px;
-  border: 2px dashed #93c5fd;
-  border-radius: 12px;
+  height: 100%;
+  border: 1px dashed var(--color-primary);
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 150ms ease;
-  background: transparent;
+  background: #e6edf4;
+  padding: 8px;
+  gap: 24px;
 }
 
 .uploadDashed:hover, .uploadDashedActive {
-  background: rgba(2, 74, 148, 0.02);
-  border-color: #024A94;
+  background: #dde8f2;
 }
 
 .uploadIcon {
-  color: #024A94;
-  margin-bottom: 16px;
+  color: #023b76;
 }
 
 .uploadTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #024A94;
-  margin-bottom: 8px;
+  font-size: 25px;
+  font-weight: 500;
+  color: #023b76;
+  margin-bottom: 10px;
 }
 
 .uploadSubtitle {
-  font-size: 0.875rem;
-  color: #024A94;
-  opacity: 0.8;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--color-primary);
 }
 
 /* State 2: Form Layout */
@@ -135,7 +148,7 @@
 }
 
 .fileCard {
-  background: #f8f9fc;
+  background: var(--color-input-bg);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -148,13 +161,13 @@
   align-items: center;
   gap: 12px;
   font-weight: 600;
-  color: #11243d;
+  color: var(--color-text-primary);
 }
 
 .replaceBtn {
   background: transparent;
   border: none;
-  color: #024A94;
+  color: var(--color-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -162,7 +175,7 @@
 }
 
 .coverUpload {
-  background: #f8f9fc;
+  background: var(--color-input-bg);
   border-radius: 12px;
   height: 400px;
   display: flex;
@@ -179,20 +192,20 @@
 }
 
 .coverIcon {
-  color: #11243d;
+  color: var(--color-text-primary);
   margin-bottom: 16px;
 }
 
 .coverTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: #11243d;
+  color: var(--color-text-primary);
   margin-bottom: 8px;
 }
 
 .coverSubtitle {
   font-size: 0.875rem;
-  color: #8c95a6;
+  color: var(--color-text-placeholder);
   text-align: center;
   max-width: 250px;
 }
@@ -212,27 +225,27 @@
 .label {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #11243d;
+  color: var(--color-text-primary);
 }
 
 .input, .textarea {
   width: 100%;
   padding: 14px 16px;
-  background: #f8f9fc;
+  background: var(--color-input-bg);
   border: 1px solid transparent;
   border-radius: 12px;
   font-size: 0.9375rem;
-  color: #11243d;
+  color: var(--color-text-primary);
   transition: all 150ms ease;
   outline: none;
 }
 
 .input::placeholder, .textarea::placeholder {
-  color: #8c95a6;
+  color: var(--color-text-placeholder);
 }
 
 .input:focus, .textarea:focus {
-  border-color: #024A94;
+  border-color: var(--color-primary);
   background: #ffffff;
 }
 
@@ -260,8 +273,8 @@
 }
 
 .checkboxActive {
-  background: #024A94;
-  border-color: #024A94;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* Modal Styles */
@@ -310,13 +323,13 @@
 .modalTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #11243d;
+  color: var(--color-text-primary);
   margin-bottom: 12px;
 }
 
 .modalSubtitle {
   font-size: 1rem;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   margin-bottom: 32px;
 }
 
@@ -339,21 +352,21 @@
 .modalBtnOutline {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  color: #11243d;
+  color: var(--color-text-primary);
 }
 
 .modalBtnOutline:hover {
-  background: #f8f9fc;
+  background: var(--color-input-bg);
 }
 
 .modalBtnPrimary {
-  background: #024A94;
-  border: 1px solid #024A94;
+  background: var(--color-primary-hover);
+  border: 1px solid var(--color-primary-hover);
   color: #ffffff;
 }
 
 .modalBtnPrimary:hover {
-  background: #013a75;
+  background: #012c5c;
 }
 
 /* Responsive */

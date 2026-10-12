@@ -18,21 +18,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  height: 48px;
-  background: #f8f9fc;
-  border: 1px solid #d6d9e1;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 16px;
+  background: var(--color-input-bg);
+  border: none;
+  border-radius: var(--radius-xl);
   cursor: pointer;
-  transition: all 150ms ease;
-  color: #11243d;
+  transition: background 150ms ease;
+  color: var(--color-primary);
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
+  font-family: var(--font-family);
 }
 
 .socialButton:hover {
-  background: #f1f3f7;
-  border-color: #b0b8c9;
+  background: #eeeeee;
 }
 
 /* ---------- Footer Links ---------- */
@@ -47,7 +47,7 @@
 }
 
 .signupLink {
-  color: #1565d8;
+  color: var(--color-primary-hover);
   font-weight: 500;
   font-size: 14px;
   text-decoration: none;

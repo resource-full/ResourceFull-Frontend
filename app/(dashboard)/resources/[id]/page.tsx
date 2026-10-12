@@ -410,7 +410,7 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
               <h4>Relevancy Score</h4>
               <div className={styles.scoreWrapper}>
                 <span className={styles.scoreValue}>96%</span>
-                <span className={styles.scoreBadge}>R.S</span>
+                <span className={styles.scoreBadge}>C.S</span>
               </div>
             </div>
           </div>

@@ -24,6 +24,14 @@ const FilterIcon = () => (
   </svg>
 );
 
+const EmptyStateIcon = () => (
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="15" y2="18" />
+  </svg>
+);
+
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("resources");
   const [activeTag, setActiveTag] = useState("All");
@@ -139,6 +147,7 @@ export default function DashboardPage() {
               aria-label="Filter"
               onClick={() => setIsPriceDropdownOpen(!isPriceDropdownOpen)}
             >
+              <span>Filter by:</span>
               <FilterIcon />
             </button>
 
@@ -188,13 +197,19 @@ export default function DashboardPage() {
       {activeTab === "resources" && (
         <div className={styles.resourceGrid}>
           {isLoadingResources ? (
-            <div className="col-span-full text-center py-8 text-gray-500">Loading resources...</div>
+            <div className={styles.loadingState}>Loading resources...</div>
           ) : filteredResources.length > 0 ? (
             filteredResources.map((resource) => (
               <ResourceCard key={resource.id} {...resource} href={`/resources/${resource.id}`} />
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">No resources found. Try adjusting your filters.</div>
+            <div className={styles.emptyState}>
+              <span className={styles.emptyIcon}><EmptyStateIcon /></span>
+              <div>
+                <p className={styles.emptyTitle}>No resources available</p>
+                <p className={styles.emptySubtitle}>Seems we don&apos;t have that right now. Try again later</p>
+              </div>
+            </div>
           )}
         </div>
       )}
@@ -202,13 +217,19 @@ export default function DashboardPage() {
       {activeTab === "pathways" && (
         <div className={styles.pathwayGrid}>
           {isLoadingPathways ? (
-            <div className="col-span-full text-center py-8 text-gray-500">Loading pathways...</div>
+            <div className={styles.loadingState}>Loading pathways...</div>
           ) : filteredPathways.length > 0 ? (
             filteredPathways.map((pathway) => (
               <PathwayCard key={pathway.id} {...pathway} href={`/pathways/${pathway.id}`} />
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">No pathways found. Try adjusting your filters.</div>
+            <div className={styles.emptyState}>
+              <span className={styles.emptyIcon}><EmptyStateIcon /></span>
+              <div>
+                <p className={styles.emptyTitle}>No pathways available</p>
+                <p className={styles.emptySubtitle}>Seems we don&apos;t have that right now. Try again later</p>
+              </div>
+            </div>
           )}
         </div>
       )}
@@ -216,13 +237,19 @@ export default function DashboardPage() {
       {activeTab === "hubs" && (
         <div className={styles.hubGrid}>
           {isLoadingHubs ? (
-            <div className="col-span-full text-center py-8 text-gray-500">Loading hubs...</div>
+            <div className={styles.loadingState}>Loading hubs...</div>
           ) : filteredHubs.length > 0 ? (
             filteredHubs.map((hub) => (
               <HubCard key={hub.id} {...hub} href={`/hubs/${hub.id}`} />
             ))
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">No hubs found. Try adjusting your filters.</div>
+            <div className={styles.emptyState}>
+              <span className={styles.emptyIcon}><EmptyStateIcon /></span>
+              <div>
+                <p className={styles.emptyTitle}>No hubs available</p>
+                <p className={styles.emptySubtitle}>Seems we don&apos;t have that right now. Try again later</p>
+              </div>
+            </div>
           )}
         </div>
       )}

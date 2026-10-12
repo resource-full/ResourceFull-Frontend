@@ -23,7 +23,7 @@ export function formatPrice(isFree: boolean, price: number | string, currency: s
   return `${symbol}${price}`;
 }
 
-const VARIANTS: ResourceCardVariant[] = ["orange", "purple"];
+const VARIANTS: ResourceCardVariant[] = ["orange", "purple", "pink", "green"];
 
 function getVariant(index: number): ResourceCardVariant {
   return VARIANTS[index % VARIANTS.length];

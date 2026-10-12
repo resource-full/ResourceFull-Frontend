@@ -15,6 +15,8 @@ import AboutTab from "./_components/AboutTab";
 import SkillsTab from "./_components/SkillsTab";
 import ExperienceTab, { ExperienceItem } from "./_components/ExperienceTab";
 import GoalsTab from "./_components/GoalsTab";
+import LinkedInModal from "./_components/LinkedInModal";
+import AddExperienceModal from "./_components/AddExperienceModal";
 
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -86,6 +88,8 @@ export default function EditProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [showLinkedInModal, setShowLinkedInModal] = useState(false);
+  const [showAddExperienceModal, setShowAddExperienceModal] = useState(false);
 
   // Load from API on mount
   useEffect(() => {
@@ -225,12 +229,8 @@ export default function EditProfilePage() {
         return (
           <ExperienceTab
             experiences={experiences}
-            onImportLinkedIn={() => {
-              alert("LinkedIn integration coming soon!");
-            }}
-            onAddExperience={() => {
-              alert("Add experience modal coming soon!");
-            }}
+            onImportLinkedIn={() => setShowLinkedInModal(true)}
+            onAddExperience={() => setShowAddExperienceModal(true)}
             onEditExperience={(id) => {
               alert(`Edit experience ${id} coming soon!`);
             }}
@@ -295,6 +295,28 @@ export default function EditProfilePage() {
           {renderTabContent()}
         </div>
       </div>
+
+      {/* LinkedIn Connect Modal */}
+      {showLinkedInModal && (
+        <LinkedInModal
+          onClose={() => setShowLinkedInModal(false)}
+          onConnect={() => {
+            // Real LinkedIn OAuth/import is not wired up yet — this just closes the modal.
+            setShowLinkedInModal(false);
+          }}
+        />
+      )}
+
+      {/* Add Experience Modal */}
+      {showAddExperienceModal && (
+        <AddExperienceModal
+          onClose={() => setShowAddExperienceModal(false)}
+          onSave={(experience) => {
+            setExperiences([...experiences, { ...experience, id: `exp-${Date.now()}` }]);
+            setShowAddExperienceModal(false);
+          }}
+        />
+      )}
 
       {/* Success Modal */}
       {showSuccess && (

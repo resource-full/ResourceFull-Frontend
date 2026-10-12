@@ -26,7 +26,7 @@
 }
 
 .copyrightText {
-  color: #888;
+  color: var(--color-text-secondary);
   font-size: 14px;
   margin: 0;
 }

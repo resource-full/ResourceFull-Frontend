@@ -1,6 +1,6 @@
 .card {
-  border-radius: 24px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 15px 10px;
   display: flex;
   flex-direction: column;
   color: #ffffff;
@@ -17,11 +17,19 @@
 
 /* Variant Backgrounds */
 .variantPurple {
-  background-color: #6a359c;
+  background-color: #58169c;
 }
 
 .variantOrange {
-  background-color: #c4452a;
+  background-color: #ad3307;
+}
+
+.variantPink {
+  background-color: #9c1658;
+}
+
+.variantGreen {
+  background-color: #52b114;
 }
 
 /* Header */
@@ -29,25 +37,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .authorInfo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 4px;
 }
 
 .authorAvatar {
-  width: 32px;
-  height: 32px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .authorName {
-  font-size: 0.9375rem;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .bookmarkBtn {
@@ -86,11 +95,19 @@
 }
 
 .variantPurple .openBadge {
-  color: #6a359c;
+  color: #58169c;
 }
 
 .variantOrange .openBadge {
-  color: #c4452a;
+  color: #ad3307;
+}
+
+.variantPink .openBadge {
+  color: #9c1658;
+}
+
+.variantGreen .openBadge {
+  color: #52b114;
 }
 
 /* Content */
@@ -98,24 +115,23 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.2;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .price {
   font-size: 16px;
   font-weight: 400;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .description {
-  font-size: 14px;
+  font-size: 10px;
   line-height: 1.5;
-  /* opacity: 0.9; */
   font-weight: 400;
-  color: #FFFFFFCC;
-  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 10px;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -124,53 +140,64 @@
 .metaContainer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .fileType {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.9375rem;
-  font-weight: 500;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .tag {
-  background: #ffffff;
-  padding: 4px 12px;
-  border-radius: 100px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 500;
 }
 
 /* Tag colors based on variant */
 .variantPurple .tag {
-  color: #6a359c;
+  background: #f2e9fb;
+  color: #51059e;
 }
 
 .variantOrange .tag {
-  color: #c4452a;
+  background: #ffece5;
+  color: #ad3307;
+}
+
+.variantPink .tag {
+  background: #fce7ef;
+  color: #9c1658;
+}
+
+.variantGreen .tag {
+  background: #eafbe4;
+  color: #52b114;
 }
 
 /* Preview Image Area */
 .previewContainer {
   flex: 1;
   background: #ffffff;
-  border-radius: 16px;
-  padding: 16px;
+  border-radius: 12px;
+  padding: 10px;
   position: relative;
   min-height: 180px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 10px;
 }
 
 .previewImage {
@@ -199,8 +226,8 @@
 }
 
 .avatarStack img {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 2px solid;
   margin-right: -8px;
@@ -208,16 +235,24 @@
 
 /* Match border to variant background */
 .variantPurple .avatarStack img {
-  border-color: #6a359c;
+  border-color: #58169c;
 }
 
 .variantOrange .avatarStack img {
-  border-color: #c4452a;
+  border-color: #ad3307;
+}
+
+.variantPink .avatarStack img {
+  border-color: #9c1658;
+}
+
+.variantGreen .avatarStack img {
+  border-color: #52b114;
 }
 
 .viewCount {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 500;
   margin-left: 12px;
 }
 
@@ -228,6 +263,6 @@
 }
 
 .commentCount {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 500;
 }

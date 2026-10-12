@@ -263,7 +263,7 @@ export default function SettingsPage() {
             <BackIcon />
           </button>
           <h1 className={styles.pageTitle}>
-            Settings <span style={{ color: "#94a3b8", fontWeight: 400 }}>›</span> <span className={styles.activeTabName}>{TAB_LABELS[activeTab]}</span>
+            Settings <span style={{ color: "var(--color-text-placeholder)", fontWeight: 400 }}>›</span> <span className={styles.activeTabName}>{TAB_LABELS[activeTab]}</span>
           </h1>
         </div>
         

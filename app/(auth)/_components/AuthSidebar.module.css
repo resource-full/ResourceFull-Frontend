@@ -2,9 +2,9 @@
   display: flex;
   height: 100%;
   width: 50%;
-  /* background: #024A94; */
   position: relative;
   overflow: hidden;
+  border-radius: var(--radius-xl);
 }
 
 .heroImage {

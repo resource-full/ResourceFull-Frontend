@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/app/contexts/AuthContext";
 import styles from "./DashboardSidebar.module.css";
 
 const ExploreIcon = () => (
@@ -161,6 +162,8 @@ const ColoredEmailIcon = () => (
 );
 
 export default function DashboardSidebar() {
+  const { user } = useAuth();
+  const username = user?.username || (user?.email ? user.email.split('@')[0] : '') || 'username';
   const pathname = usePathname();
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -313,8 +316,16 @@ export default function DashboardSidebar() {
         <p className={styles.shareDesc}>
           Share your profile on your socials
         </p>
-        <button className={styles.shareLinkBox} onClick={() => alert('Link copied!')}>
-          <span className={styles.shareLinkText}>resourcefull.co/adaeze</span>
+        <button
+          className={styles.shareLinkBox}
+          onClick={() => {
+            if (typeof navigator !== "undefined" && navigator.clipboard) {
+              navigator.clipboard.writeText(`https://rfull.co/${username}`);
+            }
+            alert('Link copied!');
+          }}
+        >
+          <span className={styles.shareLinkText}>rfull.co/{username}</span>
           <CopyIcon />
         </button>
       </div>

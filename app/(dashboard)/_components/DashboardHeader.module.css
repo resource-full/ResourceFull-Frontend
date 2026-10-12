@@ -40,29 +40,30 @@
   flex: 1;
   border: none;
   outline: none;
-  font-size: 0.9375rem;
-  color: #11243d;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
   background: transparent;
 }
 
 .searchInput::placeholder {
-  color: #8c95a6;
+  color: var(--color-text-secondary);
 }
 
 .searchBtn {
-  background: #024A94;
+  background: var(--color-primary-hover);
   color: #ffffff;
   border: none;
-  border-radius: 100px;
-  padding: 8px 20px;
+  border-radius: 14px;
+  padding: 12px 16px;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background 150ms ease;
 }
 
 .searchBtn:hover {
-  background: #013a75;
+  background: #012c5c;
 }
 
 .filterPillsContainer {
@@ -80,7 +81,7 @@
   border-radius: 8px;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #1565d8;
+  color: var(--color-primary);
   border: 1px solid transparent;
 }
 
@@ -92,7 +93,7 @@
 .pillClose {
   background: transparent;
   border: none;
-  color: #1565d8;
+  color: var(--color-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -110,17 +111,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.9375rem;
-  color: #5a6474;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
   cursor: pointer;
 }
 
 .filterItem:hover {
-  color: #11243d;
+  color: var(--color-text-heading);
 }
 
 .filterIcon {
-  color: #8c95a6;
+  color: var(--color-text-secondary);
 }
 
 .userSection {
@@ -132,7 +133,7 @@
 .bellBtn {
   background: transparent;
   border: none;
-  color: #11243d;
+  color: var(--color-text-heading);
   cursor: pointer;
   position: relative;
   display: flex;

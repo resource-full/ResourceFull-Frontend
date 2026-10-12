@@ -25,7 +25,10 @@ export default function WalletPage() {
           <h1 className={styles.pageTitle}>Wallet</h1>
           <p className={styles.pageSubtitle}>Manage your earnings, withdrawals, and payout accounts</p>
         </div>
-        <Link href="#" className={styles.downloadLink}>Download statement</Link>
+        <div className={styles.headerLinks}>
+          <Link href="/analytics" className={styles.downloadLink}>Analytics</Link>
+          <Link href="#" className={styles.downloadLink}>Download statement</Link>
+        </div>
       </div>
 
       <BalanceCard />

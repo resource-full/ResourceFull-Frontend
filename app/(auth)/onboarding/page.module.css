@@ -26,16 +26,16 @@
 }
 
 .formTitle {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #11243d;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--color-text-heading);
+  letter-spacing: -0.04em;
+  line-height: 1.35;
 }
 
 .formSubtitle {
-  font-size: 0.9375rem;
-  color: #5a6474;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
   font-weight: 400;
 }
 
@@ -59,19 +59,19 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #1565d8;
+  background: var(--color-primary);
   flex-shrink: 0;
 }
 
 .footerLink {
   font-size: 0.8125rem;
-  color: #5a6474;
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: color 150ms ease;
 }
 
 .footerLink:hover {
-  color: #1565d8;
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
@@ -87,18 +87,18 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #d6d9e1;
+  background: var(--color-border);
   transition: all 250ms ease;
 }
 
 .dotActive {
   width: 28px;
   border-radius: 999px;
-  background: #1565d8;
+  background: var(--color-primary);
 }
 
 .dotCompleted {
-  background: #1565d8;
+  background: var(--color-primary);
 }
 
 /* ---------- Responsive ---------- */

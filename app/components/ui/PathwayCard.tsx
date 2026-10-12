@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./PathwayCard.module.css";
 
-export type PathwayCardVariant = "purple" | "orange";
+export type PathwayCardVariant = "purple" | "orange" | "pink" | "green";
 
 interface PathwayCardProps {
   id: number | string;
@@ -67,8 +67,20 @@ export default function PathwayCard({
   isPurchased,
   isSaved,
 }: PathwayCardProps) {
-  const mainColor = variant === "purple" ? "#6a359c" : "#c4452a";
-  const bgLightColor = variant === "purple" ? "rgba(106, 53, 156, 0.08)" : "rgba(196, 69, 42, 0.08)";
+  const MAIN_COLORS: Record<PathwayCardVariant, string> = {
+    purple: "#58169c",
+    orange: "#ad3307",
+    pink: "#9c1658",
+    green: "#52b114",
+  };
+  const BG_LIGHT_COLORS: Record<PathwayCardVariant, string> = {
+    purple: "rgba(88, 22, 156, 0.08)",
+    orange: "rgba(173, 51, 7, 0.08)",
+    pink: "rgba(156, 22, 88, 0.08)",
+    green: "rgba(82, 177, 20, 0.08)",
+  };
+  const mainColor = MAIN_COLORS[variant];
+  const bgLightColor = BG_LIGHT_COLORS[variant];
 
   const cardContent = (
     <div className={styles.card}>
