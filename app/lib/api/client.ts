@@ -3,6 +3,8 @@ import axios from "axios";
 const ENV_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend-ta1r.onrender.com";
 const BASE_URL = ENV_URL.endsWith('/api/v1') ? ENV_URL : `${ENV_URL.replace(/\/$/, '')}/api/v1`;
 
+export const API_BASE_URL = BASE_URL;
+
 export const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: {

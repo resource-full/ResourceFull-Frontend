@@ -294,6 +294,42 @@
   border-color: #cbd5e1;
 }
 
+.filterWrapper {
+  position: relative;
+}
+
+.filterDropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-width: 140px;
+  z-index: 100;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: var(--color-text-heading);
+  cursor: pointer;
+}
+
+.filterOption:hover {
+  background: #f8f9fa;
+}
+
 /* Horizontal List */
 .itemList {
   display: flex;

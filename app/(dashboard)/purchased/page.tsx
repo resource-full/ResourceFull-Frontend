@@ -14,7 +14,7 @@ import { Resource } from "@/app/lib/types/resource";
 import { Pathway } from "@/app/lib/types/pathway";
 import { Hub } from "@/app/lib/types/hub";
 import { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
-import { formatPrice } from "@/app/hooks/useDashboardData";
+import { formatPrice, matchesFilters, useCommentCounts } from "@/app/hooks/useDashboardData";
 import styles from "./page.module.css";
 
 const EmptyStateIcon = () => (
@@ -101,6 +101,11 @@ export default function PurchasedPage() {
         void fetchPurchased();
     }, [fetchPurchased]);
 
+    const purchasedResourceIds = useMemo(() => purchasedResources.map(r => r._id || r.id), [purchasedResources]);
+    const purchasedPathwayIds = useMemo(() => purchasedPathways.map(p => p._id || p.id), [purchasedPathways]);
+    const resourceCommentCounts = useCommentCounts(purchasedResourceIds);
+    const pathwayCommentCounts = useCommentCounts(purchasedPathwayIds);
+
     // Map raw API data to display shapes
     const displayResources = useMemo(() => {
         const mapped = purchasedResources.map((res, index) => ({
@@ -115,13 +120,14 @@ export default function PurchasedPage() {
             fileType: res.resourceFile?.format ? `.${res.resourceFile.format}` : ".pdf",
             tags: res.tags || [],
             viewCount: res.viewCount?.toString() || "0",
-            commentCount: 0,
+            commentCount: resourceCommentCounts[res._id || res.id] ?? 0,
             isFree: res.isFree,
+            industry: res.industry,
+            experience: res.experience,
+            applicableLocation: res.applicableLocation,
         }));
-        if (!filters.searchQuery.trim()) return mapped;
-        const q = filters.searchQuery.toLowerCase();
-        return mapped.filter(r => r.title.toLowerCase().includes(q) || r.description.toLowerCase().includes(q));
-    }, [purchasedResources, filters.searchQuery]);
+        return mapped.filter(r => matchesFilters(r, filters));
+    }, [purchasedResources, filters, resourceCommentCounts]);
 
     const displayPathways = useMemo(() => {
         const mapped = purchasedPathways.map((pw, index) => ({
@@ -135,13 +141,14 @@ export default function PurchasedPage() {
             tags: pw.tags || [],
             resourceCount: pw.resourceCount || pw.blockCount || 0,
             viewCount: pw.viewCount?.toString() || "0",
-            commentCount: 0,
+            commentCount: pathwayCommentCounts[pw._id || pw.id] ?? 0,
             isFree: pw.isFree,
+            industry: pw.industry,
+            experience: pw.experience,
+            applicableLocation: pw.applicableLocation,
         }));
-        if (!filters.searchQuery.trim()) return mapped;
-        const q = filters.searchQuery.toLowerCase();
-        return mapped.filter(p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
-    }, [purchasedPathways, filters.searchQuery]);
+        return mapped.filter(p => matchesFilters(p, filters));
+    }, [purchasedPathways, filters, pathwayCommentCounts]);
 
     const displayHubs = useMemo(() => {
         const mapped = purchasedHubs.map((hub, index) => ({
@@ -159,11 +166,12 @@ export default function PurchasedPage() {
             viewCount: "0",
             commentCount: "0",
             isFree: true,
+            industry: hub.industry,
+            experience: hub.experience,
+            applicableLocation: hub.applicableLocation,
         }));
-        if (!filters.searchQuery.trim()) return mapped;
-        const q = filters.searchQuery.toLowerCase();
-        return mapped.filter(h => h.title.toLowerCase().includes(q) || h.description.toLowerCase().includes(q));
-    }, [purchasedHubs, filters.searchQuery]);
+        return mapped.filter(h => matchesFilters(h, filters));
+    }, [purchasedHubs, filters]);
 
     const totalCount = displayResources.length + displayPathways.length + displayHubs.length;
 

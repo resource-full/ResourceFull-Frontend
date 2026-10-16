@@ -48,20 +48,18 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 1.5px solid #3A4F65;
-    background: transparent;
+    border: none;
+    background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #8C9BAB;
     cursor: pointer;
     transition: all 0.3s ease;
     animation: bounce 2s ease infinite;
 }
 
 .scrollArrow:hover {
-    border-color: #119DA4;
-    color: #119DA4;
+    background: #F0F0F0;
     transform: translateY(2px);
 }
 

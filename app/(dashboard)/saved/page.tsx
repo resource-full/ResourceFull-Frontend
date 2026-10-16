@@ -6,6 +6,7 @@ import DashboardTopNav from "../_components/DashboardTopNav";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
 import HubCard from "@/app/components/ui/HubCard";
 import PathwayCard from "@/app/components/ui/PathwayCard";
+import FilterByDropdown from "@/app/components/ui/FilterByDropdown";
 import { interactionAPI } from "@/app/lib/api/interaction";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { pathwayAPI } from "@/app/lib/api/pathway";
@@ -14,35 +15,37 @@ import { Resource } from "@/app/lib/types/resource";
 import { Pathway } from "@/app/lib/types/pathway";
 import { Hub } from "@/app/lib/types/hub";
 import { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
-import { formatPrice } from "@/app/hooks/useDashboardData";
+import { formatPrice, matchesFilters, useCommentCounts } from "@/app/hooks/useDashboardData";
 import styles from "./page.module.css";
 
 const TAGS = [
-  "All",
-  "CV Templates",
-  "Templates",
-  "Fellowships",
-  "Prompts",
-  "Career Advice"
+    "All",
+    "Templates",
+    "Prompts",
+    "Courses",
+    "Videos",
 ];
 
-const FilterIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-  </svg>
-);
+const FILTER_OPTIONS = [
+  { value: "free", label: "Free" },
+  { value: "paid", label: "Paid" },
+  { value: "best_match", label: "Best match" },
+  { value: "most_saved", label: "Most saved" },
+  { value: "newest", label: "Newest" },
+  { value: "highest_rating", label: "Highest rating" },
+];
 
 const EmptyStateIcon = () => (
-  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="3" y1="6" x2="21" y2="6" />
-    <line x1="3" y1="12" x2="21" y2="12" />
-    <line x1="3" y1="18" x2="15" y2="18" />
-  </svg>
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="18" x2="15" y2="18" />
+    </svg>
 );
 
 const VARIANTS: ResourceCardVariant[] = ["orange", "purple", "pink", "green"];
 function getVariant(index: number): ResourceCardVariant {
-  return VARIANTS[index % VARIANTS.length];
+    return VARIANTS[index % VARIANTS.length];
 }
 
 export default function SavedPage() {
@@ -61,7 +64,11 @@ export default function SavedPage() {
     const [error, setError] = useState<string | null>(null);
     const [activeTag, setActiveTag] = useState("All");
     const [priceFilters, setPriceFilters] = useState<string[]>([]);
-    const [isPriceDropdownOpen, setIsPriceDropdownOpen] = useState(false);
+
+    const savedResourceIds = useMemo(() => savedResources.map(r => r._id || r.id), [savedResources]);
+    const savedPathwayIds = useMemo(() => savedPathways.map(p => p._id || p.id), [savedPathways]);
+    const resourceCommentCounts = useCommentCounts(savedResourceIds);
+    const pathwayCommentCounts = useCommentCounts(savedPathwayIds);
 
     const fetchSaved = useCallback(async () => {
         try {
@@ -162,13 +169,14 @@ export default function SavedPage() {
             fileType: res.resourceFile?.format ? `.${res.resourceFile.format}` : ".pdf",
             tags: res.tags || [],
             viewCount: res.viewCount?.toString() || "0",
-            commentCount: 0,
+            commentCount: resourceCommentCounts[res._id || res.id] ?? 0,
             isFree: res.isFree,
+            industry: res.industry,
+            experience: res.experience,
+            applicableLocation: res.applicableLocation,
         }));
-        if (!filters.searchQuery.trim()) return mapped;
-        const q = filters.searchQuery.toLowerCase();
-        return mapped.filter(r => r.title.toLowerCase().includes(q) || r.description.toLowerCase().includes(q));
-    }, [savedResources, filters.searchQuery]);
+        return mapped.filter(r => matchesFilters(r, filters));
+    }, [savedResources, filters, resourceCommentCounts]);
 
     const displayPathways = useMemo(() => {
         const mapped = savedPathways.map((pw, index) => ({
@@ -182,13 +190,14 @@ export default function SavedPage() {
             tags: pw.tags || [],
             resourceCount: pw.resourceCount || pw.blockCount || 0,
             viewCount: pw.viewCount?.toString() || "0",
-            commentCount: 0,
+            commentCount: pathwayCommentCounts[pw._id || pw.id] ?? 0,
             isFree: pw.isFree,
+            industry: pw.industry,
+            experience: pw.experience,
+            applicableLocation: pw.applicableLocation,
         }));
-        if (!filters.searchQuery.trim()) return mapped;
-        const q = filters.searchQuery.toLowerCase();
-        return mapped.filter(p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
-    }, [savedPathways, filters.searchQuery]);
+        return mapped.filter(p => matchesFilters(p, filters));
+    }, [savedPathways, filters, pathwayCommentCounts]);
 
     const displayHubs = useMemo(() => {
         const mapped = savedHubs.map((hub, index) => ({
@@ -206,11 +215,12 @@ export default function SavedPage() {
             viewCount: "0",
             commentCount: "0",
             isFree: true,
+            industry: hub.industry,
+            experience: hub.experience,
+            applicableLocation: hub.applicableLocation,
         }));
-        if (!filters.searchQuery.trim()) return mapped;
-        const q = filters.searchQuery.toLowerCase();
-        return mapped.filter(h => h.title.toLowerCase().includes(q) || h.description.toLowerCase().includes(q));
-    }, [savedHubs, filters.searchQuery]);
+        return mapped.filter(h => matchesFilters(h, filters));
+    }, [savedHubs, filters]);
 
     const filteredResources = useMemo(() => {
         let result = displayResources;
@@ -248,11 +258,7 @@ export default function SavedPage() {
         return result;
     }, [displayHubs, activeTag]);
 
-    const togglePriceFilter = (filter: string) => {
-        setPriceFilters(prev =>
-            prev.includes(filter) ? prev.filter(v => v !== filter) : [...prev, filter]
-        );
-    };
+
 
     const totalCount = displayResources.length + displayPathways.length + displayHubs.length;
 
@@ -266,7 +272,7 @@ export default function SavedPage() {
         if (hasFilters) {
             const count = activeTab === "resources" ? displayResources.length
                 : activeTab === "pathways" ? displayPathways.length
-                : displayHubs.length;
+                    : displayHubs.length;
             const parts: string[] = [];
             if (filters.worldwide.length) parts.push(`in ${filters.worldwide.join(" & ")}`);
             if (filters.industry.length) parts.push(`for ${filters.industry.join(" & ")}`);
@@ -360,54 +366,11 @@ export default function SavedPage() {
                         </button>
                     ))}
                 </div>
-                <div className={styles.filterWrapper}>
-                    <button
-                        className={styles.filterBtn}
-                        aria-label="Filter"
-                        onClick={() => setIsPriceDropdownOpen(!isPriceDropdownOpen)}
-                    >
-                        <span>Filter by:</span>
-                        <FilterIcon />
-                    </button>
-
-                    {isPriceDropdownOpen && (
-                        <div className={styles.filterDropdown}>
-                            <label className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-50 rounded-lg">
-                                <div className={`w-5 h-5 border-[1.5px] rounded flex items-center justify-center transition-colors ${priceFilters.includes('free') ? 'bg-[#024A94] border-[#024A94]' : 'border-gray-300 bg-white'}`}>
-                                    {priceFilters.includes('free') && (
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                            <polyline points="20 6 9 17 4 12" />
-                                        </svg>
-                                    )}
-                                </div>
-                                <input
-                                    type="checkbox"
-                                    className="hidden"
-                                    checked={priceFilters.includes('free')}
-                                    onChange={() => togglePriceFilter('free')}
-                                />
-                                <span className="text-gray-800 font-medium">Free</span>
-                            </label>
-
-                            <label className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-50 rounded-lg">
-                                <div className={`w-5 h-5 border-[1.5px] rounded flex items-center justify-center transition-colors ${priceFilters.includes('paid') ? 'bg-[#024A94] border-[#024A94]' : 'border-gray-300 bg-white'}`}>
-                                    {priceFilters.includes('paid') && (
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                            <polyline points="20 6 9 17 4 12" />
-                                        </svg>
-                                    )}
-                                </div>
-                                <input
-                                    type="checkbox"
-                                    className="hidden"
-                                    checked={priceFilters.includes('paid')}
-                                    onChange={() => togglePriceFilter('paid')}
-                                />
-                                <span className="text-gray-800 font-medium">Paid</span>
-                            </label>
-                        </div>
-                    )}
-                </div>
+                <FilterByDropdown
+                    options={FILTER_OPTIONS}
+                    selectedValues={priceFilters}
+                    onChange={setPriceFilters}
+                />
             </div>
 
             <DashboardTopNav activeTab={activeTab} onTabChange={setActiveTab} />

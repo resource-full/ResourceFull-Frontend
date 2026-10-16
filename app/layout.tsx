@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Script from 'next/script'
 
 export const metadata: Metadata = {
   title: "Resourcefull — Get Access to Resources Fast",
@@ -20,10 +19,6 @@ export default function RootLayout({
       <body>
         <Providers>
           {children}
-          <Script
-            src="https://widgets.easyappz.com/widget.js?client=resort1"
-            strategy="afterInteractive"
-          />
         </Providers>
       </body>
     </html>

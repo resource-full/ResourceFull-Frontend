@@ -90,6 +90,108 @@
   border: 1px dashed #e2e8f0;
 }
 
+.walletTab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.notificationsCard {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notificationsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notificationsTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #11243d;
+  margin: 0;
+}
+
+.markAllBtn {
+  font-size: 0.8125rem;
+  color: #024A94;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.markAllBtn:hover {
+  text-decoration: underline;
+}
+
+.notifList {
+  display: flex;
+  flex-direction: column;
+}
+
+.notifItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+}
+
+.notifItem:last-child {
+  border-bottom: none;
+}
+
+.notifUnread {
+  background: #f8fafe;
+}
+
+.notifIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffe4e6;
+  color: #11243d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+}
+
+.notifTextGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notifText {
+  font-size: 0.875rem;
+  color: #11243d;
+  line-height: 1.4;
+}
+
+.notifTime {
+  font-size: 0.75rem;
+  color: #8c95a6;
+}
+
+.notifEmpty {
+  text-align: center;
+  color: #8c95a6;
+  font-size: 0.875rem;
+  padding: 24px 0;
+}
+
 @media (max-width: 768px) {
   .mainContent {
     flex-direction: column;

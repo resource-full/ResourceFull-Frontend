@@ -11,7 +11,7 @@ export default function CtaSection() {
           <span className={styles.badge}>GET STARTED TODAY!</span>
           <h2 className={styles.title}>Your expertise<br />deserves a home.</h2>
           <p className={styles.subtitle}>
-            Create your personalized Hub — a single link that showcases all<br />
+            Create your personalized Hub a single link that showcases all<br />
             the resources you&apos;ve created, saved, and recommended.
           </p>
           <Link href="/add-resource" className={styles.button}>

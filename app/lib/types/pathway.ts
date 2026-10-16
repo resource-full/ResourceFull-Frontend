@@ -1,9 +1,11 @@
+import { Resource } from "./resource";
+
 export interface PathwayBlock {
   type: "text" | "resource";
   order: number;
   name: string;
   shortDescription: string;
-  resource?: string;
+  resource?: string | Resource;
   _id?: string;
 }
 

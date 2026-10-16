@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Logo from "@/app/components/ui/Logo";
 import styles from "./LandingFooter.module.css";
 
 export default function LandingFooter() {
@@ -10,17 +10,11 @@ export default function LandingFooter() {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.left}>
-          <Image
-            src="/assets/resourcefull-logo-2.png" /* Assuming the blue horizontal logo */
-            alt="ResourceFull"
-            width={160}
-            height={40}
-            className={styles.logo}
-          />
+          <Logo iconSize={32} fontSize={20} />
         </div>
         <div className={styles.right}>
           <p className={styles.copyrightText}>
-            © {currentYear} ResourceFull. Built for ambitious Africa.
+            © {currentYear} ResourceFull. Built for ambitious Africans.
           </p>
         </div>
       </div>

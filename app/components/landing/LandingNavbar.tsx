@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import Logo from "@/app/components/ui/Logo";
 import styles from "./LandingNavbar.module.css";
 
 export default function LandingNavbar() {
@@ -15,14 +15,7 @@ export default function LandingNavbar() {
   return (
     <nav className={styles.navbar}>
       <Link href="/" className={styles.logoContainer}>
-        <Image
-          src="/assets/resourcefull-logo-2.png"
-          alt="Resourcefull Logo"
-          width={180}
-          height={45}
-          className={styles.logo}
-          priority
-        />
+        <Logo iconSize={40} fontSize={24} />
       </Link>
 
       <div className={`${styles.navLinks} ${styles.desktopOnly}`}>

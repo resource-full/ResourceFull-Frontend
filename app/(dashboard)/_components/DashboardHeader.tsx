@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Logo from "@/app/components/ui/Logo";
 import FilterDropdown, { FilterOption } from "@/app/components/ui/FilterDropdown";
 import { COUNTRIES, SKILLS_OPTIONS } from "@/app/lib/constants/onboarding";
 import styles from "./DashboardHeader.module.css";
 import React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { notificationAPI } from "@/app/lib/api/notification";
 import { Notification } from "@/app/lib/types/notification";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const SearchIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -116,19 +118,35 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
   const [isLoadingNotifs, setIsLoadingNotifs] = React.useState(false);
   const [notifError, setNotifError] = React.useState<string | null>(null);
   const [markingReadIds, setMarkingReadIds] = React.useState<Set<string>>(new Set());
+  const [isUserMenuOpen, setIsUserMenuOpen] = React.useState(false);
   const notifRef = React.useRef<HTMLDivElement>(null);
+  const userMenuRef = React.useRef<HTMLDivElement>(null);
 
   const pathname = usePathname()
+  const router = useRouter();
+  const { logout } = useAuth();
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
         setIsNotifOpen(false);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = async () => {
+    setIsUserMenuOpen(false);
+    try {
+      await logout();
+    } finally {
+      router.push("/login");
+    }
+  };
 
   React.useEffect(() => {
     const fetchNotifications = async () => {
@@ -224,7 +242,7 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
     <div className={styles.header}>
       {/* Mobile Logo */}
       <Link href="/" className={styles.mobileLogo}>
-        <Image src="/assets/resourcefull-logo-2.png" alt="Resourcefull Logo" width={120} height={21} style={{ height: 'auto' }} priority />
+        <Logo iconSize={28} fontSize={16} />
       </Link>
 
       <div className={styles.searchSection}>
@@ -313,16 +331,36 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
             </div>
           )}
         </div>
-        <Link href="/profile">
-          <Image
-            src="https://i.pravatar.cc/150?img=47"
-            alt="User Profile"
-            width={40}
-            height={40}
-            className={styles.avatar}
-            unoptimized
-          />
-        </Link>
+        <div className={styles.userMenuWrapper} ref={userMenuRef}>
+          <button
+            className={styles.bellBtn}
+            aria-label="User menu"
+            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+          >
+            <Image
+              src="https://i.pravatar.cc/150?img=47"
+              alt="User Profile"
+              width={40}
+              height={40}
+              className={styles.avatar}
+              unoptimized
+            />
+          </button>
+
+          {isUserMenuOpen && (
+            <div className={styles.userMenuDropdown}>
+              <Link href="/profile" className={styles.userMenuItem} onClick={() => setIsUserMenuOpen(false)}>
+                View Profile
+              </Link>
+              <Link href="/settings" className={styles.userMenuItem} onClick={() => setIsUserMenuOpen(false)}>
+                Settings
+              </Link>
+              <button className={`${styles.userMenuItem} ${styles.userMenuItemDanger}`} onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
     // </div>

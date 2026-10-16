@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { pathwayAPI } from "@/app/lib/api/pathway";
@@ -69,6 +70,7 @@ interface PathwayNode {
 }
 
 export default function AddPathwayPage() {
+  const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
   
   // Step 1: Builder State
@@ -464,7 +466,7 @@ export default function AddPathwayPage() {
                 <h3 className={styles.modalTitle}>Pathway Uploaded!</h3>
                 <p className={styles.modalSubtitle}>Your pathway is live and has been added to <strong>CV Template Hub</strong></p>
                 <div className={styles.modalActions}>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => window.location.href = '#'}>Go to Profile</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => router.push('/profile')}>Go to Profile</button>
                   <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={closeModal}>Upload More</button>
                 </div>
               </>
@@ -490,7 +492,7 @@ export default function AddPathwayPage() {
                 <h3 className={styles.modalTitle}>Saved to Drafts</h3>
                 <p className={styles.modalSubtitle}>Your pathway is now saved in your drafts</p>
                 <div className={styles.modalActions}>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => window.location.href = '#'}>Go to Profile</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => router.push('/profile')}>Go to Profile</button>
                   <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={closeModal}>Upload More</button>
                 </div>
               </>

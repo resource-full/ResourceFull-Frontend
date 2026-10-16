@@ -19,11 +19,6 @@ const DocumentIcon = () => (
   </svg>
 );
 
-const MessageIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-  </svg>
-);
 
 const ArrowUpRight = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +39,7 @@ const mockPathways = [
     resourcesCount: 20,
     steps: ["Intro", "Tools", "Projects", "Set Up VS Code", "CV Template"],
     usersCount: "2.5k",
-    commentsCount: 2
+    confidenceScore: "70%"
   },
   {
     id: 2,
@@ -59,7 +54,7 @@ const mockPathways = [
     resourcesCount: 20,
     steps: ["Intro", "Tools", "Projects", "Set Up VS Code", "CV Template"],
     usersCount: "2.5k",
-    commentsCount: 2
+    confidenceScore: "70%"
   },
   {
     id: 3,
@@ -73,7 +68,7 @@ const mockPathways = [
     resourcesCount: 20,
     steps: ["Intro", "Tools", "Projects", "Set Up VS Code", "CV Template"],
     usersCount: "2.5k",
-    commentsCount: 2
+    confidenceScore: "70%"
   },
   {
     id: 4,
@@ -88,7 +83,7 @@ const mockPathways = [
     resourcesCount: 20,
     steps: ["Intro", "Tools", "Projects", "Set Up VS Code", "CV Template"],
     usersCount: "2.5k",
-    commentsCount: 2
+    confidenceScore: "70%"
   }
 ];
 
@@ -128,9 +123,9 @@ export default function Pathways() {
 
               <p className={styles.description}>{pathway.description}</p>
 
-              <div className={styles.tags} style={{ backgroundColor: pathway.titleColor }}>
+              <div className={styles.tags}>
                 {pathway.tags.map((tag, index) => (
-                  <span key={index} className={`${styles.tag}`}>
+                  <span key={index} className={styles.tag} style={{ backgroundColor: pathway.titleColor }}>
                     {tag}
                   </span>
                 ))}
@@ -143,15 +138,14 @@ export default function Pathways() {
 
               <div className={styles.pathwayDiagram}>
                 {pathway.steps.map((step, index) => (
-                  <div key={index} className={styles.diagramStep}>
-                    <span className={styles.stepNumber}>{index + 1}</span>
-                    <span className={styles.stepName}>{step}</span>
+                  <div key={index} className={styles.diagramStepWrap}>
+                    <div className={styles.diagramStep} style={{ borderColor: `${pathway.titleColor}4D` }}>
+                      <span className={styles.stepNumber} style={{ backgroundColor: pathway.titleColor }}>{index + 1}</span>
+                      <span className={styles.stepName} style={{ color: pathway.titleColor }}>{step}</span>
+                    </div>
+                    {index < pathway.steps.length - 1 && <span className={styles.diagramConnector} />}
                   </div>
                 ))}
-                {/* SVG for the dashed connecting line */}
-                <svg className={styles.diagramLine} width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
-                  <path d="M 40,25 C 100,25 200,25 250,25 C 270,25 270,60 250,60 C 200,60 100,60 40,60" fill="none" stroke="#D1C4E9" strokeWidth="2" strokeDasharray="4 4" />
-                </svg>
               </div>
 
               <div className={styles.cardFooter}>
@@ -162,9 +156,9 @@ export default function Pathways() {
                   </div>
                   <span className={styles.usersCount}>{pathway.usersCount}</span>
                 </div>
-                <div className={styles.commentsInfo}>
-                  <span className={styles.commentsCount}>{pathway.commentsCount}</span>
-                  <MessageIcon />
+                <div className={styles.confidenceChip}>
+                  <span>{pathway.confidenceScore}</span>
+                  <span>C.S</span>
                 </div>
               </div>
             </div>

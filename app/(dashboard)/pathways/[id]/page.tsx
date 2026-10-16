@@ -197,7 +197,7 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
         const res = await pathwayAPI.getSinglePathway(id);
         if (res.success && res.data) {
           const data = res.data;
-          setPathway({
+          setPathway(prev => ({
             id: data._id || data.id,
             variant: "purple",
             authorName: data.author?.name || "Author",
@@ -209,9 +209,9 @@ export default function PathwayDetailsPage({ params }: { params: Promise<{ id: s
             resourceCount: data.resourceCount || data.blockCount || 0,
             viewCount: data.viewCount?.toString() || "0",
             commentCount: stats?.comments ?? 0,
-            isOwned: false,
+            isOwned: prev.isOwned,
             blocks: data.blocks || [],
-          });
+          }));
         }
       } catch (error) {
         console.error("Failed to fetch pathway details:", error);

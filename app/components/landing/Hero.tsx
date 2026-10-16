@@ -41,13 +41,12 @@ export default function Hero() {
         {/* Left Column */}
         <div className={styles.leftColumn}>
           <h1 className={styles.headline}>
-            Stop <span className={styles.textDark}>Searching</span><br />
+            Stop <span className={styles.textDark}>Searching</span>.<br />
             Get the Right <span className={styles.textBlue}>Resource</span>
           </h1>
           <p className={styles.subheadline}>
-            Your one-stop career resource platform — curated CVs, fellowship
-            guides, skill pathways, and more. All in one place, confidence-scored,
-            and ready for you.
+            CVs, business plans, pitch decks, proposal templates. Real resources
+            from people who&apos;ve been exactly where you are.
           </p>
 
           <div className={styles.actions}>
