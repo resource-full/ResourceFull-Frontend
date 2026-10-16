@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { resourceAPI } from "@/app/lib/api/resource";
@@ -97,6 +98,7 @@ const DummyPathwayCard = ({ title, variant = "purple" }: { title: string, varian
 };
 
 export default function AddHubPage() {
+  const router = useRouter();
   // Form State
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -154,8 +156,8 @@ export default function AddHubPage() {
           industry: industries[0] || "Software Development",
           applicableLocation: locations[0] || "Worldwide",
           experience: experiences[0] || "Professional",
-          ...(selectedResources.length > 0 && { resources: selectedResources }),
-          ...(selectedPathways.length > 0 && { pathways: selectedPathways }),
+          resources: selectedResources,
+          pathways: selectedPathways,
         };
         const response = await hubAPI.createHub(payload);
         if (response.success) {
@@ -400,7 +402,7 @@ export default function AddHubPage() {
                 <h3 className={styles.modalTitle}>Hub Created!</h3>
                 <p className={styles.modalSubtitle}>Your hub is live and visible to your audience</p>
                 <div className={styles.modalActions}>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => window.location.href = '#'}>Go to Profile</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => router.push('/profile')}>Go to Profile</button>
                   <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={closeModal}>Create More</button>
                 </div>
               </>
@@ -426,7 +428,7 @@ export default function AddHubPage() {
                 <h3 className={styles.modalTitle}>Saved to Drafts</h3>
                 <p className={styles.modalSubtitle}>Your hub is now saved in your drafts</p>
                 <div className={styles.modalActions}>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => window.location.href = '#'}>Go to Profile</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => router.push('/profile')}>Go to Profile</button>
                   <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={closeModal}>Create More</button>
                 </div>
               </>

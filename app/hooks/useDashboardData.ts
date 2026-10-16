@@ -2,11 +2,45 @@ import { useState, useEffect, useMemo } from 'react';
 import { resourceAPI } from '@/app/lib/api/resource';
 import { pathwayAPI } from '@/app/lib/api/pathway';
 import { hubAPI } from '@/app/lib/api/hub';
+import { interactionAPI } from '@/app/lib/api/interaction';
 import { Resource } from '@/app/lib/types/resource';
 import { Pathway } from '@/app/lib/types/pathway';
 import { Hub } from '@/app/lib/types/hub';
 import { ResourceCardVariant } from '@/app/components/ui/ResourceCard';
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from '@/app/lib/constants/onboarding';
+
+export function useCommentCounts(ids: string[]) {
+  const [counts, setCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const idsToFetch = ids.filter(id => id && !(id in counts));
+    if (idsToFetch.length === 0) return;
+    let cancelled = false;
+
+    Promise.all(
+      idsToFetch.map(async (id) => {
+        try {
+          const res = await interactionAPI.getInteractionStats(id);
+          return [id, res.success && res.data ? res.data.comments : 0] as const;
+        } catch {
+          return [id, 0] as const;
+        }
+      })
+    ).then((results) => {
+      if (cancelled) return;
+      setCounts(prev => {
+        const next = { ...prev };
+        results.forEach(([id, count]) => { next[id] = count; });
+        return next;
+      });
+    });
+
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ids.join(',')]);
+
+  return counts;
+}
 
 export interface DisplayFilters {
   searchQuery: string;
@@ -102,7 +136,7 @@ function experienceLabel(value: string): string {
   return labelFromOptions(value, EXPERIENCE_OPTIONS);
 }
 
-function matchesFilters(item: {
+export function matchesFilters(item: {
   title: string;
   name?: string;
   description: string;
@@ -206,46 +240,57 @@ export function useDashboardData(filters?: DisplayFilters) {
     fetchHubs();
   }, []);
 
+  const resourceIds = useMemo(() => fetchedResources.map(r => r._id || r.id), [fetchedResources]);
+  const pathwayIds = useMemo(() => fetchedPathways.map(p => p._id || p.id), [fetchedPathways]);
+  const resourceCommentCounts = useCommentCounts(resourceIds);
+  const pathwayCommentCounts = useCommentCounts(pathwayIds);
+
   const allResources: MappedResource[] = useMemo(() => {
-    return fetchedResources.map((res, index) => ({
-      id: res._id || res.id,
-      variant: getVariant(index),
-      authorName: res.owner?.name || "Author",
-      authorAvatarUrl: res.owner?.avatar || "https://i.pravatar.cc/150",
-      previewImageUrl: res.coverPhoto || "/assets/pdf1.png",
-      title: res.name,
-      price: formatPrice(res.isFree, res.price, res.currency),
-      description: res.description,
-      fileType: res.resourceFile?.format ? `.${res.resourceFile.format}` : ".pdf",
-      tags: res.tags || [],
-      viewCount: res.viewCount?.toString() || "0",
-      commentCount: 0,
-      isFree: res.isFree,
-      industry: res.industry,
-      experience: res.experience,
-      applicableLocation: res.applicableLocation,
-    }));
-  }, [fetchedResources]);
+    return fetchedResources.map((res, index) => {
+      const id = res._id || res.id;
+      return {
+        id,
+        variant: getVariant(index),
+        authorName: res.owner?.name || "Author",
+        authorAvatarUrl: res.owner?.avatar || "https://i.pravatar.cc/150",
+        previewImageUrl: res.coverPhoto || "/assets/pdf1.png",
+        title: res.name,
+        price: formatPrice(res.isFree, res.price, res.currency),
+        description: res.description,
+        fileType: res.resourceFile?.format ? `.${res.resourceFile.format}` : ".pdf",
+        tags: res.tags || [],
+        viewCount: res.viewCount?.toString() || "0",
+        commentCount: resourceCommentCounts[id] ?? 0,
+        isFree: res.isFree,
+        industry: res.industry,
+        experience: res.experience,
+        applicableLocation: res.applicableLocation,
+      };
+    });
+  }, [fetchedResources, resourceCommentCounts]);
 
   const allPathways: MappedPathway[] = useMemo(() => {
-    return fetchedPathways.map((pw, index) => ({
-      id: pw._id || pw.id,
-      variant: getVariant(index),
-      authorName: pw.author?.name || "Author",
-      authorAvatarUrl: pw.author?.avatar || "https://i.pravatar.cc/150",
-      title: pw.name,
-      price: formatPrice(pw.isFree, pw.price, pw.currency),
-      description: pw.description,
-      tags: pw.tags || [],
-      resourceCount: pw.resourceCount || pw.blockCount || 0,
-      viewCount: pw.viewCount?.toString() || "0",
-      commentCount: 0,
-      isFree: pw.isFree,
-      industry: pw.industry,
-      experience: pw.experience,
-      applicableLocation: pw.applicableLocation,
-    }));
-  }, [fetchedPathways]);
+    return fetchedPathways.map((pw, index) => {
+      const id = pw._id || pw.id;
+      return {
+        id,
+        variant: getVariant(index),
+        authorName: pw.author?.name || "Author",
+        authorAvatarUrl: pw.author?.avatar || "https://i.pravatar.cc/150",
+        title: pw.name,
+        price: formatPrice(pw.isFree, pw.price, pw.currency),
+        description: pw.description,
+        tags: pw.tags || [],
+        resourceCount: pw.resourceCount || pw.blockCount || 0,
+        viewCount: pw.viewCount?.toString() || "0",
+        commentCount: pathwayCommentCounts[id] ?? 0,
+        isFree: pw.isFree,
+        industry: pw.industry,
+        experience: pw.experience,
+        applicableLocation: pw.applicableLocation,
+      };
+    });
+  }, [fetchedPathways, pathwayCommentCounts]);
 
   const allHubs: MappedHub[] = useMemo(() => {
     return fetchedHubs.map((hub, index) => ({

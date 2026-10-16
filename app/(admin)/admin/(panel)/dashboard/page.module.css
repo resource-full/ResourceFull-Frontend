@@ -1,0 +1,284 @@
+.pageContainer {
+  font-family: var(--font-family);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Top stats strip */
+.statsStrip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 12px;
+  flex-wrap: wrap;
+}
+
+.statBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 8px;
+  min-width: 120px;
+}
+
+.statIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--color-text-heading);
+  letter-spacing: 0.02em;
+}
+
+.statValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-heading);
+}
+
+.statDelta {
+  font-size: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.deltaUp {
+  color: #1cab22;
+}
+
+.deltaDown {
+  color: #ab1c3a;
+}
+
+/* Title row */
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pageTitle {
+  font-size: 31px;
+  font-weight: 500;
+  color: #011a34;
+}
+
+.pageSubtitle {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+.titleActions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.rangeTabs {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 8px;
+  gap: 4px;
+}
+
+.rangeTab {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  height: 36px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-heading);
+  cursor: pointer;
+}
+
+.rangeTabActive {
+  background: #e6edf4;
+  color: #023b76;
+  font-weight: 500;
+}
+
+.exportBtn {
+  background: var(--color-primary-hover);
+  color: #ffffff;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.exportBtn:hover {
+  background: #012c5c;
+}
+
+/* Main grid */
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cardTitle {
+  font-size: 19px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.metricBox {
+  background: var(--color-input-bg);
+  border-radius: 14px;
+  padding: 22px 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metricLabel {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.metricValue {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.metricDelta {
+  font-size: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Bar chart */
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 220px;
+  padding-top: 16px;
+}
+
+.barCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.barTrack {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bar {
+  width: 100%;
+  background: #64b5f6;
+  border-radius: 6px 6px 0 0;
+  min-height: 4px;
+}
+
+.barLabel {
+  font-size: 11px;
+  color: #2c2c2c;
+  white-space: nowrap;
+}
+
+/* Pie chart */
+.pieRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.pie {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 44px), #000 calc(100% - 44px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 44px), #000 calc(100% - 44px));
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legendValue {
+  color: #000000;
+}

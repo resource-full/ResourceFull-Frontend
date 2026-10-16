@@ -3,10 +3,10 @@ import styles from "./TopContributors.module.css";
 import Avatar from '@/public/assets/adaeze.png';
 
 const mockContributors = [
-  { id: 1, avatar: Avatar, name: "Adaeze Okafor", role: "Senior PM • Frontend Development", stats: [{ value: "84", label: "Resources Uploaded" }, { value: "96%", label: "Resources Uploaded" }] },
-  { id: 2, avatar: Avatar, name: "Adaeze Okafor", role: "Senior PM • Frontend Development", stats: [{ value: "84", label: "Resources Uploaded" }, { value: "96%", label: "Resources Uploaded" }] },
-  { id: 3, avatar: Avatar, name: "Adaeze Okafor", role: "Senior PM • Frontend Development", stats: [{ value: "84", label: "Resources Uploaded" }, { value: "96%", label: "Resources Uploaded" }] },
-  { id: 4, avatar: Avatar, name: "Adaeze Okafor", role: "Senior PM • Frontend Development", stats: [{ value: "84", label: "Resources Uploaded" }, { value: "96%", label: "Resources Uploaded" }] },
+  { id: 1, avatar: Avatar, name: "Adaeze Okafor", role: "Senior PM • Frontend Development", stats: [{ value: "84", label: "Resources Uploaded" }, { value: "96%", label: "Confidence Score" }] },
+  { id: 2, avatar: Avatar, name: "Adaeze Okafor", role: "Senior PM • Frontend Development", stats: [{ value: "84", label: "Resources Uploaded" }, { value: "96%", label: "Confidence Score" }] },
+  { id: 3, avatar: Avatar, name: "Adaeze Okafor", role: "Senior PM • Frontend Development", stats: [{ value: "84", label: "Resources Uploaded" }, { value: "96%", label: "Confidence Score" }] },
+  { id: 4, avatar: Avatar, name: "Adaeze Okafor", role: "Senior PM • Frontend Development", stats: [{ value: "84", label: "Resources Uploaded" }, { value: "96%", label: "Confidence Score" }] },
 ];
 
 export default function TopContributors() {

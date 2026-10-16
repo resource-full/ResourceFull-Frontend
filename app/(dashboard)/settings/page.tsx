@@ -1,13 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
 import SettingsSidebar, { SettingsTab } from "./_components/SettingsSidebar";
 import PersonalizationTab from "./_components/PersonalizationTab";
 import AudienceFitTab from "./_components/AudienceFitTab";
+import BalanceCard from "../wallet/_components/BalanceCard";
+import PayoutSidebar from "../wallet/_components/PayoutSidebar";
 import styles from "./page.module.css";
 import { userAPI } from "@/app/lib/api/user";
 import { authAPI, getAuthErrorMessage } from "@/app/lib/api/auth";
+import { notificationAPI } from "@/app/lib/api/notification";
+import { Notification } from "@/app/lib/types/notification";
 
 const TAB_LABELS: Record<SettingsTab, string> = {
   "personalization": "Personalization",
@@ -57,6 +61,55 @@ export default function SettingsPage() {
     industry: [],
     experience: [],
   });
+
+  // Notifications tab state
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const [notifError, setNotifError] = useState<string | null>(null);
+  const [notifLoaded, setNotifLoaded] = useState(false);
+
+  const fetchNotifications = useCallback(async () => {
+    setNotifLoading(true);
+    setNotifError(null);
+    try {
+      const res = await notificationAPI.getNotifications({ limit: 20 });
+      if (res.success && res.data) {
+        setNotifications(res.data.notifications);
+      }
+    } catch (error) {
+      console.error("Failed to fetch notifications", error);
+      setNotifError("Failed to load notifications");
+    } finally {
+      setNotifLoading(false);
+      setNotifLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === "notifications" && !notifLoaded) {
+      fetchNotifications();
+    }
+  }, [activeTab, notifLoaded, fetchNotifications]);
+
+  const handleMarkAllNotificationsRead = async () => {
+    try {
+      await notificationAPI.markAllAsRead();
+      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    } catch (error) {
+      console.error("Failed to mark all as read", error);
+    }
+  };
+
+  const handleMarkNotificationRead = async (notifId: string) => {
+    const notif = notifications.find((n) => n._id === notifId);
+    if (!notif || notif.isRead) return;
+    try {
+      await notificationAPI.markAsRead(notifId);
+      setNotifications((prev) => prev.map((n) => (n._id === notifId ? { ...n, isRead: true } : n)));
+    } catch (error) {
+      console.error("Failed to mark notification as read", error);
+    }
+  };
 
   useEffect(() => {
     async function fetchProfile() {
@@ -244,6 +297,49 @@ export default function SettingsPage() {
         return <PersonalizationTab formData={formData} setFormData={setFormData} />;
       case "audience-fit":
         return <AudienceFitTab formData={formData} setFormData={setFormData} />;
+      case "wallets":
+        return (
+          <div className={styles.walletTab}>
+            <BalanceCard />
+            <PayoutSidebar />
+          </div>
+        );
+      case "notifications":
+        return (
+          <div className={styles.notificationsCard}>
+            <div className={styles.notificationsHeader}>
+              <h2 className={styles.notificationsTitle}>Notifications</h2>
+              <button className={styles.markAllBtn} onClick={handleMarkAllNotificationsRead}>
+                Mark all read
+              </button>
+            </div>
+            <div className={styles.notifList}>
+              {notifLoading ? (
+                <div className={styles.notifEmpty}>Loading notifications...</div>
+              ) : notifError ? (
+                <div className={styles.notifEmpty}>{notifError}</div>
+              ) : notifications.length === 0 ? (
+                <div className={styles.notifEmpty}>No notifications yet.</div>
+              ) : (
+                notifications.map((notif) => (
+                  <div
+                    key={notif._id}
+                    className={`${styles.notifItem} ${notif.isRead ? "" : styles.notifUnread}`}
+                    onClick={() => handleMarkNotificationRead(notif._id)}
+                  >
+                    <div className={styles.notifIcon}>
+                      {notif.metadata?.senderName ? notif.metadata.senderName.substring(0, 2).toUpperCase() : "RF"}
+                    </div>
+                    <div className={styles.notifTextGroup}>
+                      <div className={styles.notifText}>{notif.message}</div>
+                      <div className={styles.notifTime}>{new Date(notif.createdAt).toLocaleDateString()}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        );
       default:
         return (
           <div className={styles.placeholderTab}>

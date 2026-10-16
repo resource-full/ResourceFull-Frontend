@@ -65,3 +65,11 @@ export interface GetSingleResourceResponse {
   success: boolean;
   data: Resource;
 }
+
+export interface DownloadResourceResponse {
+  success: boolean;
+  data: {
+    downloadUrl: string;
+    resource: Resource;
+  };
+}

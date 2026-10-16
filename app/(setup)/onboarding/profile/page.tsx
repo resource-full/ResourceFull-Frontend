@@ -7,9 +7,18 @@ import { INITIAL_FORM_DATA, COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { authAPI, getAuthErrorMessage } from "@/app/lib/api/auth";
 
+function getInitialFormData() {
+  if (typeof window === "undefined") return { ...INITIAL_FORM_DATA };
+  return {
+    ...INITIAL_FORM_DATA,
+    firstName: localStorage.getItem("onboardingFirstName") || INITIAL_FORM_DATA.firstName,
+    lastName: localStorage.getItem("onboardingLastName") || INITIAL_FORM_DATA.lastName,
+  };
+}
+
 export default function ProfileSetupPage() {
   const router = useRouter();
-  const [data, setData] = useState({ ...INITIAL_FORM_DATA });
+  const [data, setData] = useState(getInitialFormData);
   const [skillInput, setSkillInput] = useState("");
 
   // Dropdown open state

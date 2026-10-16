@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import { CreateResourceResponse, GetAllResourcesResponse, GetSingleResourceResponse } from "../types/resource";
+import { CreateResourceResponse, GetAllResourcesResponse, GetSingleResourceResponse, DownloadResourceResponse } from "../types/resource";
 
 export const resourceAPI = {
     createResource: async (formData: FormData) => {
@@ -72,7 +72,7 @@ export const resourceAPI = {
     },
 
     downloadResource: async (id: string) => {
-        const response = await apiClient.get(`/resources/${id}/download`);
+        const response = await apiClient.get<DownloadResourceResponse>(`/resources/${id}/download`);
         return response.data;
     }
 };

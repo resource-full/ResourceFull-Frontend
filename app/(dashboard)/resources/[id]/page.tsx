@@ -189,7 +189,7 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
         const res = await resourceAPI.getSingleResource(id);
         if (res.success && res.data) {
           const data = res.data;
-          setResource({
+          setResource(prev => ({
             id: data._id || data.id,
             variant: "purple",
             authorName: data.owner?.name || "Author",
@@ -202,8 +202,8 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
             previewImageUrl: data.coverPhoto || "/assets/pdf1.png",
             viewCount: data.viewCount?.toString() || "0",
             commentCount: stats?.comments ?? 0,
-            isOwned: false
-          });
+            isOwned: prev.isOwned
+          }));
         }
       } catch (error) {
         console.error("Failed to fetch resource details:", error);

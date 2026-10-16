@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import Link from "next/link";
+import Logo from "@/app/components/ui/Logo";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import styles from "./DashboardSidebar.module.css";
@@ -219,9 +219,9 @@ export default function DashboardSidebar() {
       <div className={styles.logoRow}>
         <Link href="/" className={styles.logo}>
           {!isCollapsed ? (
-            <Image src="/assets/resourcefull-logo-2.png" alt="Resourcefull Logo" width={204} height={36} className={styles.logoImage} priority />
+            <Logo iconSize={36} fontSize={21} />
           ) : (
-            <Image src="/assets/mini-logo.png" alt="Resourcefull Logo" width={35} height={36} priority />
+            <Logo iconOnly iconSize={35} />
           )}
         </Link>
         <button

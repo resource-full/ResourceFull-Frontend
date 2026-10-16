@@ -7,6 +7,7 @@ import { Input, PasswordInput, Button } from "@/app/components/ui";
 import styles from "./LoginForm.module.css";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { authAPI } from "@/app/lib/api/auth";
+import { API_BASE_URL } from "@/app/lib/api/client";
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24">
@@ -122,11 +123,21 @@ export default function LoginForm() {
       </form>
 
       <div className={styles.socialContainer}>
-        <button type="button" className={styles.socialButton} aria-label="Log in with Google">
+        <button
+          type="button"
+          className={styles.socialButton}
+          aria-label="Log in with Google"
+          onClick={() => { window.location.href = `${API_BASE_URL}/auth/google`; }}
+        >
           <GoogleIcon />
           <span>Log in with Google</span>
         </button>
-        <button type="button" className={styles.socialButton} aria-label="Log in with LinkedIn">
+        <button
+          type="button"
+          className={styles.socialButton}
+          aria-label="Log in with LinkedIn"
+          onClick={() => { window.location.href = `${API_BASE_URL}/auth/linkedin`; }}
+        >
           <LinkedInIcon />
           <span>Log in with LinkedIn</span>
         </button>

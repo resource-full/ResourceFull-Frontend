@@ -9,6 +9,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     login: (payload: LoginPayload) => Promise<void>;
     register: (payload: RegisterPayload) => Promise<void>;
+    loginWithTokens: (accessToken: string, refreshToken: string) => Promise<void>;
     logout: () => Promise<void>;
 }
 
@@ -63,7 +64,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem("refreshToken", refreshToken);
             localStorage.setItem("userId", user._id || user.id);
             localStorage.setItem("userEmail", user.email);
+            localStorage.setItem("onboardingFirstName", payload.firstName);
+            localStorage.setItem("onboardingLastName", payload.lastName);
             setUser(user);
+        }
+    };
+
+    const loginWithTokens = async (accessToken: string, refreshToken: string) => {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        const response = await authAPI.getCurrentUser();
+        if (response.success) {
+            localStorage.setItem("userId", response.data._id || response.data.id);
+            localStorage.setItem("userEmail", response.data.email);
+            setUser(response.data);
         }
     };
 
@@ -77,6 +91,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("userId");
             localStorage.removeItem("userEmail");
+            localStorage.removeItem("onboardingFirstName");
+            localStorage.removeItem("onboardingLastName");
             setUser(null);
         }
     };
@@ -89,6 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 isAuthenticated: !!user,
                 login,
                 register,
+                loginWithTokens,
                 logout,
             }}
         >

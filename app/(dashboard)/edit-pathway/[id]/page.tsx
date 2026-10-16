@@ -125,14 +125,21 @@ export default function EditPathwayPage() {
           }
           if (pathway.blocks && pathway.blocks.length > 0) {
             setNodes(
-              pathway.blocks.map((block, index) => ({
-                id: block._id || String(index + 1),
-                type: block.type === "resource" ? "resource" : "text",
-                title: block.name || "",
-                content: block.shortDescription || "",
-                resourceId: block.resource || undefined,
-                resourceTitle: block.resource || undefined,
-              }))
+              pathway.blocks.map((block, index) => {
+                const isPopulated = block.resource && typeof block.resource === "object";
+                const resourceId = isPopulated
+                  ? (block.resource as Resource)._id || (block.resource as Resource).id
+                  : (block.resource as string | undefined);
+                const resourceTitle = isPopulated ? (block.resource as Resource).name : undefined;
+                return {
+                  id: block._id || String(index + 1),
+                  type: block.type === "resource" ? "resource" : "text",
+                  title: block.name || "",
+                  content: block.shortDescription || "",
+                  resourceId,
+                  resourceTitle,
+                };
+              })
             );
           }
         }

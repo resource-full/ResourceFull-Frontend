@@ -1,0 +1,156 @@
+/* ── Wrapper ── */
+.filterWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* ── Trigger button matching Figma design ── */
+.filterTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: var(--color-input-bg, #f6f6f6);
+  border: none;
+  border-radius: 9999px;
+  color: var(--color-primary, #024a94);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 160ms ease, box-shadow 160ms ease, transform 100ms ease;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.filterTrigger:hover {
+  background: #ebebeb;
+}
+
+.filterTrigger:active {
+  background: #e2e2e2;
+  transform: scale(0.98);
+}
+
+.filterTriggerActive {
+  background: #ececec;
+}
+
+.triggerIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary, #024a94);
+  flex-shrink: 0;
+}
+
+.triggerText {
+  color: var(--color-primary, #024a94);
+  font-weight: 500;
+}
+
+/* ── Dropdown panel matching Figma popover card ── */
+.dropdownPanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  min-width: 250px;
+  z-index: 200;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: filterSlideIn 180ms ease;
+}
+
+@keyframes filterSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Option row ── */
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 2px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 120ms ease;
+  user-select: none;
+}
+
+.optionRow:hover {
+  background: #f8fafc;
+}
+
+/* ── Custom checkbox matching Figma ── */
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.checkboxChecked {
+  background: #024a94;
+  border-color: #024a94;
+}
+
+.checkIcon {
+  color: #ffffff;
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Label text ── */
+.optionLabel {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+/* Hidden native input */
+.hiddenInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .filterTrigger {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+  }
+
+  .dropdownPanel {
+    min-width: 220px;
+    right: 0;
+    padding: 18px 16px;
+    gap: 14px;
+  }
+
+  .optionLabel {
+    font-size: 0.95rem;
+  }
+}

@@ -12,6 +12,7 @@ import { interactionAPI } from "@/app/lib/api/interaction";
 import { Hub } from "@/app/lib/types/hub";
 import { useDashboardData, formatPrice } from "@/app/hooks/useDashboardData";
 import { ResourceCardVariant } from "@/app/components/ui/ResourceCard";
+import FilterByDropdown from "@/app/components/ui/FilterByDropdown";
 import styles from "./page.module.css";
 
 const BookmarkIcon = () => (
@@ -50,6 +51,15 @@ function getVariant(index: number): ResourceCardVariant {
   return VARIANTS[index % VARIANTS.length];
 }
 
+const FILTER_OPTIONS = [
+  { value: "free", label: "Free" },
+  { value: "paid", label: "Paid" },
+  { value: "best_match", label: "Best match" },
+  { value: "most_saved", label: "Most saved" },
+  { value: "newest", label: "Newest" },
+  { value: "highest_rating", label: "Highest rating" },
+];
+
 interface HubItem {
   id: string;
   type: "resource" | "pathway";
@@ -73,6 +83,7 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
   const paymentItemId = searchParams.get("itemId");
 
   const [activeTab, setActiveTab] = useState("All");
+  const [priceFilters, setPriceFilters] = useState<string[]>([]);
   const [ownedItems, setOwnedItems] = useState<Set<string>>(new Set());
   const [processingItems, setProcessingItems] = useState<Set<string>>(new Set());
   const [showToast, setShowToast] = useState(false);
@@ -282,13 +293,16 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
     }
   };
 
-  // Filter items based on active tab
+  // Filter items based on active tab and price filters
   const filteredItems = items.filter(item => {
-    if (activeTab === "All") return true;
-    if (activeTab === "Resources") return item.type === "resource";
-    if (activeTab === "Pathways") return item.type === "pathway";
+    if (activeTab === "Resources" && item.type !== "resource") return false;
+    if (activeTab === "Pathways" && item.type !== "pathway") return false;
+    if (priceFilters.includes("free") && !priceFilters.includes("paid") && !item.isFree) return false;
+    if (priceFilters.includes("paid") && !priceFilters.includes("free") && item.isFree) return false;
     return true;
   });
+
+
 
   const hubName = hub?.name || "Hub";
   const hubDescription = hub?.description || "";
@@ -402,11 +416,11 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
                   ))}
                 </div>
 
-                <button className={styles.filterBtn} aria-label="Filter">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-                  </svg>
-                </button>
+                <FilterByDropdown
+                  options={FILTER_OPTIONS}
+                  selectedValues={priceFilters}
+                  onChange={setPriceFilters}
+                />
               </div>
 
               <div className={styles.itemList}>

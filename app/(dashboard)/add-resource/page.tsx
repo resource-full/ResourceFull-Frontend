@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { resourceAPI } from "@/app/lib/api/resource";
@@ -61,6 +62,7 @@ const RefreshIcon = () => (
 );
 
 export default function AddResourcePage() {
+  const router = useRouter();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
   const [coverPhotoFile, setCoverPhotoFile] = useState<File | null>(null);
@@ -390,7 +392,7 @@ export default function AddResourcePage() {
                   ) : null}
                 </p>
                 <div className={styles.modalActions}>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => window.location.href = '#'}>Go to Profile</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => router.push('/profile')}>Go to Profile</button>
                   <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={closeModal}>Upload More</button>
                 </div>
               </>
@@ -419,7 +421,7 @@ export default function AddResourcePage() {
                 <h3 className={styles.modalTitle}>Saved to Drafts</h3>
                 <p className={styles.modalSubtitle}>Your resource is now saved in your drafts</p>
                 <div className={styles.modalActions}>
-                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => window.location.href = '#'}>Go to Profile</button>
+                  <button className={`${styles.modalBtn} ${styles.modalBtnOutline}`} onClick={() => router.push('/profile')}>Go to Profile</button>
                   <button className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={closeModal}>Upload More</button>
                 </div>
               </>

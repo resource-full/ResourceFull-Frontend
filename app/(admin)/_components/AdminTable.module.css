@@ -1,0 +1,165 @@
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.countLabel {
+  font-size: 19px;
+  font-weight: 500;
+  color: #011a34;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  background: var(--color-input-bg);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--color-text-heading);
+  min-width: 220px;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.sortLabel {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.chip {
+  background: var(--color-input-bg);
+  border: none;
+  border-radius: 100px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-heading);
+  cursor: pointer;
+}
+
+.chipActive {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eaeaea;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--color-text-heading);
+  border-bottom: 1px solid #f1f1f1;
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.cellPrimary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.cellAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.cellThumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.statusBadge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.statusPublished {
+  background: #e9fcea;
+  color: #1cab22;
+}
+
+.statusDraft {
+  background: #fff4e5;
+  color: #b06a00;
+}
+
+.statusSuspended {
+  background: #fdeced;
+  color: #ab1c3a;
+}
+
+.actionsCell {
+  display: flex;
+  gap: 8px;
+}
+
+.actionBtn {
+  background: var(--color-input-bg);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-heading);
+  cursor: pointer;
+}
+
+.actionBtnDanger {
+  color: #ab1c3a;
+}

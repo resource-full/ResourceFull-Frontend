@@ -13,6 +13,7 @@ import SuccessModal from "@/app/components/ui/SuccessModal";
 import styles from "../page.module.css";
 import socialStyles from "../../../(auth)/login/_components/LoginForm.module.css";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { API_BASE_URL } from "@/app/lib/api/client";
 
 /* ============================================================
    Validation
@@ -195,11 +196,21 @@ export default function OnboardingForm() {
 
         {/* Social sign-in */}
         <div className={socialStyles.socialContainer}>
-          <button type="button" className={socialStyles.socialButton} aria-label="Sign in with Google">
+          <button
+            type="button"
+            className={socialStyles.socialButton}
+            aria-label="Sign in with Google"
+            onClick={() => { window.location.href = `${API_BASE_URL}/auth/google`; }}
+          >
             <GoogleIcon />
             <span>Sign in with Google</span>
           </button>
-          <button type="button" className={socialStyles.socialButton} aria-label="Sign in with LinkedIn">
+          <button
+            type="button"
+            className={socialStyles.socialButton}
+            aria-label="Sign in with LinkedIn"
+            onClick={() => { window.location.href = `${API_BASE_URL}/auth/linkedin`; }}
+          >
             <LinkedInIcon />
             <span>Sign in with LinkedIn</span>
           </button>

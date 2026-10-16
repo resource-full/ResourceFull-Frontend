@@ -153,6 +153,50 @@
   position: relative;
 }
 
+.userMenuWrapper {
+  position: relative;
+}
+
+.userMenuDropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 200px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.userMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-heading);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  text-decoration: none;
+}
+
+.userMenuItem:hover {
+  background: #f8f9fc;
+}
+
+.userMenuItemDanger {
+  color: #ef4444;
+}
+
 .notificationsDropdown {
   position: absolute;
   top: calc(100% + 12px);

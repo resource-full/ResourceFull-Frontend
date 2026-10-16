@@ -7,22 +7,25 @@ import DashboardTopNav from "../_components/DashboardTopNav";
 import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeader";
 import HubCard from "@/app/components/ui/HubCard";
 import PathwayCard from "@/app/components/ui/PathwayCard";
+import FilterByDropdown from "@/app/components/ui/FilterByDropdown";
 import styles from "./page.module.css";
 
 const TAGS = [
   "All",
-  "CV Templates",
   "Templates",
-  "Fellowships",
   "Prompts",
-  "Career Advice"
+  "Courses",
+  "Videos",
 ];
 
-const FilterIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-  </svg>
-);
+const FILTER_OPTIONS = [
+  { value: "free", label: "Free" },
+  { value: "paid", label: "Paid" },
+  { value: "best_match", label: "Best match" },
+  { value: "most_saved", label: "Most saved" },
+  { value: "newest", label: "Newest" },
+  { value: "highest_rating", label: "Highest rating" },
+];
 
 const EmptyStateIcon = () => (
   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -36,7 +39,6 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("resources");
   const [activeTag, setActiveTag] = useState("All");
   const [priceFilters, setPriceFilters] = useState<string[]>([]);
-  const [isPriceDropdownOpen, setIsPriceDropdownOpen] = useState(false);
   const [filters, setFilters] = useState<DashboardFilters>({
     searchQuery: "",
     worldwide: [],
@@ -105,7 +107,7 @@ export default function DashboardPage() {
     if (hasFilters) {
       const count = activeTab === "resources" ? filteredResources.length
         : activeTab === "pathways" ? filteredPathways.length
-        : filteredHubs.length;
+          : filteredHubs.length;
       const parts: string[] = [];
       if (filters.worldwide.length) parts.push(`in ${filters.worldwide.join(" & ")}`);
       if (filters.industry.length) parts.push(`for ${filters.industry.join(" & ")}`);
@@ -113,14 +115,10 @@ export default function DashboardPage() {
       return `${count} Results ${parts.join(", ")}`;
     }
 
-    return "Explore 3000+ resources";
+    return "Trending resources";
   };
 
-  const togglePriceFilter = (filter: string) => {
-    setPriceFilters(prev =>
-      prev.includes(filter) ? prev.filter(v => v !== filter) : [...prev, filter]
-    );
-  };
+
 
   return (
     <div className={styles.pageContainer}>
@@ -141,54 +139,11 @@ export default function DashboardPage() {
               </button>
             ))}
           </div>
-          <div className={styles.filterWrapper}>
-            <button
-              className={styles.filterBtn}
-              aria-label="Filter"
-              onClick={() => setIsPriceDropdownOpen(!isPriceDropdownOpen)}
-            >
-              <span>Filter by:</span>
-              <FilterIcon />
-            </button>
-
-            {isPriceDropdownOpen && (
-              <div className={styles.filterDropdown}>
-                <label className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-50 rounded-lg">
-                  <div className={`w-5 h-5 border-[1.5px] rounded flex items-center justify-center transition-colors ${priceFilters.includes('free') ? 'bg-[#024A94] border-[#024A94]' : 'border-gray-300 bg-white'}`}>
-                    {priceFilters.includes('free') && (
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    )}
-                  </div>
-                  <input
-                    type="checkbox"
-                    className="hidden"
-                    checked={priceFilters.includes('free')}
-                    onChange={() => togglePriceFilter('free')}
-                  />
-                  <span className="text-gray-800 font-medium">Free</span>
-                </label>
-
-                <label className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-50 rounded-lg">
-                  <div className={`w-5 h-5 border-[1.5px] rounded flex items-center justify-center transition-colors ${priceFilters.includes('paid') ? 'bg-[#024A94] border-[#024A94]' : 'border-gray-300 bg-white'}`}>
-                    {priceFilters.includes('paid') && (
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    )}
-                  </div>
-                  <input
-                    type="checkbox"
-                    className="hidden"
-                    checked={priceFilters.includes('paid')}
-                    onChange={() => togglePriceFilter('paid')}
-                  />
-                  <span className="text-gray-800 font-medium">Paid</span>
-                </label>
-              </div>
-            )}
-          </div>
+          <FilterByDropdown
+            options={FILTER_OPTIONS}
+            selectedValues={priceFilters}
+            onChange={setPriceFilters}
+          />
         </div>
       </div>
 
