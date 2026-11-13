@@ -10,14 +10,13 @@ export interface GetWalletOverviewResponse {
   data: WalletOverview;
 }
 
-export interface Bank {
-  code: string;
-  name: string;
-}
+export type Bank = string;
 
 export interface GetBanksResponse {
   success: boolean;
-  data: Bank[];
+  data: {
+    banks: Bank[];
+  };
 }
 
 export interface WithdrawalAccount {

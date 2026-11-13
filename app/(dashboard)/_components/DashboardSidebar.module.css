@@ -53,6 +53,23 @@
   flex-shrink: 0;
 }
 
+.mobileCloseBtn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #8c95a6;
+  cursor: pointer;
+  padding: 4px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.mobileBackdrop {
+  display: none;
+}
+
 .collapseBtn:hover {
   background: #f0f4f8;
   color: #11243d;
@@ -334,101 +351,72 @@
 }
 
 /* ============================================================
-   Mobile Bottom Navigation — iOS-style tab bar
+   Mobile Navigation — slide-in drawer from the left
    ============================================================ */
 @media (max-width: 768px) {
   .sidebar {
-    flex-direction: row;
-    width: 100% !important;
-    height: auto !important;
-    padding: 8px 12px;
-    padding-bottom: max(8px, env(safe-area-inset-bottom));
-    justify-content: space-around;
-    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px !important;
+    max-width: 85vw;
+    height: 100vh !important;
+    height: 100dvh !important;
+    flex-direction: column;
+    padding: 24px 16px;
     background: #ffffff;
-    overflow: visible;
+    overflow-y: auto;
+    z-index: 300;
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.16);
+    transform: translateX(-100%);
+    transition: transform 280ms ease;
     gap: 0;
   }
 
-  /* Hide desktop-only elements */
-  .logoRow,
-  .shareCard,
+  .sidebar.mobileOpen {
+    transform: translateX(0);
+  }
+
   .collapseBtn {
     display: none !important;
   }
 
-  /* Make nav sections horizontal */
-  .navSection {
-    flex-direction: row;
-    gap: 0;
-    align-items: center;
-    flex: 1;
-    justify-content: space-around;
-  }
-
-  .bottomNav {
-    flex-direction: row;
-    gap: 0;
-    margin-top: 0;
-    align-items: center;
-    flex: 1;
-    justify-content: space-around;
-  }
-
-  /* Hide text labels, badges */
-  .navLinkText,
-  .badge,
-  .addBtnText {
-    display: none !important;
-  }
-
-  /* Icon-only nav links */
-  .navLink {
+  .mobileCloseBtn {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    border-radius: 12px;
-    color: #8c95a6;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 44px;
-    min-height: 44px;
   }
 
-  .navLinkInner {
-    gap: 0;
+  .mobileBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 299;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 280ms ease;
   }
 
-  .navLinkActive {
-    background: #f0f7ff;
-    color: #024A94;
+  .mobileBackdropVisible {
+    opacity: 1;
+    pointer-events: auto;
   }
 
-  /* Add button — compact circle */
-  .addBtn {
-    margin-top: 0;
-    padding: 10px;
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    flex-shrink: 0;
+  .shareCard {
+    margin-top: 32px;
   }
 
-  /* Add menu pops UP from bottom when on mobile */
+  /* Add menu pops up above the drawer content, anchored near the Add button */
   .addMenu {
     position: fixed !important;
-    bottom: 80px !important;
-    /* Above bottom nav */
+    bottom: auto !important;
     top: auto !important;
-    height: auto !important;
-    left: 50% !important;
-    transform: translateX(-50%);
-    margin-bottom: 0;
-    margin-top: 0;
-    width: 280px;
-    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+    left: 16px !important;
+    right: 16px !important;
+    transform: none;
+    width: auto;
+    max-width: calc(280px - 32px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
     border-radius: 16px;
   }
 }

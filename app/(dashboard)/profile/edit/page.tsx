@@ -108,7 +108,9 @@ export default function EditProfilePage() {
           if (parsed.currentCareer) setCurrentCareer(parsed.currentCareer);
           if (parsed.skills) setSkills(parsed.skills);
           if (parsed.primaryCareerGoal) setPrimaryGoal(parsed.primaryCareerGoal);
-          if (parsed.goalReviewTimeline) setGoalTimeline([parsed.goalReviewTimeline]);
+          if (parsed.goalReviewTimeline) {
+            setGoalTimeline([parsed.goalReviewTimeline === "1year" ? "12_months" : "6_months"]);
+          }
           if (parsed.avatar) setAvatar(parsed.avatar);
           if (parsed.coverImage) setCoverPhoto(parsed.coverImage);
         }
@@ -126,15 +128,16 @@ export default function EditProfilePage() {
       name: `${firstName} ${lastName}`.trim(),
       location,
       bio,
-      experienceLevel,
+      industry,
+      professionalExperience: experienceLevel,
       currentCareer: currentCareer || industry,
       skills,
-      primaryGoal,
-      goalTimeline,
+      primaryCareerGoal: primaryGoal,
+      goalReviewTimeline: goalTimeline[0] === "12_months" ? "1year" : "6months",
     };
-    
+
     if (avatar) payload.avatar = avatar;
-    if (coverPhoto) payload.coverPhoto = coverPhoto;
+    if (coverPhoto) payload.coverImage = coverPhoto;
 
     return payload;
   };

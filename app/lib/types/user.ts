@@ -69,13 +69,13 @@ export interface UpdateUserProfilePayload {
   skills?: string[];
   bio?: string;
   industry?: string;
-  experienceLevel?: string;
+  professionalExperience?: string;
   currentGoals?: string;
-  primaryGoal?: string;
-  goalTimeline?: string[];
+  primaryCareerGoal?: string;
+  goalReviewTimeline?: string;
   experiences?: any[];
   avatar?: string;
-  coverPhoto?: string;
+  coverImage?: string;
   [key: string]: any; // Allow other fields to be updated if needed
 }
 

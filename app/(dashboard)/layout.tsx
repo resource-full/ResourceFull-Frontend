@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import DashboardSidebar from "./_components/DashboardSidebar";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
+import { MobileSidebarProvider } from "./_components/MobileSidebarContext";
 import styles from "./layout.module.css";
 
 export const metadata: Metadata = {
@@ -15,16 +16,18 @@ export default function DashboardLayout({
 }>) {
   return (
     <ProtectedRoute>
-      <div className={styles.dashboardLayout}>
-        <div className={styles.sidebarWrapper}>
-          <DashboardSidebar />
-        </div>
-        <div className={styles.mainContent}>
-          <div className={styles.mainInner}>
-            {children}
+      <MobileSidebarProvider>
+        <div className={styles.dashboardLayout}>
+          <div className={styles.sidebarWrapper}>
+            <DashboardSidebar />
+          </div>
+          <div className={styles.mainContent}>
+            <div className={styles.mainInner}>
+              {children}
+            </div>
           </div>
         </div>
-      </div>
+      </MobileSidebarProvider>
     </ProtectedRoute>
   );
 }

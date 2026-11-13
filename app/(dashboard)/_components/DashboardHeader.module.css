@@ -347,6 +347,18 @@
   display: none;
 }
 
+.hamburgerBtn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #11243d;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 768px) {
   .header {
     flex-wrap: wrap;
@@ -354,6 +366,10 @@
     padding: 12px 16px;
     border-radius: 16px;
     margin-bottom: 16px;
+  }
+
+  .hamburgerBtn {
+    display: flex;
   }
 
   .mobileLogo {

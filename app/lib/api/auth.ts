@@ -54,11 +54,8 @@ export interface OnboardingStatusResponse {
     success: boolean;
     message?: string;
     data?: {
-        completed?: boolean;
         onboardingCompleted?: boolean;
-        isOnboarded?: boolean;
-        currentStep?: number;
-        steps?: Record<string, boolean> | string[];
+        onboardingStep?: number;
         [key: string]: any;
     };
 }
@@ -101,7 +98,7 @@ export const authAPI = {
         return response.data;
     },
 
-    changePassword: async (payload: { oldPassword?: string; newPassword?: string }) => {
+    changePassword: async (payload: { currentPassword?: string; newPassword?: string }) => {
         const response = await apiClient.post("/auth/change-password", payload);
         return response.data;
     },

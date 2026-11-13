@@ -32,6 +32,8 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("personalization");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   // Change password state (Privacy & Security tab)
   const [pwd, setPwd] = useState({ oldPassword: "", newPassword: "", confirmPassword: "" });
@@ -140,6 +142,8 @@ export default function SettingsPage() {
 
   const handleSave = async () => {
     setIsSaving(true);
+    setSaveSuccess(false);
+    setSaveError(false);
     try {
       await userAPI.updateUserProfile({
         name: formData.username,
@@ -149,10 +153,12 @@ export default function SettingsPage() {
         professionalExperience: formData.experience[0] || "",
         skills: formData.skills
       });
-      alert("Settings saved successfully");
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 4000);
     } catch (error) {
       console.error("Failed to save profile", error);
-      alert("Failed to save settings");
+      setSaveError(true);
+      setTimeout(() => setSaveError(false), 4000);
     } finally {
       setIsSaving(false);
     }
@@ -175,7 +181,7 @@ export default function SettingsPage() {
     setPwdLoading(true);
     try {
       const res = await authAPI.changePassword({
-        oldPassword: pwd.oldPassword,
+        currentPassword: pwd.oldPassword,
         newPassword: pwd.newPassword,
       });
       setPwdSuccess(res?.message || "Password updated successfully");
@@ -371,6 +377,39 @@ export default function SettingsPage() {
           {isSaving ? "Saving..." : "Save"}
         </button>
       </div>
+
+      {saveSuccess && (
+        <div
+          role="status"
+          style={{
+            color: "#16a34a",
+            fontSize: "0.875rem",
+            padding: "10px 12px",
+            background: "#f0fdf4",
+            border: "1px solid #bbf7d0",
+            borderRadius: "8px",
+            marginBottom: "16px",
+          }}
+        >
+          Settings saved successfully
+        </div>
+      )}
+      {saveError && (
+        <div
+          role="alert"
+          style={{
+            color: "#dc2626",
+            fontSize: "0.875rem",
+            padding: "10px 12px",
+            background: "#fef2f2",
+            border: "1px solid #fecaca",
+            borderRadius: "8px",
+            marginBottom: "16px",
+          }}
+        >
+          Failed to save settings. Please try again.
+        </div>
+      )}
 
       <div className={styles.mainContent}>
         <SettingsSidebar activeTab={activeTab} onTabChange={setActiveTab} />

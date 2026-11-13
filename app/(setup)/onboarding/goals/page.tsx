@@ -35,10 +35,10 @@ export default function GoalsSetupPage() {
     try {
       await authAPI.saveOnboardingStep({
         step: 2,
-        goals: {
-          primaryGoal: data.primaryGoal,
+        data: {
+          primaryCareerGoal: data.primaryGoal,
           targetRoles: data.targetRoles,
-          goalTimeline: data.goalTimeline,
+          goalReviewTimeline: data.goalTimeline.replace(/-/g, ""),
         },
       });
       setSuccess("Goals saved");

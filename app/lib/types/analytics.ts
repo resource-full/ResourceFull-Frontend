@@ -39,23 +39,20 @@ export interface GetPerformanceResponse {
 }
 
 export interface ProductPerformance {
-  id: string;
-  type: 'resource' | 'pathway';
+  type: 'Resource' | 'Pathway';
   name: string;
-  description: string;
-  price: string | number;
+  category: string;
   earnings: string | number;
   downloads: string | number;
   saves: string | number;
   views: string | number;
-  confidence: number;
-  isUp: boolean;
+  confidence: number; // fraction, e.g. 0.3 for 30%
 }
 
 export interface GetProductsPerformanceResponse {
   success: boolean;
   data: {
-    products: ProductPerformance[];
+    data: ProductPerformance[];
     pagination: {
       page: number;
       limit: number;

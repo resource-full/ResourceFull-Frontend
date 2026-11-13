@@ -11,6 +11,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { notificationAPI } from "@/app/lib/api/notification";
 import { Notification } from "@/app/lib/types/notification";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { useMobileSidebar } from "./MobileSidebarContext";
 
 const SearchIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -79,6 +80,14 @@ const CommentIconSmall = () => (
   </svg>
 );
 
+const HamburgerIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
 const CloseIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -124,7 +133,8 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
 
   const pathname = usePathname()
   const router = useRouter();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const { toggle: toggleMobileSidebar } = useMobileSidebar();
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -240,6 +250,14 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
 
   return (
     <div className={styles.header}>
+      <button
+        className={styles.hamburgerBtn}
+        aria-label="Open menu"
+        onClick={toggleMobileSidebar}
+      >
+        <HamburgerIcon />
+      </button>
+
       {/* Mobile Logo */}
       <Link href="/" className={styles.mobileLogo}>
         <Logo iconSize={28} fontSize={16} />
@@ -338,7 +356,7 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
           >
             <Image
-              src="https://i.pravatar.cc/150?img=47"
+              src={user?.avatar || "https://i.pravatar.cc/150?img=47"}
               alt="User Profile"
               width={40}
               height={40}

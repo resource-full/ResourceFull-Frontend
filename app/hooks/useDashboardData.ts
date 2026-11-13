@@ -3,6 +3,9 @@ import { resourceAPI } from '@/app/lib/api/resource';
 import { pathwayAPI } from '@/app/lib/api/pathway';
 import { hubAPI } from '@/app/lib/api/hub';
 import { interactionAPI } from '@/app/lib/api/interaction';
+import { paymentAPI } from '@/app/lib/api/payment';
+import { analyticsAPI } from '@/app/lib/api/analytics';
+import { walletAPI } from '@/app/lib/api/wallet';
 import { Resource } from '@/app/lib/types/resource';
 import { Pathway } from '@/app/lib/types/pathway';
 import { Hub } from '@/app/lib/types/hub';
@@ -337,4 +340,116 @@ export function useDashboardData(filters?: DisplayFilters) {
     isLoadingPathways,
     isLoadingHubs,
   };
+}
+
+export interface SidebarCounts {
+  saved: number | null;
+  purchased: number | null;
+  analytics: number | null;
+  wallet: number | null;
+}
+
+/**
+ * Counts for the sidebar nav badges. Mirrors the "actual content" each tab
+ * shows (saved items, purchased items, tracked products, transactions) —
+ * null while still loading so the badge can be hidden instead of showing 0.
+ */
+export function useSidebarCounts(): SidebarCounts {
+  const [counts, setCounts] = useState<SidebarCounts>({
+    saved: null,
+    purchased: null,
+    analytics: null,
+    wallet: null,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await interactionAPI.getUserInteractions("save");
+        if (!cancelled && res.success) {
+          setCounts(prev => ({ ...prev, saved: Array.isArray(res.data) ? res.data.length : 0 }));
+        }
+      } catch {
+        if (!cancelled) setCounts(prev => ({ ...prev, saved: 0 }));
+      }
+    })();
+
+    (async () => {
+      try {
+        const res = await analyticsAPI.getProducts();
+        if (!cancelled && res.success) {
+          const total = res.data?.pagination?.total ?? res.data?.data?.length ?? 0;
+          setCounts(prev => ({ ...prev, analytics: total }));
+        }
+      } catch {
+        if (!cancelled) setCounts(prev => ({ ...prev, analytics: 0 }));
+      }
+    })();
+
+    (async () => {
+      try {
+        const res = await walletAPI.getTransactions({ limit: 1 });
+        if (!cancelled && res.success) {
+          const total = res.data?.pagination?.total ?? res.data?.transactions?.length ?? 0;
+          setCounts(prev => ({ ...prev, wallet: total }));
+        }
+      } catch {
+        if (!cancelled) setCounts(prev => ({ ...prev, wallet: 0 }));
+      }
+    })();
+
+    (async () => {
+      try {
+        const [resourcesRes, pathwaysRes, hubsRes] = await Promise.all([
+          resourceAPI.getAllResources(),
+          pathwayAPI.getAllPathways(),
+          hubAPI.getAllHubs(),
+        ]);
+        const resources = resourcesRes.success ? resourcesRes.data.resources : [];
+        const pathways = pathwaysRes.success ? pathwaysRes.data.pathways : [];
+        const hubCount = hubsRes.success && hubsRes.data ? hubsRes.data.hubs.length : 0;
+
+        const purchasedResourceChecks = await Promise.all(
+          resources.map(async (res) => {
+            const id = res._id || res.id;
+            if (!id) return false;
+            try {
+              const status = await paymentAPI.checkPurchaseStatus("Resource", id);
+              return status.success && !!status.data?.hasPurchased;
+            } catch {
+              return false;
+            }
+          })
+        );
+        const purchasedPathwayChecks = await Promise.all(
+          pathways.map(async (pw) => {
+            const id = pw._id || pw.id;
+            if (!id) return false;
+            try {
+              const status = await paymentAPI.checkPurchaseStatus("Pathway", id);
+              return status.success && !!status.data?.hasPurchased;
+            } catch {
+              return false;
+            }
+          })
+        );
+
+        if (!cancelled) {
+          const purchasedCount =
+            purchasedResourceChecks.filter(Boolean).length +
+            purchasedPathwayChecks.filter(Boolean).length +
+            hubCount;
+          setCounts(prev => ({ ...prev, purchased: purchasedCount }));
+        }
+      } catch {
+        if (!cancelled) setCounts(prev => ({ ...prev, purchased: 0 }));
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, []);
+
+  return counts;
 }
