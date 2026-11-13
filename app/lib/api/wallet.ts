@@ -19,7 +19,7 @@ export const walletAPI = {
         return response.data;
     },
 
-    addWithdrawalAccount: async (data: { bankCode: string; accountNumber: string; accountName: string }) => {
+    addWithdrawalAccount: async (data: { bankName: string; accountNumber: string; accountName: string }) => {
         const response = await apiClient.post<GenericWalletResponse>("/wallet/accounts", data);
         return response.data;
     },

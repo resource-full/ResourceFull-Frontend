@@ -119,7 +119,7 @@ export default function AnalyticsPage() {
         ]);
         if (statsRes.success) setStats(statsRes.data);
         if (perfRes.success) setChartData(perfRes.data);
-        if (prodRes.success) setProducts(prodRes.data.products);
+        if (prodRes.success) setProducts(prodRes.data.data);
       } catch (err) {
         console.error("Failed to load analytics data", err);
       } finally {
@@ -297,19 +297,25 @@ export default function AnalyticsPage() {
             </div>
           </div>
           <div style={{ width: '100%', height: 280 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={Array.isArray(chartData) ? chartData : []} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dx={-10} />
-                <Tooltip
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                />
-                <Line type="linear" dataKey="earnings" stroke="#10b981" strokeWidth={2} dot={false} />
-                <Line type="linear" dataKey="downloads" stroke="#8b5cf6" strokeWidth={2} dot={false} />
-                <Line type="linear" dataKey="saved" stroke="#0ea5e9" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
+            {Array.isArray(chartData) && chartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dx={-10} />
+                  <Tooltip
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  />
+                  <Line type="linear" dataKey="earnings" stroke="#10b981" strokeWidth={2} dot={false} />
+                  <Line type="linear" dataKey="downloads" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                  <Line type="linear" dataKey="saved" stroke="#0ea5e9" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>
+                No activity yet for this period
+              </div>
+            )}
           </div>
         </div>
 
@@ -350,7 +356,7 @@ export default function AnalyticsPage() {
                 <tr>
                   <th>Type</th>
                   <th>Name</th>
-                  <th>Description</th>
+                  <th>Category</th>
                   <th>Earnings</th>
                   <th>Downloads</th>
                   <th>Saves</th>
@@ -361,26 +367,24 @@ export default function AnalyticsPage() {
               <tbody>
                 {(!Array.isArray(products) || products.length === 0) ? (
                   <tr><td colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>No performance data available</td></tr>
-                ) : products.map((row) => (
-                  <tr key={row.id}>
+                ) : products.map((row, index) => (
+                  <tr key={`${row.type}-${row.name}-${index}`}>
                     <td>
-                      {row.type === 'resource' ? <ResourceTypeIcon /> : <PathwayTypeIcon />}
+                      {row.type === 'Resource' ? <ResourceTypeIcon /> : <PathwayTypeIcon />}
                     </td>
                     <td>
                       <div className={styles.nameCell}>
                         <span className={styles.nameTitle}>{row.name}</span>
-                        {row.price && <span className={styles.namePrice}>{row.price}</span>}
                       </div>
                     </td>
-                    <td><div className={styles.descText}>{row.description}</div></td>
+                    <td><div className={styles.descText}>{row.category}</div></td>
                     <td>{row.earnings}</td>
                     <td>{row.downloads}</td>
                     <td>{row.saves}</td>
                     <td>{row.views}</td>
                     <td>
-                      <span className={row.isUp ? styles.confUp : styles.confDown}>
-                        {row.isUp ? <ArrowUpIcon /> : <ArrowDownIcon />}
-                        {row.confidence}%
+                      <span className={styles.confUp}>
+                        {Math.round((row.confidence || 0) * 100)}%
                       </span>
                     </td>
                   </tr>

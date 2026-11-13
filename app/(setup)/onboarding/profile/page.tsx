@@ -6,6 +6,17 @@ import styles from "../../setup.module.css";
 import { INITIAL_FORM_DATA, COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
 import { authAPI, getAuthErrorMessage } from "@/app/lib/api/auth";
+import { userAPI } from "@/app/lib/api/user";
+
+// Backend's professionalExperience enum is case-sensitive and inconsistent
+// ("Entry level" has a lowercase "l" while the others are capitalized) —
+// these values are verified against the live API, not guessed.
+const EXPERIENCE_LEVELS = [
+  { label: "Student", value: "Student" },
+  { label: "Entry Level", value: "Entry level" },
+  { label: "Mid Level", value: "Mid Level" },
+  { label: "Senior", value: "Senior" },
+];
 
 function getInitialFormData() {
   if (typeof window === "undefined") return { ...INITIAL_FORM_DATA };
@@ -68,19 +79,24 @@ export default function ProfileSetupPage() {
     setSuccess("");
     setLoading(true);
     try {
-      await authAPI.saveOnboardingStep({
-        step: 1,
-        profile: {
+      await Promise.all([
+        authAPI.saveOnboardingStep({
+          step: 1,
+          data: {
+            location: personalLocation[0] || "",
+            professionalExperience: data.experienceLevel,
+            currentRole: data.currentRole,
+            industry: industry[0] || "",
+            roleLocation: roleLocation[0] || "",
+            skills: data.skills,
+          },
+        }),
+        userAPI.updateUserProfile({
           firstName: data.firstName,
           lastName: data.lastName,
-          location: personalLocation,
-          experienceLevel: data.experienceLevel,
-          currentRole: data.currentRole,
-          industry,
-          roleLocation,
-          skills: data.skills,
-        },
-      });
+          name: `${data.firstName} ${data.lastName}`.trim(),
+        }),
+      ]);
       setSuccess("Profile saved");
       router.push("/onboarding/goals");
     } catch (err: any) {
@@ -193,13 +209,13 @@ export default function ProfileSetupPage() {
         </h2>
         
         <div className={styles.toggleGroup}>
-          {["Student", "Entry Level", "Mid Level", "Senior"].map((level) => (
+          {EXPERIENCE_LEVELS.map(({ label, value }) => (
             <button
-              key={level}
-              className={`${styles.toggleBtn} ${data.experienceLevel === level ? styles.toggleBtnActive : ""}`}
-              onClick={() => handleToggle(level)}
+              key={value}
+              className={`${styles.toggleBtn} ${data.experienceLevel === value ? styles.toggleBtnActive : ""}`}
+              onClick={() => handleToggle(value)}
             >
-              {level}
+              {label}
             </button>
           ))}
         </div>

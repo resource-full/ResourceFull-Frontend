@@ -74,7 +74,7 @@ export default function PayoutSidebar() {
   const [banks, setBanks] = useState<Bank[]>([]);
   const [banksLoading, setBanksLoading] = useState(false);
   const [banksError, setBanksError] = useState<string | null>(null);
-  const [selectedBankCode, setSelectedBankCode] = useState("");
+  const [selectedBankName, setSelectedBankName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
   const [adding, setAdding] = useState(false);
@@ -141,7 +141,7 @@ export default function PayoutSidebar() {
   const handleOpenForm = () => {
     setAddSuccess(null);
     setAddError(null);
-    setSelectedBankCode("");
+    setSelectedBankName("");
     setAccountNumber("");
     setAccountName("");
     setShowForm(true);
@@ -158,7 +158,7 @@ export default function PayoutSidebar() {
     setAddSuccess(null);
     setAddError(null);
 
-    if (!selectedBankCode) {
+    if (!selectedBankName) {
       setAddError("Please select a bank.");
       return;
     }
@@ -174,18 +174,17 @@ export default function PayoutSidebar() {
     setAdding(true);
     try {
       const res = await walletAPI.addWithdrawalAccount({
-        bankCode: selectedBankCode,
+        bankName: selectedBankName,
         accountNumber: accountNumber.trim(),
         accountName: accountName.trim(),
       });
       if (res.success) {
-        const bank = banks.find((b) => b.code === selectedBankCode);
         const existing = toAccount(res.data);
         const newAccount: WithdrawalAccount = existing
           ? existing
           : {
                 _id: `local-${Date.now()}`,
-                bankName: bank?.name || selectedBankCode,
+                bankName: selectedBankName,
                 accountNumber: accountNumber.trim(),
                 accountName: accountName.trim(),
                 isDefault: accounts.length === 0,
@@ -193,7 +192,7 @@ export default function PayoutSidebar() {
         setAccounts((prev) => [...prev, newAccount]);
         setAddSuccess("Payout account added successfully.");
         setShowForm(false);
-        setSelectedBankCode("");
+        setSelectedBankName("");
         setAccountNumber("");
         setAccountName("");
       } else {
@@ -272,16 +271,16 @@ export default function PayoutSidebar() {
               <select
                 id="bank-select"
                 className={styles.formSelect}
-                value={selectedBankCode}
-                onChange={(e) => setSelectedBankCode(e.target.value)}
+                value={selectedBankName}
+                onChange={(e) => setSelectedBankName(e.target.value)}
                 disabled={banksLoading}
               >
                 <option value="">
                   {banksLoading ? "Loading banks..." : "Select a bank"}
                 </option>
                 {banks.map((bank) => (
-                  <option key={bank.code} value={bank.code}>
-                    {bank.name}
+                  <option key={bank} value={bank}>
+                    {bank}
                   </option>
                 ))}
               </select>

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Select from "@/app/components/ui/Select";
+import { userAPI } from "@/app/lib/api/user";
 import styles from "./Tab.module.css";
 
 interface AboutTabProps {
@@ -9,22 +10,14 @@ interface AboutTabProps {
   onChange: (field: string, value: string) => void;
 }
 
-const INDUSTRY_OPTIONS = [
-  { value: "Design", label: "Design" },
-  { value: "Engineering", label: "Engineering" },
-  { value: "Product", label: "Product" },
-  { value: "Marketing", label: "Marketing" },
-  { value: "Sales", label: "Sales" },
-  { value: "Data", label: "Data" },
-];
-
+// Backend's professionalExperience enum is case-sensitive and only has
+// these 4 values ("Entry level" has a lowercase "l"); Undergraduate/Lead/
+// Executive are not valid values and will 400 if sent.
 const EXPERIENCE_LEVEL_OPTIONS = [
-  { value: "Undergraduate", label: "Undergraduate" },
-  { value: "Entry Level", label: "Entry Level" },
+  { value: "Student", label: "Student" },
+  { value: "Entry level", label: "Entry Level" },
   { value: "Mid Level", label: "Mid Level" },
   { value: "Senior", label: "Senior" },
-  { value: "Lead", label: "Lead" },
-  { value: "Executive", label: "Executive" },
 ];
 
 export default function AboutTab({
@@ -33,6 +26,22 @@ export default function AboutTab({
   experienceLevel,
   onChange,
 }: AboutTabProps) {
+  // The valid `industry` values come from the backend itself rather than a
+  // hardcoded list, since the frontend has no independent way to know which
+  // strings the backend's enum actually accepts.
+  const [industryOptions, setIndustryOptions] = useState<{ value: string; label: string }[]>(
+    industry ? [{ value: industry, label: industry }] : []
+  );
+
+  useEffect(() => {
+    userAPI.getIndustries().then((res) => {
+      const list: string[] = res?.data?.industries || [];
+      if (list.length > 0) {
+        setIndustryOptions(list.map((name) => ({ value: name, label: name })));
+      }
+    }).catch(() => {});
+  }, []);
+
   return (
     <div className={styles.tabContainer}>
       <div className={styles.tabHeader}>
@@ -60,7 +69,7 @@ export default function AboutTab({
             <label className={styles.fieldLabel}>Industry</label>
             <Select
               id="industry-select"
-              options={INDUSTRY_OPTIONS}
+              options={industryOptions}
               value={industry}
               onChange={(val) => onChange("industry", val)}
               placeholder="Select Industry"

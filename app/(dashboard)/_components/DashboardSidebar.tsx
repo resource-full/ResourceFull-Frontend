@@ -6,6 +6,8 @@ import Link from "next/link";
 import Logo from "@/app/components/ui/Logo";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { useMobileSidebar } from "./MobileSidebarContext";
+import { useSidebarCounts } from "@/app/hooks/useDashboardData";
 import styles from "./DashboardSidebar.module.css";
 
 const ExploreIcon = () => (
@@ -20,6 +22,13 @@ const CollapseIcon = () => (
     <path fillRule="evenodd" clipRule="evenodd" d="M12.3169 0.183058C12.0729 -0.0610194 11.6771 -0.0610194 11.4331 0.183058L5.18306 6.43306C5.06585 6.55027 5 6.70924 5 6.875C5 7.04076 5.06585 7.19973 5.18306 7.31694L11.4331 13.5669C11.6771 13.811 12.0729 13.811 12.3169 13.5669C12.561 13.3229 12.561 12.9271 12.3169 12.6831L6.50888 6.875L12.3169 1.06694C12.561 0.822864 12.561 0.427136 12.3169 0.183058ZM7.31694 0.183059C7.07286 -0.061019 6.67714 -0.061019 6.43306 0.183059L0.183059 6.43306C0.0658484 6.55027 0 6.70924 0 6.875C0 7.04076 0.0658484 7.19973 0.183059 7.31694L6.43306 13.5669C6.67714 13.811 7.07286 13.811 7.31694 13.5669C7.56102 13.3229 7.56102 12.9271 7.31694 12.6831L1.50888 6.875L7.31694 1.06694C7.56102 0.822864 7.56102 0.427136 7.31694 0.183059Z" fill="#707070" />
   </svg>
 
+);
+
+const CloseMenuIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
 );
 
 const SavedIcon = () => (
@@ -165,6 +174,8 @@ export default function DashboardSidebar() {
   const { user } = useAuth();
   const username = user?.username || (user?.email ? user.email.split('@')[0] : '') || 'username';
   const pathname = usePathname();
+  const { isOpen: isMobileOpen, close: closeMobile } = useMobileSidebar();
+  const sidebarCounts = useSidebarCounts();
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -214,8 +225,19 @@ export default function DashboardSidebar() {
     };
   }, []);
 
+  useEffect(() => {
+    closeMobile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
   return (
-    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
+    <>
+      <div
+        className={`${styles.mobileBackdrop} ${isMobileOpen ? styles.mobileBackdropVisible : ''}`}
+        onClick={closeMobile}
+        aria-hidden="true"
+      />
+      <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''} ${isMobileOpen ? styles.mobileOpen : ''}`}>
       <div className={styles.logoRow}>
         <Link href="/" className={styles.logo}>
           {!isCollapsed ? (
@@ -229,6 +251,13 @@ export default function DashboardSidebar() {
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
           <CollapseIcon />
+        </button>
+        <button
+          className={styles.mobileCloseBtn}
+          onClick={closeMobile}
+          aria-label="Close menu"
+        >
+          <CloseMenuIcon />
         </button>
       </div>
 
@@ -250,7 +279,9 @@ export default function DashboardSidebar() {
             <SavedIcon />
             <span className={styles.navLinkText}>Saved</span>
           </div>
-          <span className={styles.badge}>10</span>
+          {sidebarCounts.saved !== null && (
+            <span className={styles.badge}>{sidebarCounts.saved}</span>
+          )}
         </Link>
         <Link
           href="/purchased"
@@ -260,7 +291,9 @@ export default function DashboardSidebar() {
             <Bag />
             <span className={styles.navLinkText}>Purchased</span>
           </div>
-          <span className={styles.badge}>10</span>
+          {sidebarCounts.purchased !== null && (
+            <span className={styles.badge}>{sidebarCounts.purchased}</span>
+          )}
         </Link>
       </div>
 
@@ -342,7 +375,9 @@ export default function DashboardSidebar() {
             <AnalyticsIcon />
             <span className={styles.navLinkText}>Analytics</span>
           </div>
-          <span className={styles.badge}>10</span>
+          {sidebarCounts.analytics !== null && (
+            <span className={styles.badge}>{sidebarCounts.analytics}</span>
+          )}
         </Link>
         <Link
           href="/wallet"
@@ -352,7 +387,9 @@ export default function DashboardSidebar() {
             <WalletIcon />
             <span className={styles.navLinkText}>Wallet</span>
           </div>
-          <span className={styles.badge}>10</span>
+          {sidebarCounts.wallet !== null && (
+            <span className={styles.badge}>{sidebarCounts.wallet}</span>
+          )}
         </Link>
         <Link href="/settings" className={`${styles.navLink} ${pathname === '/settings' ? styles.navLinkActive : ''}`}>
           <div className={styles.navLinkInner}>
@@ -398,6 +435,7 @@ export default function DashboardSidebar() {
         </div>,
         document.body
       )}
-    </aside>
+      </aside>
+    </>
   );
 }

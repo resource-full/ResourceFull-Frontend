@@ -49,18 +49,11 @@
   }
 
   .sidebarWrapper {
-    position: fixed;
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100% !important;
-    height: auto !important;
+    position: static;
+    width: 0;
+    height: 0;
     border-right: none;
-    border-top: 1px solid #e2e8f0;
-    z-index: 50;
-    background: #ffffff;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+    background: transparent;
     overflow: visible;
   }
 
@@ -70,7 +63,6 @@
     min-height: 100vh;
     min-height: 100dvh;
     overflow-y: auto;
-    padding-bottom: 88px;
   }
 
   .mainInner {

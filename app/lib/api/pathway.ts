@@ -31,7 +31,7 @@ export const pathwayAPI = {
 
   getMyPathways: async (params?: Record<string, any>) => {
     const response = await apiClient.get<GetAllPathwaysResponse>(
-      "/pathways/my-pathways",
+      "/pathways/user/my",
       { params }
     );
     return response.data;

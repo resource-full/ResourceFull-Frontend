@@ -35,14 +35,11 @@ function OAuthCallbackContent() {
         try {
           const statusRes = await authAPI.getOnboardingStatus();
           const statusData = statusRes?.data;
-          const completed =
-            statusData?.completed ??
-            statusData?.onboardingCompleted ??
-            statusData?.isOnboarded;
+          const completed = statusData?.onboardingCompleted;
           if (!completed) {
-            const currentStep =
-              typeof statusData?.currentStep === "number" ? statusData.currentStep : 1;
-            redirectTo = currentStep >= 2 ? "/onboarding/goals" : "/onboarding/profile";
+            const onboardingStep =
+              typeof statusData?.onboardingStep === "number" ? statusData.onboardingStep : 1;
+            redirectTo = onboardingStep >= 2 ? "/onboarding/goals" : "/onboarding/profile";
           }
         } catch {
           // Status check failed; default to dashboard
