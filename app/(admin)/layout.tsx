@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin — Resourcefull",
+  title: "Admin — ResourceFull",
   description: "Platform overview and management.",
 };
 

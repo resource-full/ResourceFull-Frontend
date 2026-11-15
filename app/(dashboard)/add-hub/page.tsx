@@ -245,33 +245,36 @@ export default function AddHubPage() {
           />
         </div>
 
-        <FormMultiSelect 
-          label="Applicable Location" 
-          options={COUNTRIES.filter(c => c.value !== 'worldwide')} 
-          selected={locations} 
+        <FormMultiSelect
+          label="Applicable Location"
+          options={COUNTRIES.filter(c => c.value !== 'worldwide')}
+          selected={locations}
           onChange={setLocations}
           isOpen={openDropdown === 'location'}
           onToggle={() => toggleDropdown('location')}
           enableSearch
+          closeOnSelect
         />
 
-        <FormMultiSelect 
-          label="Experience" 
-          options={EXPERIENCE_OPTIONS} 
-          selected={experiences} 
+        <FormMultiSelect
+          label="Experience"
+          options={EXPERIENCE_OPTIONS}
+          selected={experiences}
           onChange={setExperiences}
           isOpen={openDropdown === 'experience'}
           onToggle={() => toggleDropdown('experience')}
+          closeOnSelect
         />
 
-        <FormMultiSelect 
-          label="Industry" 
-          options={SKILLS_OPTIONS} 
-          selected={industries} 
+        <FormMultiSelect
+          label="Industry"
+          options={SKILLS_OPTIONS}
+          selected={industries}
           onChange={setIndustries}
           isOpen={openDropdown === 'industry'}
           onToggle={() => toggleDropdown('industry')}
           enableSearch
+          closeOnSelect
         />
 
         <div className={styles.sectionRow}>

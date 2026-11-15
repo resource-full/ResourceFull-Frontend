@@ -3,7 +3,7 @@ import LandingNavbar from "../components/landing/LandingNavbar";
 import LandingFooter from "../components/landing/LandingFooter";
 
 export const metadata: Metadata = {
-  title: "Resourcefull — Your Gateway to Professional Growth",
+  title: "ResourceFull — Your Gateway to Professional Growth",
   description:
     "Find the perfect resources to help you secure a job and achieve your goals.",
 };

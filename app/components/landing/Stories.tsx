@@ -12,7 +12,7 @@ export default function Stories() {
   return (
     <section className={styles.section}>
       <h2 className={styles.title}>Stories</h2>
-      
+
       <div className={styles.testimonialCard}>
         <div className={styles.cardHeader}>
           <div className={styles.authorInfo}>
@@ -22,7 +22,7 @@ export default function Stories() {
         </div>
 
         <p className={styles.content}>
-          &quot;Resourcefull has been a thoughtful and experienced journey. I&apos;ve used resources to prepare for corporate interview processes. Each time I&apos;ve done so, it&apos;s been awesome! With the help of Resourcefull, Sarah&apos;s life began to change for the better. The app&apos;s timely notifications ensured she never missed important deadlines for applications and services. She enrolled in the coding bootcamp and, with the skills she gained, secured a better-paying job in tech support. The after-school programs kept her children engaged and learning, giving her peace of mind while she worked.&quot;
+          &quot;ResourceFull has been a thoughtful and experienced journey. I&apos;ve used resources to prepare for corporate interview processes. Each time I&apos;ve done so, it&apos;s been awesome! With the help of Resourcefull, Sarah&apos;s life began to change for the better. The app&apos;s timely notifications ensured she never missed important deadlines for applications and services. She enrolled in the coding bootcamp and, with the skills she gained, secured a better-paying job in tech support. The after-school programs kept her children engaged and learning, giving her peace of mind while she worked.&quot;
         </p>
 
         <div className={styles.badgeContainer}>

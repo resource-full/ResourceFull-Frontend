@@ -24,6 +24,10 @@ interface MultiSelectProps {
   onToggle: () => void;
   enableSearch?: boolean;
   isTransparent?: boolean;
+  /** For fields that only ever use one value: picking an option replaces
+   *  the selection (instead of toggling it into a list) and closes the
+   *  dropdown right away, instead of leaving it open. */
+  closeOnSelect?: boolean;
 }
 
 export default function FormMultiSelect({
@@ -34,12 +38,18 @@ export default function FormMultiSelect({
   isOpen,
   onToggle,
   enableSearch = false,
-  isTransparent = false
+  isTransparent = false,
+  closeOnSelect = false,
 }: MultiSelectProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const toggleOption = (val: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (closeOnSelect) {
+      onChange([val]);
+      onToggle();
+      return;
+    }
     if (selected.includes(val)) {
       onChange(selected.filter(v => v !== val));
     } else {

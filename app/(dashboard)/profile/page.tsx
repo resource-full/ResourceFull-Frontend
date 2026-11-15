@@ -224,13 +224,14 @@ export default function ProfilePage() {
   }, []);
 
   const [profile, setProfile] = useState({
-    name: "Stella Della",
-    profession: "Frontend Development",
-    username: "@adaeze.builds",
-    bio: "Senior PM at Google Lagos · Building career resources for ambitious Africans. Previously Paystack, Andela.",
-    avatar: "/assets/9fa8a96b7774ec94ca80cf93ebd4ece37578f603.jpg",
+    name: "",
+    profession: "",
+    username: "",
+    bio: "",
+    avatar: "",
     coverPhoto: "linear-gradient(90deg, #d4a72d 0%, #a6d88c 100%)"
   });
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
 
   const [stats, setStats] = useState<UserProfileStats | null>(null);
   const [socials, setSocials] = useState<UserProfileSocials | null>(null);
@@ -253,6 +254,8 @@ export default function ProfilePage() {
         }
       } catch (e) {
         console.error("Error fetching profile from API:", e);
+      } finally {
+        setIsProfileLoading(false);
       }
     };
     fetchProfile();
@@ -270,6 +273,17 @@ export default function ProfilePage() {
     if (type === 'hub') return <span style={{ color: '#5a6474', display: 'flex' }}><HubFolderIcon /></span>;
     return null;
   };
+
+  if (isProfileLoading) {
+    return (
+      <div className={styles.pageContainer}>
+        <div className={styles.loadingContainer}>
+          <div className={styles.spinner}></div>
+          <p className={styles.loadingText}>Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.pageContainer}>

@@ -195,6 +195,7 @@ export default function ProfileSetupPage() {
             isOpen={openDropdown === 'personalLocation'}
             onToggle={() => toggleDropdown('personalLocation')}
             enableSearch
+            closeOnSelect
           />
         </div>
       </div>
@@ -239,6 +240,7 @@ export default function ProfileSetupPage() {
               isOpen={openDropdown === 'industry'}
               onToggle={() => toggleDropdown('industry')}
               enableSearch
+              closeOnSelect
             />
           </div>
           <div className={styles.field} style={{ flex: 1 }}>
@@ -250,6 +252,7 @@ export default function ProfileSetupPage() {
               isOpen={openDropdown === 'roleLocation'}
               onToggle={() => toggleDropdown('roleLocation')}
               enableSearch
+              closeOnSelect
             />
           </div>
         </div>

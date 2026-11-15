@@ -7,7 +7,7 @@ import styles from "../../setup.module.css";
 export default function SuccessSetupPage() {
   return (
     <div className={styles.container} style={{ alignItems: "center", justifyContent: "center", minHeight: "60vh", textAlign: "center" }}>
-      
+
       {/* Centered Step Indicator for Success Page */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "48px" }}>
         <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#024A94", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
@@ -44,7 +44,7 @@ export default function SuccessSetupPage() {
 
       <Link href="/dashboard" style={{ width: "100%", maxWidth: "400px" }}>
         <button className={styles.submitBtn} style={{ width: "100%", marginTop: 0 }}>
-          Go to Resourcefull
+          Go to ResourceFull
         </button>
       </Link>
     </div>
