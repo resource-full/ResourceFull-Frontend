@@ -299,6 +299,7 @@ export default function EditResourcePage() {
             isOpen={openDropdown === 'location'}
             onToggle={() => toggleDropdown('location')}
             enableSearch
+            closeOnSelect
           />
 
           <FormMultiSelect
@@ -308,6 +309,7 @@ export default function EditResourcePage() {
             onChange={setExperiences}
             isOpen={openDropdown === 'experience'}
             onToggle={() => toggleDropdown('experience')}
+            closeOnSelect
           />
 
           <FormMultiSelect
@@ -318,6 +320,7 @@ export default function EditResourcePage() {
             isOpen={openDropdown === 'industry'}
             onToggle={() => toggleDropdown('industry')}
             enableSearch
+            closeOnSelect
           />
 
           <div className={styles.inputGroup}>

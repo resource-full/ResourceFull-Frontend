@@ -5,7 +5,7 @@ import styles from "./layout.module.css";
 import Mockup from "@/public/assets/onboardingMockup2.png";
 
 export const metadata: Metadata = {
-  title: "Setup Profile - Resourcefull",
+  title: "Setup Profile - ResourceFull",
   description: "Set up your professional identity on Resourcefull.",
 };
 
@@ -19,7 +19,7 @@ export default function SetupLayout({
       <aside className={styles.sidebarPanel}>
         <Image
           src={Mockup}
-          alt="Resourcefull Setup Mockup"
+          alt="ResourceFull Setup Mockup"
           className={styles.heroImage}
           priority
         />

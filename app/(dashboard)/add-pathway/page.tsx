@@ -357,33 +357,36 @@ export default function AddPathwayPage() {
             />
           </div>
 
-          <FormMultiSelect 
-            label="Applicable Location" 
-            options={COUNTRIES.filter(c => c.value !== 'worldwide')} 
-            selected={locations} 
+          <FormMultiSelect
+            label="Applicable Location"
+            options={COUNTRIES.filter(c => c.value !== 'worldwide')}
+            selected={locations}
             onChange={setLocations}
             isOpen={openDropdown === 'location'}
             onToggle={() => toggleDropdown('location')}
             enableSearch
+            closeOnSelect
           />
 
-          <FormMultiSelect 
-            label="Experience" 
-            options={EXPERIENCE_OPTIONS} 
-            selected={experiences} 
+          <FormMultiSelect
+            label="Experience"
+            options={EXPERIENCE_OPTIONS}
+            selected={experiences}
             onChange={setExperiences}
             isOpen={openDropdown === 'experience'}
             onToggle={() => toggleDropdown('experience')}
+            closeOnSelect
           />
 
-          <FormMultiSelect 
-            label="Industry" 
-            options={SKILLS_OPTIONS} 
-            selected={industries} 
+          <FormMultiSelect
+            label="Industry"
+            options={SKILLS_OPTIONS}
+            selected={industries}
             onChange={setIndustries}
             isOpen={openDropdown === 'industry'}
             onToggle={() => toggleDropdown('industry')}
             enableSearch
+            closeOnSelect
           />
 
           <div className={styles.inputGroup}>
@@ -412,13 +415,14 @@ export default function AddPathwayPage() {
             />
           </label>
 
-          <FormMultiSelect 
-            label="Add to Hub" 
-            options={HUB_OPTIONS} 
-            selected={hubs} 
+          <FormMultiSelect
+            label="Add to Hub"
+            options={HUB_OPTIONS}
+            selected={hubs}
             onChange={setHubs}
             isOpen={openDropdown === 'hub'}
             onToggle={() => toggleDropdown('hub')}
+            closeOnSelect
           />
         </div>
       )}

@@ -28,8 +28,8 @@ const CheckIcon = () => (
 
 export default function SuccessModal({
   title = "Account Created Successfully!",
-  subtitle = "You have successfully created your resourcefull account",
-  buttonText = "Login to Resourcefull",
+  subtitle = "You have successfully created your ResourceFull account",
+  buttonText = "Login to ResourceFull",
   redirectTo = "/login",
   onClose,
 }: SuccessModalProps) {

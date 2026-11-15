@@ -309,6 +309,7 @@ export default function EditHubPage() {
           isOpen={openDropdown === 'location'}
           onToggle={() => toggleDropdown('location')}
           enableSearch
+          closeOnSelect
         />
 
         <FormMultiSelect
@@ -318,6 +319,7 @@ export default function EditHubPage() {
           onChange={setExperiences}
           isOpen={openDropdown === 'experience'}
           onToggle={() => toggleDropdown('experience')}
+          closeOnSelect
         />
 
         <FormMultiSelect
@@ -328,6 +330,7 @@ export default function EditHubPage() {
           isOpen={openDropdown === 'industry'}
           onToggle={() => toggleDropdown('industry')}
           enableSearch
+          closeOnSelect
         />
 
         <div className={styles.sectionRow}>

@@ -22,7 +22,7 @@ export default function Logo({ iconOnly = false, iconSize = 36, fontSize = 22, l
       />
       {!iconOnly && (
         <span className={`${styles.wordmark} ${light ? styles.wordmarkLight : ""}`} style={{ fontSize }}>
-          Resourcefull
+          ResourceFull
         </span>
       )}
     </span>
