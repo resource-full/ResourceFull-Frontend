@@ -4,6 +4,7 @@ import HowItWorks from "@/app/components/landing/HowItWorks";
 import TopContributors from "@/app/components/landing/TopContributors";
 import CtaSection from "@/app/components/landing/CtaSection";
 import CommunityTestimonials from "@/app/components/landing/CommunityTestimonials";
+import PopularCategories from "@/app/components/landing/PopularCategories";
 
 export default function LandingPage() {
   return (
@@ -11,6 +12,7 @@ export default function LandingPage() {
       <Hero />
       <HowItWorks />
       <Pathways />
+      <PopularCategories />
       <CommunityTestimonials />
       <TopContributors />
       <CtaSection />

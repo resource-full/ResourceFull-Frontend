@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
-import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { COUNTRIES, SKILLS_OPTIONS, CONTENT_EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { pathwayAPI } from "@/app/lib/api/pathway";
 import { Resource } from "@/app/lib/types/resource";
@@ -403,7 +403,7 @@ export default function EditPathwayPage() {
 
           <FormMultiSelect
             label="Experience"
-            options={EXPERIENCE_OPTIONS}
+            options={CONTENT_EXPERIENCE_OPTIONS}
             selected={experiences}
             onChange={setExperiences}
             isOpen={openDropdown === 'experience'}

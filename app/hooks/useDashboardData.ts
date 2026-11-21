@@ -79,10 +79,14 @@ export interface MappedResource {
   tags: string[];
   viewCount: string;
   commentCount: number | string;
+  confidenceScore: number;
+  averageRating: number;
+  createdAt: string;
   isFree: boolean;
   industry: string;
   experience: string;
   applicableLocation: string;
+  status: 'draft' | 'public' | 'private';
 }
 
 export interface MappedPathway {
@@ -97,10 +101,13 @@ export interface MappedPathway {
   resourceCount: number;
   viewCount: string;
   commentCount: number | string;
+  averageRating: number;
+  createdAt: string;
   isFree: boolean;
   industry: string;
   experience: string;
   applicableLocation: string;
+  status: 'draft' | 'public' | 'private';
 }
 
 export interface MappedHub {
@@ -117,10 +124,12 @@ export interface MappedHub {
   pathwayCount: number;
   viewCount: string;
   commentCount: number | string;
+  createdAt: string;
   isFree: boolean;
   industry: string;
   experience: string;
   applicableLocation: string;
+  status: 'draft' | 'public' | 'private';
 }
 
 function labelFromOptions(value: string, options: { value: string; label: string }[]): string {
@@ -190,7 +199,12 @@ export function matchesFilters(item: {
   return true;
 }
 
-export function useDashboardData(filters?: DisplayFilters) {
+/**
+ * @param scope "all" (default) fetches the public catalog, as used by
+ * Explore/Saved/Purchased/etc. "mine" fetches only the current user's own
+ * created resources/pathways/hubs, for screens like the profile page.
+ */
+export function useDashboardData(filters?: DisplayFilters, scope: "all" | "mine" = "all") {
   const [fetchedResources, setFetchedResources] = useState<Resource[]>([]);
   const [fetchedPathways, setFetchedPathways] = useState<Pathway[]>([]);
   const [fetchedHubs, setFetchedHubs] = useState<Hub[]>([]);
@@ -201,7 +215,9 @@ export function useDashboardData(filters?: DisplayFilters) {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const res = await resourceAPI.getAllResources();
+        const res = scope === "mine"
+          ? await resourceAPI.getMyResources()
+          : await resourceAPI.getAllResources();
         if (res.success && res.data.resources) {
           setFetchedResources(res.data.resources);
         }
@@ -214,7 +230,9 @@ export function useDashboardData(filters?: DisplayFilters) {
 
     const fetchPathways = async () => {
       try {
-        const res = await pathwayAPI.getAllPathways();
+        const res = scope === "mine"
+          ? await pathwayAPI.getMyPathways()
+          : await pathwayAPI.getAllPathways();
         if (res.success && res.data.pathways) {
           setFetchedPathways(res.data.pathways);
         }
@@ -227,7 +245,9 @@ export function useDashboardData(filters?: DisplayFilters) {
 
     const fetchHubs = async () => {
       try {
-        const res = await hubAPI.getAllHubs();
+        const res = scope === "mine"
+          ? await hubAPI.getMyHubs()
+          : await hubAPI.getAllHubs();
         if (res.success && res.data?.hubs) {
           setFetchedHubs(res.data.hubs);
         }
@@ -241,7 +261,7 @@ export function useDashboardData(filters?: DisplayFilters) {
     fetchResources();
     fetchPathways();
     fetchHubs();
-  }, []);
+  }, [scope]);
 
   const resourceIds = useMemo(() => fetchedResources.map(r => r._id || r.id), [fetchedResources]);
   const pathwayIds = useMemo(() => fetchedPathways.map(p => p._id || p.id), [fetchedPathways]);
@@ -264,10 +284,14 @@ export function useDashboardData(filters?: DisplayFilters) {
         tags: res.tags || [],
         viewCount: res.viewCount?.toString() || "0",
         commentCount: resourceCommentCounts[id] ?? 0,
+        confidenceScore: res.confidenceScore ?? 0,
+        averageRating: res.averageRating ?? 0,
+        createdAt: res.createdAt || "",
         isFree: res.isFree,
         industry: res.industry,
         experience: res.experience,
         applicableLocation: res.applicableLocation,
+        status: res.status || "draft",
       };
     });
   }, [fetchedResources, resourceCommentCounts]);
@@ -280,17 +304,23 @@ export function useDashboardData(filters?: DisplayFilters) {
         variant: getVariant(index),
         authorName: pw.author?.name || "Author",
         authorAvatarUrl: pw.author?.avatar || "https://i.pravatar.cc/150",
-        title: pw.name,
+        // Backend never persists a pathway title (its `title` field stays
+        // null regardless of what's sent on create), so `name`/`title` are
+        // both consistently empty on read — fall back rather than show blank.
+        title: pw.name || pw.title || "Untitled Pathway",
         price: formatPrice(pw.isFree, pw.price, pw.currency),
         description: pw.description,
         tags: pw.tags || [],
         resourceCount: pw.resourceCount || pw.blockCount || 0,
         viewCount: pw.viewCount?.toString() || "0",
         commentCount: pathwayCommentCounts[id] ?? 0,
+        averageRating: pw.averageRating ?? 0,
+        createdAt: pw.createdAt || "",
         isFree: pw.isFree,
         industry: pw.industry,
         experience: pw.experience,
         applicableLocation: pw.applicableLocation,
+        status: pw.status || "draft",
       };
     });
   }, [fetchedPathways, pathwayCommentCounts]);
@@ -299,8 +329,8 @@ export function useDashboardData(filters?: DisplayFilters) {
     return fetchedHubs.map((hub, index) => ({
       id: hub._id,
       variant: getVariant(index),
-      authorName: hub.author?.email || "Author",
-      authorAvatarUrl: "https://i.pravatar.cc/150",
+      authorName: hub.owner?.name || hub.owner?.email || "Author",
+      authorAvatarUrl: hub.owner?.avatar || "https://i.pravatar.cc/150",
       previewImageUrl: "/assets/pdf1.png",
       title: hub.name,
       price: "Free",
@@ -308,12 +338,14 @@ export function useDashboardData(filters?: DisplayFilters) {
       tags: [hub.industry].filter(Boolean),
       resourceCount: hub.resources?.length || 0,
       pathwayCount: hub.pathways?.length || 0,
-      viewCount: "0",
+      viewCount: hub.viewCount?.toString() || "0",
       commentCount: "0",
+      createdAt: hub.createdAt || "",
       isFree: true,
       industry: hub.industry,
       experience: hub.experience,
       applicableLocation: hub.applicableLocation,
+      status: hub.status || "public",
     }));
   }, [fetchedHubs]);
 

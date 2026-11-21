@@ -220,3 +220,130 @@
   font-size: 0.8125rem;
   font-weight: 600;
 }
+
+/* ============================================================
+   Mobile — Pinterest-style pin: colored cover block up top,
+   minimal text, floating save button.
+   ============================================================ */
+@media (max-width: 768px) {
+  .cardWrapper {
+    padding-top: 0;
+  }
+
+  .cardWrapper:hover {
+    transform: none;
+  }
+
+  .tab {
+    position: static;
+    order: -1;
+    width: 100%;
+    height: 100px;
+    border-radius: 14px;
+    margin-bottom: 8px;
+  }
+
+  .mainCard {
+    border: none;
+    border-radius: 18px;
+    padding: 8px;
+  }
+
+  .header {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    margin: 0;
+    z-index: 2;
+  }
+
+  .authorInfo {
+    display: none;
+  }
+
+  .bookmarkBtn {
+    background: rgba(255, 255, 255, 0.92);
+    color: #11243d;
+    padding: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  .bookmarkBtn:hover {
+    background: #ffffff;
+  }
+
+  .bookmarkBtn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .openBadge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .title {
+    font-size: 12.5px;
+    margin: 0 2px 2px;
+    -webkit-line-clamp: 2;
+  }
+
+  .price {
+    font-size: 11px;
+    margin: 0 2px 6px;
+  }
+
+  .description,
+  .tagsContainer {
+    display: none;
+  }
+
+  .statsRow {
+    gap: 6px;
+    margin: 0 2px 8px;
+  }
+
+  .statBox {
+    padding: 6px 2px;
+    font-size: 10.5px;
+    gap: 4px;
+    border: 1px solid #f1f5f9;
+  }
+
+  .statBox svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .footer {
+    margin: 0 2px;
+    padding-top: 8px;
+  }
+
+  .avatarStack img {
+    width: 16px;
+    height: 16px;
+    margin-right: -6px;
+  }
+
+  .viewCount,
+  .commentCount {
+    font-size: 10px;
+    margin-left: 6px;
+  }
+
+  .statsRight svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .rsBadge {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+}

@@ -393,23 +393,56 @@
     order: 3;
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
-    padding: 12px;
-    border-radius: 16px;
+    gap: 10px;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
   }
 
   .searchBar {
     max-width: 100%;
     border-right: none;
-    border-bottom: 1px solid #DFDFDF;
-    padding-bottom: 12px;
+    margin: 0;
+    padding: 12px 16px;
+    background: #f6f6f6;
+    border-radius: 9999px;
+    transition: box-shadow 150ms ease, background 150ms ease;
+  }
+
+  .searchBar:focus-within {
+    background: #ffffff;
+    box-shadow: 0 0 0 1.5px #024A94, 0 4px 16px rgba(2, 74, 148, 0.1);
+  }
+
+  .searchIcon {
     margin-top: 0;
-    margin-bottom: 0;
+  }
+
+  .searchBtn {
+    display: none;
   }
 
   .filterPillsContainer {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 8px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .filterPillsContainer::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filterPillsContainer > * {
+    flex-shrink: 0;
+  }
+
+  .filterPill {
+    background: #f0f7ff;
+    border-radius: 9999px;
+    padding: 8px 12px;
+    white-space: nowrap;
   }
 
   .notificationsDropdown {
@@ -422,11 +455,5 @@
     max-height: 60vh;
     border-radius: 20px;
     box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
-  }
-}
-
-@media (max-width: 480px) {
-  .searchBtn {
-    display: none;
   }
 }

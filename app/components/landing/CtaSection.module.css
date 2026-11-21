@@ -32,6 +32,7 @@
 }
 
 .title {
+  font-family: var(--font-family-body);
   font-size: 49px;
   font-weight: 500;
   color: #EAEAEA;
@@ -41,6 +42,7 @@
 }
 
 .subtitle {
+  font-family: var(--font-family-body);
   font-size: 16px;
   color: #F6F6F6;
   font-weight: 400;

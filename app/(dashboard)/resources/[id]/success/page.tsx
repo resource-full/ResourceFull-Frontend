@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import DashboardHeader from "../../../_components/DashboardHeader";
 import styles from "./page.module.css";
-import { useState, use } from "react";
+import { useState, useEffect, use } from "react";
 import { DashboardFilters } from "../../../_components/DashboardHeader";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { formatPrice } from "@/app/hooks/useDashboardData";
 
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -30,17 +32,17 @@ const DocumentIcon = () => (
   </svg>
 );
 
-// We mock the resource data, similar to the main page
-const MOCK_RESOURCE = {
-  id: "1",
-  title: "Graphic Designer 80% wining rate CV",
-  authorName: "Stella Della",
-  authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-  price: "$120",
-  description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume. Perfect for both beginners and experienced designers, this guide ensures your CV highlights your skills and experience, making a strong impact on potential employers.",
+// Placeholder shown only until the real resource loads
+const EMPTY_RESOURCE = {
+  id: "",
+  title: "",
+  authorName: "",
+  authorAvatarUrl: "https://i.pravatar.cc/150",
+  price: "",
+  description: "",
   fileType: ".pdf",
-  tags: ["Design", "CV"],
-  previewImageUrl: "/assets/pdf.jpg",
+  tags: [] as string[],
+  previewImageUrl: "",
 };
 
 export default function ResourceSuccessPage({ params }: { params: Promise<{ id: string }> }) {
@@ -52,6 +54,35 @@ export default function ResourceSuccessPage({ params }: { params: Promise<{ id: 
     industry: [],
     experience: [],
   });
+  const [resource, setResource] = useState(EMPTY_RESOURCE);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    (async () => {
+      try {
+        const res = await resourceAPI.getSingleResource(id);
+        if (res.success && res.data) {
+          const data = res.data;
+          setResource({
+            id: data._id || data.id,
+            title: data.name,
+            authorName: data.owner?.name || "Author",
+            authorAvatarUrl: data.owner?.avatar || "https://i.pravatar.cc/150",
+            price: formatPrice(data.isFree, data.price, data.currency),
+            description: data.description,
+            fileType: data.resourceFile?.format ? `.${data.resourceFile.format}` : ".pdf",
+            tags: data.tags || [],
+            previewImageUrl: data.coverPhoto || "/assets/pdf1.png",
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch purchased resource:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [id]);
 
   const handleOpenResource = () => {
     router.push(`/resources/${id}/view`);
@@ -84,50 +115,54 @@ export default function ResourceSuccessPage({ params }: { params: Promise<{ id: 
           Your <strong>resource</strong> is ready!
         </p>
 
-        <div className={styles.resourceCardMock}>
-          <div className={styles.mockImageContainer}>
-            {MOCK_RESOURCE.previewImageUrl && (
-              <div className={styles.mockImageWrapper}>
-                <Image 
-                  src={MOCK_RESOURCE.previewImageUrl} 
-                  alt="Resource Preview" 
-                  layout="fill" 
-                  objectFit="cover" 
+        {isLoading ? (
+          <div className={styles.resourceCardMock}>Loading...</div>
+        ) : (
+          <div className={styles.resourceCardMock}>
+            <div className={styles.mockImageContainer}>
+              {resource.previewImageUrl && (
+                <div className={styles.mockImageWrapper}>
+                  <Image
+                    src={resource.previewImageUrl}
+                    alt="Resource Preview"
+                    layout="fill"
+                    objectFit="cover"
+                    unoptimized
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className={styles.mockContent}>
+              <div className={styles.resourceHeader}>
+                <Image
+                  src={resource.authorAvatarUrl}
+                  alt={resource.authorName}
+                  width={24}
+                  height={24}
+                  className={styles.authorAvatar}
                   unoptimized
                 />
+                <span className={styles.authorName}>{resource.authorName}</span>
               </div>
-            )}
-          </div>
+              <h3 className={styles.resourceTitle}>{resource.title}</h3>
+              <div className={styles.resourcePrice}>{resource.price}</div>
+              <p className={styles.resourceDesc}>{resource.description}</p>
 
-          <div className={styles.mockContent}>
-            <div className={styles.resourceHeader}>
-              <Image 
-                src={MOCK_RESOURCE.authorAvatarUrl} 
-                alt={MOCK_RESOURCE.authorName} 
-                width={24} 
-                height={24} 
-                className={styles.authorAvatar}
-                unoptimized 
-              />
-              <span className={styles.authorName}>{MOCK_RESOURCE.authorName}</span>
-            </div>
-            <h3 className={styles.resourceTitle}>{MOCK_RESOURCE.title}</h3>
-            <div className={styles.resourcePrice}>{MOCK_RESOURCE.price}</div>
-            <p className={styles.resourceDesc}>{MOCK_RESOURCE.description}</p>
-            
-            <div className={styles.resourceMeta}>
-              <div className={styles.fileType}>
-                <DocumentIcon />
-                {MOCK_RESOURCE.fileType}
-              </div>
-              <div className={styles.tags}>
-                {MOCK_RESOURCE.tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>{tag}</span>
-                ))}
+              <div className={styles.resourceMeta}>
+                <div className={styles.fileType}>
+                  <DocumentIcon />
+                  {resource.fileType}
+                </div>
+                <div className={styles.tags}>
+                  {resource.tags.map((tag) => (
+                    <span key={tag} className={styles.tag}>{tag}</span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className={styles.buttonGroup}>
           <button className={styles.primaryBtn} onClick={handleOpenResource}>

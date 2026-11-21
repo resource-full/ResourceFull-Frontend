@@ -17,10 +17,11 @@
   color: #0AC0C7;
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .title {
+  font-family: var(--font-family-body);
   font-size: 48px;
   font-weight: 500;
   color: #ffffff;
@@ -64,6 +65,7 @@
 }
 
 .cardQuote {
+  font-family: var(--font-family-body);
   font-size: 16px;
   color: #D1E5FF;
   width: 272px;

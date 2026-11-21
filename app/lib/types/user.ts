@@ -13,12 +13,43 @@ export interface UserProfileSocials {
   facebook: string;
 }
 
+/** A resource/pathway/hub as embedded directly on the user profile payload.
+ *  Lighter than the dedicated /resources, /pathways, /hubs endpoints, but
+ *  has everything the profile tabs' tables need — and unlike
+ *  /pathways/:id and /pathways/user/my, its pathway items carry a real
+ *  populated `name` instead of a stale null `title`. */
+export interface UserProfileItem {
+  _id: string;
+  name: string;
+  description: string;
+  coverPhoto?: string;
+  status: 'draft' | 'public' | 'private';
+  applicableLocation: string;
+  experience: string;
+  industry: string;
+  isFree: boolean;
+  price: number;
+  currency: string;
+  viewCount: number;
+  downloadCount?: number;
+  blocks?: { type: string; order: number; name: string; shortDescription: string; resource?: string }[];
+  resources?: string[];
+  pathways?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserProfileDraftOrPrivateItem extends UserProfileItem {
+  itemType: 'Resource' | 'Pathway' | 'Hub';
+}
+
 export interface UserProfile {
   _id: string;
   id: string;
   firstName: string;
   lastName: string;
   name: string;
+  username?: string;
   email: string;
   role: string;
   authProvider: string;
@@ -51,6 +82,13 @@ export interface UserProfile {
   lastLogin: string;
   stats: UserProfileStats;
   socials: UserProfileSocials;
+  /** All of the user's own resources/pathways/hubs regardless of status,
+   *  plus `drafts`/`onlyMe` pre-filtered the same way by the backend. */
+  resources?: UserProfileItem[];
+  pathways?: UserProfileItem[];
+  hubs?: UserProfileItem[];
+  drafts?: UserProfileDraftOrPrivateItem[];
+  onlyMe?: UserProfileDraftOrPrivateItem[];
 }
 
 export interface GetUserProfileResponse {

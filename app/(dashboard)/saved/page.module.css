@@ -211,13 +211,20 @@
     /* prevent overflowing */
   }
 
-  .resourceGrid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .resourceGrid,
+  .pathwayGrid,
+  .hubGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
-  .hubGrid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .exploreTag {
+    border-radius: 9999px;
+    padding: 8px 16px;
+    font-weight: 500;
+  }
+
+  .exploreTagActive {
+    box-shadow: 0 2px 8px rgba(2, 74, 148, 0.18);
   }
 }

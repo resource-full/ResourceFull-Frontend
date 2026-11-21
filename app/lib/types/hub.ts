@@ -5,15 +5,26 @@ export interface Hub {
   industry: string;
   applicableLocation: string;
   experience: string;
+  status?: 'draft' | 'public' | 'private';
   resources?: string[];
   pathways?: string[];
-  author?: {
+  owner?: {
     _id: string;
     email: string;
+    name?: string;
+    avatar?: string;
   };
+  viewCount?: number;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
+}
+
+export interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  pages: number;
 }
 
 export interface CreateHubRequest {
@@ -37,9 +48,7 @@ export interface GetAllHubsResponse {
   message?: string;
   data?: {
     hubs: Hub[];
-    total: number;
-    pages: number;
-    currentPage: number;
+    pagination: PaginationInfo;
   };
 }
 

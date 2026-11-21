@@ -111,7 +111,14 @@ export default function FilterByDropdown({
         <span className={styles.triggerIcon}>
           <FilterLinesIcon />
         </span>
-        <span className={styles.triggerText}>Filter by:</span>
+        <span className={styles.triggerText}>
+          {selectedValues.length > 0
+            ? options.filter((o) => selectedValues.includes(o.value)).map((o) => o.label).join(", ")
+            : "Filter by:"}
+        </span>
+        {selectedValues.length > 0 && (
+          <span className={styles.triggerCount}>{selectedValues.length}</span>
+        )}
       </button>
 
       {isOpen && (

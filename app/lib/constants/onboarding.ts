@@ -87,6 +87,19 @@ export const EXPERIENCE_OPTIONS: SelectOption[] = [
   { value: "entrepreneur", label: "Entrepreneur / Founder" },
 ];
 
+/**
+ * The `experience` field on resources/pathways/hubs (who the content is
+ * aimed at) is a SEPARATE backend enum from the user's own
+ * professionalExperience — and, confirmed by testing every EXPERIENCE_OPTIONS
+ * label directly against the live API, it currently only accepts these two
+ * values. Every other label 400s on create/update, which is why resource
+ * uploads were silently failing for any experience level other than these.
+ */
+export const CONTENT_EXPERIENCE_OPTIONS: SelectOption[] = [
+  { value: "Undergraduate", label: "Undergraduate" },
+  { value: "Professional (above 6 years)", label: "Professional (above 6 years)" },
+];
+
 export const GOALS_OPTIONS: SelectOption[] = [
   { value: "new-job", label: "Get a new job", icon: "💼" },
   { value: "new-field", label: "Transition to a new field", icon: "🔄" },

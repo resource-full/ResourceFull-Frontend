@@ -16,9 +16,12 @@ const InstagramIcon = () => (
     </svg>
 );
 
-const FacebookIcon = () => (
+const LinkedInIcon = () => (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 10C20 4.4772 15.5228 0 10 0C4.4772 0 0 4.4772 0 10C0 14.6896 3.2288 18.6248 7.5844 19.7056V13.056H5.5224V10H7.5844V8.6832C7.5844 5.2796 9.1248 3.702 12.4664 3.702C13.1 3.702 14.1932 3.8264 14.6404 3.9504V6.7204C14.4044 6.6956 13.9944 6.6832 13.4852 6.6832C11.8456 6.6832 11.212 7.3044 11.212 8.9192V10H14.4784L13.9172 13.056H11.212V19.9268C16.1636 19.3288 20.0004 15.1128 20.0004 10H20Z" fill="#2C2C2C" />
+        <rect x="1" y="1" width="18" height="18" rx="3" stroke="#2C2C2C" strokeWidth="1.6" />
+        <circle cx="6" cy="6.5" r="1.1" fill="#2C2C2C" />
+        <rect x="5.1" y="8.5" width="1.8" height="7" fill="#2C2C2C" />
+        <path d="M9.3 8.5H11V9.6C11.4 8.9 12.2 8.3 13.4 8.3C15.6 8.3 16 9.7 16 11.6V15.5H14.2V11.9C14.2 11 14 10.3 13 10.3C12 10.3 11.6 11 11.6 11.9V15.5H9.3V8.5Z" fill="#2C2C2C" />
     </svg>
 );
 
@@ -28,32 +31,14 @@ const XIcon = () => (
     </svg>
 );
 
-const ColoredFacebookIcon = () => (
+const ColoredLinkedInIcon = () => (
     <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clipPath="url(#clip0_3265_56680)">
-            <path d="M44 22C44 9.84984 34.1502 0 22 0C9.84984 0 0 9.84984 0 22C0 32.3171 7.10336 40.9746 16.6857 43.3523V28.7232H12.1493V22H16.6857V19.103C16.6857 11.6151 20.0746 8.1444 27.4261 8.1444C28.82 8.1444 31.225 8.41808 32.2089 8.69088V14.7849C31.6897 14.7303 30.7877 14.703 29.6674 14.703C26.0603 14.703 24.6664 16.0697 24.6664 19.6222V22H31.8525L30.6178 28.7232H24.6664V43.839C35.5599 42.5234 44.0009 33.2482 44.0009 22H44Z" fill="#0866FF" />
-            <path d="M30.617 28.7194L31.8516 21.9962H24.6656V19.6185C24.6656 16.0659 26.0595 14.6993 29.6666 14.6993C30.7868 14.6993 31.6888 14.7265 32.208 14.7811V8.6871C31.2242 8.41342 28.8192 8.14062 27.4252 8.14062C20.0737 8.14062 16.6848 11.6113 16.6848 19.0993V21.9962H12.1484V28.7194H16.6848V43.3485C18.3868 43.7709 20.167 43.9962 21.9992 43.9962C22.9012 43.9962 23.7908 43.9408 24.6647 43.8352V28.7194H30.6161H30.617Z" fill="white" />
-        </g>
-        <defs>
-            <clipPath id="clip0_3265_56680">
-                <rect width="44" height="44" fill="white" />
-            </clipPath>
-        </defs>
+        <rect width="44" height="44" rx="8" fill="#0A66C2" />
+        <path d="M14.4 17.6H9.6V34.4H14.4V17.6Z" fill="white" />
+        <path d="M12 15.2C13.5464 15.2 14.8 13.9464 14.8 12.4C14.8 10.8536 13.5464 9.6 12 9.6C10.4536 9.6 9.2 10.8536 9.2 12.4C9.2 13.9464 10.4536 15.2 12 15.2Z" fill="white" />
+        <path d="M19.6 17.6H24.2V19.808H24.264C24.904 18.512 26.52 17.2 28.92 17.2C33.72 17.2 34.8 20.088 34.8 24.544V34.4H30V25.52C30 23.52 29.624 21.6 27.2 21.6C24.84 21.6 24.4 23.368 24.4 25.656V34.4H19.6V17.6Z" fill="white" />
     </svg>
 );
-
-const ColoredWhatsappIcon = () => (
-    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-        <rect width="44" height="44" fill="url(#pattern0_3265_45436)" />
-        <defs>
-            <pattern id="pattern0_3265_45436" patternContentUnits="objectBoundingBox" width="1" height="1">
-                <use xlinkHref="#image0_3265_45436" transform="scale(0.0104167)" />
-            </pattern>
-            <image id="image0_3265_45436" width="96" height="96" preserveAspectRatio="none" xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAOwElEQVR4nO1deYxbxRl3Kb2vP0pbqVIP9b+2Uqmqqq16yZT76JEQAuEKVwLlvlogpQRKm5aUI0DCTRAECIUkRA2EI4QFsrvJJrvveXe9nrFnvN4je9/3rq+pfrN+ieN63nu2n/284J/0SRFaxjPf9+ab75zxeCqooIIKKqigggoqqKCCCsoIdYHAl7VA+ESdsqs0wtfrlL2tUdakER7WKBvWKJ/TKY/O/5tFNMr9OmG7dMIe0WnoBi3IT/Nx/lW317FgUBWJfFoPhk/XCL9PI1zXCEvolItCSCMsCcFAgBoJLamv7/qs2+ssKwghPqZT/guN8sc1wkbSmdcYDAvW3iU6evtF//CIGJucEtOzc2IuGhXxeEIkk0lJ+PdcNCZm5ubk3/QPj4rO3gHBOrpEY6j1SIFQPqET/pyPsJNfFuLjno8q/H7/J30kfIlGWTCdQcG2TtEzMCQmpqZFIpkUhQICmpyeEb2DwyLUfjBjh7C2BsKu+UjtilAo9CksWqes3WCEn7eJ7v5B+QUXG9g9PYPDItDanq6m+jTCVn3oBaETdpxOeMBYOIl0iKGxcfmVuoGxickjdoVG+EEtyC70fNjQQMjXNcL/k8740YlJUS6AuoPqSzsn3mwKBr/j+TCggfLjdcp65KEaCkv97tYXbwXsxmYWMYQwrgX4Ms9CRVVV1dE6Yf+EGYgFhTu7RTQWE/liNDommseI2Nm7W7zYuU081faCWB9+WjwUfko8Edkk/9trPbuEb9QvBueG8/6dWDwuIl296Qf1ozCPPQsJhJAv6IS9gwX4gmHRNzSSMyP6ZgckQ++m94sz6y4R3j2LcqI/7Fsu7iBrxbbu18XBme6cf39gZEyawamzYR+cQs9CADxPnfJ6w7qBCWgXU/Fp+YVf13S7OG7P4pyZbkZ/9N0itna9LsZjE7bnMz07K1rCKWuJMFLvD3/TU85oaGn9lk5ZCBOGmQfnyA7GYuPimfaXxG/3XuAo07PRqbXLpNrqnx20NbdoLC5opOOwlRQKfc9Tjqin9BiNMmo4U9CllotLRMWmjlckU4rN+Ew6sWapeLLteTGbmLWcZyKRELyzyzgXunQS+ban7HQ+ZQcM5mPCVmgYaRTn119VcsZn0tL9K0TN0H5rISSTMrRxSB1ReoynHIB4CqKUhtqx+vLjybhUN07reG+BtCa4znI3xBOJdHW0r7aj4zNu89+jUXb3/IEbsdT5MA+varzNdWZ7FbRCv1H0zvZbngnGwaxR9lgZhBZYHKamlbXTPdMrzjtwpetM9loQTF4+GTFdy8zsXJqJGj7XFeY3NYW/hiAWJoFIoxmwoEX7LnaduV6bBGvMP05N1zQwMpo6D/iYK2ELjfBNmADvNHdyumZ6xOK6hcN8b4pO33ueYJOtpmszPGbEjkrK/IZg8NcIMWAbIryrwtDciFh24ArXmenNk5bUXWp6JsDgMGJHvgBfXLJEihFSNlM9iWRC3NB8h+tM9BZIl2jXi9nEnGnIIhUzai9JPkEPshUypNzabhrVhJPjNvO8DtGD/EnlOsEBI5SNpE4JIpyc48dGxtUxlcbRFtt2/vHVS8RqslZs7nxVRjRf6Nwqrmlc5TrTM8nMWRufmj6UWSvqLtBp6HzD4UqaOFrYtnYWdWrtMhk+zjbGCv0m15me6THPxNWm9qHMWoBdXTwBENaIHxkaHVdOZHPnNlsL+k31meLAiE85zt6heteZnklQqyogw2ck+otSbdEYYD/CD+DUV+n+ydiUNN9sLSaiXgyQEMmys6BOqllqmuw5lOgPhE5yXAA6Zesw+ME+dRgXkU07Czl7/0oRS1qHqnEmuM30THos8qxyvqi2SDlnzzp++GqU9WJwJCmyAaYaslB2FvHSwe3CbhrypJqlrjM9nU6rPVeZ1JmNRg/lkx09jGXMJ1XNoMI7/R/YXgTiQnaxJrjOdaZn0vbuN6wP4yBf5HjEs6tfrX7+5L/L1uQRE8oFLeNB1xmeSYjoWqohyh9yTAA65TUYFHWX2TAcHZFWjZ3JX+H7s8gVK/WbXWd6OsHHUe1iRIVToeomR5jv9/s/jxJwhJxVma5d/e/bnvz1TX/NWQBbu153nel21RAsRNQ/yarsUOgrBQtAI+znRqpRhbWhDbYnfpl2Y84C2N79husMz6S7yL3K+RqpS/QnFCwAnfCLMVhbt/rgzCXRglh7UulHF+ZZl5LMzrLO3n4jbXmdEzvgXxgMh4vK/Mw1v9s2pbamMgGHzW1mq2gkOiqyAb0MKQGsd0AA/FWz4BuSFrlOHA6WHbzRu9t1JptR01gg67xhrKSqJ3Y5ZgGpcr5VAzU5T/yihmst1VBwgosTqs9ynclmhCo+Vc445ZD5C98BlDVjMAzq5AFZN6yZCmBHz1uuM9iKEHjMBlSHGEkaJwQQwWCqkpN84zUoAUkk1QVcqNE5v768qyiebntRmapM+QJDBQtAJ3wAg6kKrjCJfBewo+dt013gHyNlV8CVTg+Hn1b6AilvOOrEDhjGYOhEzAbU6ee7gN/vWy4T92Z4KPyk64xW0XoLAaCPufAdkOpuQUVYNjzb8XJBi7jFf7fpgYywdblW021s32yqgqA9Ct8BhIcx2Oxc9vKTrV2vFTW6CGCXIIfgNsPthtVRqpPyA1od2AG81swMfX+gtuCFnFxzjohYOGcIfiEv6zbT0+mtvqqsc0XOJOUHNDqwA9g2M0eMTDBHFnNB/dWyQ8ZKCPlYRqta1khVZzdia5cQKjfLDztSMacRfj8GU/V5oVLAKUtlVcsaU9MUmIhNyr/Lx1JBmeS97BHZnOHEfFWZMfAq5Qc8WLAAdMJXYrD2nj4lU5y01x9WWBbpwKH9fOcWS0aiviiW/H/jYWBuSGxo3VhQZ85Z+y9Tzq+jJxWMo6ErHQtH04g6HH1PaH1JPMxMdE53KzNxYJBVuyp602DJ5NObhlSpVVoSPdIFCwA9srBnfZQrEzJv973nqAC8OSTugcaxFqnjDVV4Su0yEZowr2xOx1R8Stb85KJKVXEgtDKhaBlX7TjW2op2HEh0fHJa+SWdUL3EcSFstrkTDIQn22T7ExkPiXxwbeNfbM0LgoIaMytTRKuuxynolP/Dqibo5uY7HReAd88icR97VCZlSgGkS+3M6cbm1coxugeGjDrRexwTgI+Gf2nUhDpRlpIr3dS8OqcG63xh1894s+9d5RhGE18DZac4W5iVakfCjVWqnl+7hVn59m7V2GgnzRdo3LZzBvxu74ViWlGkezgPwIZwL5LHSaDOxUoNPVdgXMhrQ/fCjseh6TRe7d5paw6IfamAuqlUDGiDo8yXAgiGf2KnOLcU1w0srrtYxo/s1JfaAXK7aEey+l0UHsMRzAbwBHdjgEf1gdDPHBeAFAJh+/EDg6NjysW80rWj6ALwpqml5zu2KC0SO0B4w27VBZpIVBgeGze+/hZPsdBA2QXz7UnqwBk8z+UN15RMCN6UaoIFgwSP3cMa3jQCichJ2M1jZ/OqDYAn87VARbzyrL6+/hNGeHp4zJkWJa/DhEQ+YkXYiQiWZTINAqoaqJbX1+QiYKxJBQQqU+HnMAwWTzFhFGqhXV91FkAluMF8bxZCvOicA5fLeNWZdZfKnrRcx9ioyP3KnZRMHm7MIHylpzR3AuH+t1alAHb2vuM6470OES6PMovQolXXKEGBhii6AIwd0HqwRzkp1E26zTivA4Rdo6p+A1ApcuhmXsKOKzrzpQAoexE/ODA8quztKqZD5i0RYQ2ItpqBG0W4hG8qCfOFEEcZZSqqHDGd4K4zz+uAeYvAnhkM1YOihZLd0N5A+I/nD+C2ghv1ypWWHbjC8pbFielpgfA8Qs64Xt9TKmgBdhsEgNvMVcCh5TYTvXkS7rYYiaqdTKMRD5dTpfT+XSVjvhQA5VXzCfrs7jiS6uVeUOtV2PmPR56zzEfHYvE0k5PtLOn192hVMjJjqio5RCvtLPZy/WaxofWZsri0D2EI3MhrBXlf3OFLOep8Pt/nPKWELxA+Az+OfKcKuFVEVXLyAH9cfDC494hQQSwZk1FI5G9LzXgEDeEt20n24Ms3mK9Tzlx5FgUlFrJTZkAd+DK+aLTv3En+LUvMrS7BMwSBv7UTkXTCvETaUhXVzKbzA2m35zYz9o2SM18KgDBiViGHcnJ8ze3T6h1ihWgiKqoH68Tf6H2yWs4ppiP8cGvL38W7A9ViLqG+4SvbtfbNqQPX1fujcWcyJtFkEn5wGtPxGbG7f49Yx5+QgbNcrizAOQMvFskbjGFl2WQCK0RPHM67lM5/reQ6Px0aZZdZhR+KjVgyLvvRaocOyJrMLV07pCpBeTyaRP7b85Zsl4IDlctXnk3lpN2QG9coR2PzUR43oVP+sgw/jOT2JS0kJJNJ+fqSEduROfBiXDuTK2DrIsk836aU/5cFwHxF4erBvgF56VOyDF7SwAyQ2zDs+/l3x9jGsrkb2hcM/tSqJEUFVImhUAkvJKHT3tCpBvl5m+yptXPZt9OA8JFaTX9NSSfMhzfNPOUE6EBMDg+j5fJml3xELXW9r0Gppwff0yhba1x1r+NwZ61yV+Ty2EO+mJqZlb9l3PeZKiOhWoAvL3o2Kx9ohO3BJFWvHqEWBroTBzSspCMYjmAV5Q1gOF6uS7/ECAebLxA+QyNsd/r/A7MPsSY0O6s87lwADxbPVYHpR3zt86al1hDk57h+yKqwLxT6onFTChZiJCGgv3F3xKGg1BFfOQviMU2822jXbtaDwR9qhD2Alp7M8RB5hXDhAEJXj09Oya8Y4XD0Ys0/YxiVBWPYQcPjE9KExPxQ0Z2p9nTKuuVblcHWYz3lDuOiPuhqfJWZX1DagjbphF/khJfYQMM/0Am/Xad8r07YTMGPeVI+pxH2gUb56sZg+FcL6v3I+nD4Szrh/RlqZUQnfDueIyz2eypVVVVHNwSD3/VRdrZO+Rr5GByeq51/rYNhbrDQZKUGYT6NsGqdsi3ybwN8OQyIBf88od7Cvi+3LA3fiuq4BfUFVVBBBRVUUEEFFVRQQQWeLPgf9KAmcTONhtQAAAAASUVORK5CYII=" />
-        </defs>
-    </svg>
-);
-
 const ColoredInstagramIcon = () => (
     <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         <rect width="44" height="44" fill="url(#pattern0_3265_43122)" />
@@ -104,7 +89,7 @@ export default function ContactForm() {
                             <span>@getresourcefull</span>
                         </div>
                         <div className={styles.contactLink}>
-                            <FacebookIcon />
+                            <LinkedInIcon />
                             <span>@getresourcefull</span>
                         </div>
                         <div className={styles.contactLink}>
@@ -115,15 +100,11 @@ export default function ContactForm() {
                 </div>
 
                 <div className={styles.optionsContainer}>
-                    <a href="#" className={styles.optionBtn}>
-                        <div className={styles.iconWrapper}><ColoredFacebookIcon /></div>
-                        <span className={styles.optionText}>Message us on Facebook</span>
+                    <a href="https://www.linkedin.com/company/getresourcefull/" target="_blank" rel="noopener noreferrer" className={styles.optionBtn}>
+                        <div className={styles.iconWrapper}><ColoredLinkedInIcon /></div>
+                        <span className={styles.optionText}>Message us on LinkedIn</span>
                     </a>
-                    <a href="#" className={styles.optionBtn}>
-                        <div className={styles.iconWrapper}><ColoredWhatsappIcon /></div>
-                        <span className={styles.optionText}>Message us on Whatsapp</span>
-                    </a>
-                    <a href="#" className={styles.optionBtn}>
+                    <a href="https://www.instagram.com/getresourcefull/" target="_blank" rel="noopener noreferrer" className={styles.optionBtn}>
                         <div className={styles.iconWrapper}><ColoredInstagramIcon /></div>
                         <span className={styles.optionText}>Message us on Instagram</span>
                     </a>
@@ -131,7 +112,7 @@ export default function ContactForm() {
                         <div className={styles.iconWrapper}><ColoredXIcon /></div>
                         <span className={styles.optionText}>Message us on Twitter(X)</span>
                     </a>
-                    <a href="#" className={styles.optionBtn}>
+                    <a href="mailto:admin@resourcefull.store" className={styles.optionBtn}>
                         <div className={styles.iconWrapper}><ColoredEmailIcon /></div>
                         <span className={styles.optionText}>Send us an Email</span>
                     </a>

@@ -52,7 +52,7 @@ export const resourceAPI = {
     },
 
     getMyResources: async (params?: Record<string, any>) => {
-        const response = await apiClient.get(`/resources/my/resources`, { params });
+        const response = await apiClient.get<GetAllResourcesResponse>(`/resources/my/resources`, { params });
         return response.data;
     },
 

@@ -4,6 +4,7 @@ import { useState, useEffect, use, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import ResourceCard from "@/app/components/ui/ResourceCard";
+import RateResourceModal from "@/app/components/ui/RateResourceModal";
 import DashboardHeader, { DashboardFilters } from "../../_components/DashboardHeader";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { interactionAPI } from "@/app/lib/api/interaction";
@@ -59,6 +60,7 @@ const MOCK_RESOURCE = {
   previewImageUrl: "/assets/pdf1.png",
   viewCount: "2.5k",
   commentCount: 28000,
+  confidenceScore: 0,
   isOwned: false
 };
 
@@ -87,6 +89,8 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
   const [commentInput, setCommentInput] = useState("");
   const [isPostingComment, setIsPostingComment] = useState(false);
   const [commentError, setCommentError] = useState<string | null>(null);
+  const [showRateModal, setShowRateModal] = useState(false);
+  const [isSubmittingRating, setIsSubmittingRating] = useState(false);
 
   const fetchComments = useCallback(async () => {
     try {
@@ -161,12 +165,25 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
         setCommentInput("");
         fetchComments();
         fetchStats();
+        setShowRateModal(true);
       }
     } catch (err) {
       console.error("Failed to post comment", err);
       setCommentError("Failed to post comment. Please try again.");
     } finally {
       setIsPostingComment(false);
+    }
+  };
+
+  const handleSubmitRating = async (rating: number) => {
+    setIsSubmittingRating(true);
+    try {
+      await resourceAPI.rateResource(id, rating);
+    } catch (err) {
+      console.error("Failed to submit rating", err);
+    } finally {
+      setIsSubmittingRating(false);
+      setShowRateModal(false);
     }
   };
 
@@ -202,6 +219,7 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
             previewImageUrl: data.coverPhoto || "/assets/pdf1.png",
             viewCount: data.viewCount?.toString() || "0",
             commentCount: stats?.comments ?? 0,
+            confidenceScore: data.confidenceScore ?? 0,
             isOwned: prev.isOwned
           }));
         }
@@ -283,222 +301,172 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
 
               {/* Hero Banner */}
               <div className={styles.heroBanner} style={{ backgroundColor: resource.variant === 'purple' ? '#5D2E8C' : '#D03B1F' }}>
-            {/* Preview Left Side */}
-            <div className={styles.heroPreview}>
-              {resource.previewImageUrl && (
-                <div className={styles.heroPreviewImageWrapper}>
-                  <Image
-                    src={resource.previewImageUrl}
-                    alt="Preview"
-                    layout="fill"
-                    className={styles.heroPreviewImage}
-                    unoptimized
-                  />
+                {/* Preview Left Side */}
+                <div className={styles.heroPreview}>
+                  {resource.previewImageUrl && (
+                    <div className={styles.heroPreviewImageWrapper}>
+                      <Image
+                        src={resource.previewImageUrl}
+                        alt="Preview"
+                        layout="fill"
+                        className={styles.heroPreviewImage}
+                        unoptimized
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            <div className={styles.heroContent}>
-              <div className={styles.heroHeader}>
-                <div className={styles.authorInfo}>
-                  <Image src={resource.authorAvatarUrl} alt={resource.authorName} width={32} height={32} className={styles.authorAvatar} unoptimized />
-                  <span className={styles.authorName}>{resource.authorName}</span>
-                </div>
-                <div className={styles.headerActions}>
-                  <button className={styles.iconBtn} aria-label="Share"><ShareIcon /></button>
-                  <button
-                    className={styles.iconBtn}
-                    aria-label="Bookmark"
-                    onClick={handleSaveToggle}
-                    disabled={isSaving}
-                    style={isSaved ? { background: 'rgba(237, 253, 2, 0.3)' } : undefined}
-                  >
-                    <BookmarkIcon />
-                  </button>
-                </div>
-              </div>
+                <div className={styles.heroContent}>
+                  <div className={styles.heroHeader}>
+                    <div className={styles.authorInfo}>
+                      <Image src={resource.authorAvatarUrl} alt={resource.authorName} width={32} height={32} className={styles.authorAvatar} unoptimized />
+                      <span className={styles.authorName}>{resource.authorName}</span>
+                    </div>
+                    <div className={styles.headerActions}>
+                      <button className={styles.iconBtn} aria-label="Share"><ShareIcon /></button>
+                      <button
+                        className={styles.iconBtn}
+                        aria-label="Bookmark"
+                        onClick={handleSaveToggle}
+                        disabled={isSaving}
+                        style={isSaved ? { background: 'rgba(237, 253, 2, 0.3)' } : undefined}
+                      >
+                        <BookmarkIcon />
+                      </button>
+                    </div>
+                  </div>
 
-              <h1 className={styles.heroTitle}>{resource.title}</h1>
-              <div className={styles.heroPrice}>{resource.price}</div>
-              <p className={styles.heroDesc}>{resource.description}</p>
+                  <h1 className={styles.heroTitle}>{resource.title}</h1>
+                  <div className={styles.heroPrice}>{resource.price}</div>
+                  <p className={styles.heroDesc}>{resource.description}</p>
 
-              <div className={styles.heroMeta}>
-                <div className={styles.fileType}>
-                  <DocumentIcon />
-                  {resource.fileType}
-                </div>
-                <div className={styles.tags}>
-                  {resource.tags.map(tag => (
-                    <span key={tag} className={styles.tag}>{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Area */}
-          <div className={styles.actionSection}>
-            <button
-              className={`${styles.buyBtn} ${resource.isOwned ? styles.buyBtnOwned : styles.buyBtnPrimary}`}
-              onClick={handleBuyClick}
-              disabled={isProcessing}
-            >
-              {isProcessing ? (
-                <>
-                  <div className={styles.spinner}></div>
-                  {paymentReference ? "Verifying Payment..." : "Redirecting to payment..."}
-                </>
-              ) : (
-                resource.isOwned ? 'Open Resource' : (resource.price === "Free" ? 'Get' : 'Buy')
-              )}
-            </button>
-          </div>
-
-          {/* Stats Row */}
-          <div className={styles.statsRow}>
-            <div className={styles.statCard}>
-              <h4>Audience Fit</h4>
-              <div className={styles.statBar}>
-                <span className={styles.statLabel}>Brand Designers</span>
-                <div className={styles.progressBarContainer}>
-                  <div className={styles.progressBarFill} style={{ width: '80%' }}></div>
-                </div>
-                <span className={styles.statValue}>80%</span>
-              </div>
-              <div className={styles.statBar}>
-                <span className={styles.statLabel}>Graphic Designers</span>
-                <div className={styles.progressBarContainer}>
-                  <div className={styles.progressBarFill} style={{ width: '80%' }}></div>
-                </div>
-                <span className={styles.statValue}>80%</span>
-              </div>
-              <div className={styles.statBar}>
-                <span className={styles.statLabel}>Illustrator</span>
-                <div className={styles.progressBarContainer}>
-                  <div className={styles.progressBarFill} style={{ width: '80%' }}></div>
-                </div>
-                <span className={styles.statValue}>80%</span>
-              </div>
-            </div>
-
-            <div className={styles.statCard}>
-              <h4>Job Fit</h4>
-              <div className={styles.statBar}>
-                <span className={styles.statLabel}>SAAS</span>
-                <div className={styles.progressBarContainer}>
-                  <div className={styles.progressBarFill} style={{ width: '80%' }}></div>
-                </div>
-                <span className={styles.statValue}>80%</span>
-              </div>
-              <div className={styles.statBar}>
-                <span className={styles.statLabel}>Web 3</span>
-                <div className={styles.progressBarContainer}>
-                  <div className={styles.progressBarFill} style={{ width: '80%' }}></div>
-                </div>
-                <span className={styles.statValue}>80%</span>
-              </div>
-              <div className={styles.statBar}>
-                <span className={styles.statLabel}>Developer</span>
-                <div className={styles.progressBarContainer}>
-                  <div className={styles.progressBarFill} style={{ width: '80%' }}></div>
-                </div>
-                <span className={styles.statValue}>80%</span>
-              </div>
-            </div>
-
-            <div className={styles.statCard}>
-              <h4>Relevancy Score</h4>
-              <div className={styles.scoreWrapper}>
-                <span className={styles.scoreValue}>96%</span>
-                <span className={styles.scoreBadge}>C.S</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Interaction Stats */}
-          {(stats || isSaved) && (
-            <div className={styles.interactionStats}>
-              {stats && <span className={styles.interactionStat}>{stats.likes} likes</span>}
-              {stats && <span className={styles.interactionStat}>{stats.saves} saves</span>}
-              {stats && <span className={styles.interactionStat}>{stats.shares} shares</span>}
-              {isSaved && <span className={styles.interactionStat}>You saved this</span>}
-            </div>
-          )}
-
-          {/* Comments */}
-          <div className={styles.commentsSection}>
-            <div className={styles.commentsHeader}>
-              <h3 className={styles.commentsTitle}>Comments</h3>
-              <span className={styles.commentsCount}>{commentCount}</span>
-            </div>
-
-            {commentError && (
-              <div className={styles.commentError}>{commentError}</div>
-            )}
-
-            {comments.map((comment) => (
-              <div key={comment._id} className={styles.commentItem}>
-                <div>
-                  <Image src={comment.user?.avatar || "https://i.pravatar.cc/150"} alt={comment.user?.name || "User"} width={40} height={40} className={styles.commentAvatar} unoptimized />
-                </div>
-                <div className={styles.commentContent}>
-                  <div className={styles.commentAuthor}>{comment.user?.name || "Anonymous"}</div>
-                  <p className={styles.commentText}>{comment.comment || comment.content}</p>
-                  <div className={styles.commentActions}>
-                    <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-                    <button className={styles.commentActionBtn}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20" /><path d="M4 4v7a4 4 0 0 0 4 4h12" /></svg>
-                      Reply
-                    </button>
-                    <button
-                      className={styles.commentActionBtn}
-                      style={{ marginLeft: 'auto' }}
-                      onClick={async () => {
-                        try {
-                          if (comment._id) {
-                            await interactionAPI.deleteComment(comment._id);
-                            fetchComments();
-                            fetchStats();
-                          }
-                        } catch (err) {
-                          console.error("Failed to delete comment", err);
-                        }
-                      }}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-                      Delete
-                    </button>
+                  <div className={styles.heroMeta}>
+                    <div className={styles.fileType}>
+                      <DocumentIcon />
+                      {resource.fileType}
+                    </div>
+                    <div className={styles.tags}>
+                      {resource.tags.map(tag => (
+                        <span key={tag} className={styles.tag}>{tag}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            ))}
 
-            {comments.length === 0 && (
-              <div className={styles.noComments}>No comments yet. Be the first to share your thoughts!</div>
-            )}
+              {/* Action Area */}
+              <div className={styles.actionSection}>
+                <button
+                  className={`${styles.buyBtn} ${resource.isOwned ? styles.buyBtnOwned : styles.buyBtnPrimary}`}
+                  onClick={handleBuyClick}
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? (
+                    <>
+                      <div className={styles.spinner}></div>
+                      {paymentReference ? "Verifying Payment..." : "Redirecting to payment..."}
+                    </>
+                  ) : (
+                    resource.isOwned ? 'Open Resource' : (resource.price === "Free" ? 'Get' : 'Buy')
+                  )}
+                </button>
+              </div>
 
-            <div className={styles.commentInputWrapper}>
-              <input 
-                type="text" 
-                placeholder="Share your thoughts on this resource..." 
-                className={styles.commentInput} 
-                value={commentInput}
-                onChange={(e) => setCommentInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handlePostComment();
-                }}
-                disabled={isPostingComment}
-              />
-              <button 
-                className={styles.postCommentBtn} 
-                onClick={handlePostComment}
-                disabled={isProcessing || !commentInput.trim()}
-              >
-                {isPostingComment ? 'Posting...' : 'Post'}
-              </button>
-            </div>
-          </div>
-          </>
+              {/* Stats Row */}
+              <div className={styles.statsRow}>
+                <div className={styles.statCard}>
+                  <h4>Confidence Score</h4>
+                  <div className={styles.scoreWrapper}>
+                    <span className={styles.scoreValue}>{Math.round((resource.confidenceScore || 0) * 100)}%</span>
+                    <span className={styles.scoreBadge}>C.S</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Interaction Stats */}
+              {(stats || isSaved) && (
+                <div className={styles.interactionStats}>
+                  {stats && <span className={styles.interactionStat}>{stats.likes} likes</span>}
+                  {stats && <span className={styles.interactionStat}>{stats.saves} saves</span>}
+                  {stats && <span className={styles.interactionStat}>{stats.shares} shares</span>}
+                  {isSaved && <span className={styles.interactionStat}>You saved this</span>}
+                </div>
+              )}
+
+              {/* Comments */}
+              <div className={styles.commentsSection}>
+                <div className={styles.commentsHeader}>
+                  <h3 className={styles.commentsTitle}>Comments</h3>
+                  <span className={styles.commentsCount}>{commentCount}</span>
+                </div>
+
+                {commentError && (
+                  <div className={styles.commentError}>{commentError}</div>
+                )}
+
+                {comments.map((comment) => (
+                  <div key={comment._id} className={styles.commentItem}>
+                    <div>
+                      <Image src={comment.user?.avatar || "https://i.pravatar.cc/150"} alt={comment.user?.name || "User"} width={40} height={40} className={styles.commentAvatar} unoptimized />
+                    </div>
+                    <div className={styles.commentContent}>
+                      <div className={styles.commentAuthor}>{comment.user?.name || "Anonymous"}</div>
+                      <p className={styles.commentText}>{comment.comment || comment.content}</p>
+                      <div className={styles.commentActions}>
+                        <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
+                        <button className={styles.commentActionBtn}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20" /><path d="M4 4v7a4 4 0 0 0 4 4h12" /></svg>
+                          Reply
+                        </button>
+                        <button
+                          className={styles.commentActionBtn}
+                          style={{ marginLeft: 'auto' }}
+                          onClick={async () => {
+                            try {
+                              if (comment._id) {
+                                await interactionAPI.deleteComment(comment._id);
+                                fetchComments();
+                                fetchStats();
+                              }
+                            } catch (err) {
+                              console.error("Failed to delete comment", err);
+                            }
+                          }}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {comments.length === 0 && (
+                  <div className={styles.noComments}>No comments yet. Be the first to share your thoughts!</div>
+                )}
+
+                <div className={styles.commentInputWrapper}>
+                  <input
+                    type="text"
+                    placeholder="Share your thoughts on this resource..."
+                    className={styles.commentInput}
+                    value={commentInput}
+                    onChange={(e) => setCommentInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handlePostComment();
+                    }}
+                    disabled={isPostingComment}
+                  />
+                  <button
+                    className={styles.postCommentBtn}
+                    onClick={handlePostComment}
+                    disabled={isProcessing || !commentInput.trim()}
+                  >
+                    {isPostingComment ? 'Posting...' : 'Post'}
+                  </button>
+                </div>
+              </div>
+            </>
           )}
         </div>
 
@@ -521,6 +489,14 @@ export default function ResourceDetailsPage({ params }: { params: Promise<{ id: 
           </div>
         </aside>
       </div>
+
+      {showRateModal && (
+        <RateResourceModal
+          onClose={() => setShowRateModal(false)}
+          onSubmit={handleSubmitRating}
+          isSubmitting={isSubmittingRating}
+        />
+      )}
     </div>
   );
 }

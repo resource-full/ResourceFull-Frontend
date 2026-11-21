@@ -139,7 +139,7 @@ export default function TopResources() {
               </div>
 
               <div className={styles.previewImageContainer}>
-                <Image src={CvPreview} alt="CV Preview" fill style={{ objectFit: 'cover' }} />
+                <Image src={CvPreview} alt="CV Preview" fill style={{ objectFit: 'contain' }} />
               </div>
 
               <div className={styles.cardFooter}>

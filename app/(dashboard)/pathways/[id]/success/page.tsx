@@ -4,8 +4,11 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import DashboardHeader from "../../../_components/DashboardHeader";
 import styles from "./page.module.css";
-import { useState, use } from "react";
+import { useState, useEffect, use, Fragment } from "react";
 import { DashboardFilters } from "../../../_components/DashboardHeader";
+import { pathwayAPI } from "@/app/lib/api/pathway";
+import { formatPrice } from "@/app/hooks/useDashboardData";
+import { PathwayBlock } from "@/app/lib/types/pathway";
 
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -30,18 +33,24 @@ const DocumentIcon = () => (
   </svg>
 );
 
-// We mock the pathway data
-const MOCK_PATHWAY = {
-  id: "1",
-  variant: "purple" as const,
-  title: "Become a Full Stack Developer in 3 Months",
-  authorName: "Stella Della",
-  authorAvatarUrl: "https://i.pravatar.cc/150?u=stella",
-  price: "Free",
-  description: "Our Graphic Design CV Resource offers customizable templates, expert tips, and portfolio examples to help you create a standout resume. Perfect for both beginners and experienced designers, this guide ensures your CV highlights your skills and experience...",
-  tags: ["Design", "CV"],
-  resourceCount: 20
+// Placeholder shown only until the real pathway loads
+const EMPTY_PATHWAY = {
+  id: "",
+  title: "",
+  authorName: "",
+  authorAvatarUrl: "https://i.pravatar.cc/150",
+  price: "",
+  description: "",
+  tags: [] as string[],
+  resourceCount: 0,
+  blocks: [] as PathwayBlock[],
 };
+
+function chunk<T>(arr: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
 
 export default function PathwaySuccessPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -52,9 +61,39 @@ export default function PathwaySuccessPage({ params }: { params: Promise<{ id: s
     industry: [],
     experience: [],
   });
+  const [pathway, setPathway] = useState(EMPTY_PATHWAY);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const mainColor = MOCK_PATHWAY.variant === "purple" ? "#58169c" : "#ad3307";
-  const bgLightColor = MOCK_PATHWAY.variant === "purple" ? "rgba(106, 53, 156, 0.08)" : "rgba(196, 69, 42, 0.08)";
+  useEffect(() => {
+    if (!id) return;
+    (async () => {
+      try {
+        const res = await pathwayAPI.getSinglePathway(id);
+        if (res.success && res.data) {
+          const data = res.data;
+          setPathway({
+            id: data._id || data.id,
+            title: data.name,
+            authorName: data.author?.name || "Author",
+            authorAvatarUrl: data.author?.avatar || "https://i.pravatar.cc/150",
+            price: formatPrice(data.isFree, data.price, data.currency),
+            description: data.description,
+            tags: data.tags || [],
+            resourceCount: data.resourceCount || data.blockCount || 0,
+            blocks: data.blocks || [],
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch purchased pathway:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [id]);
+
+  const mainColor = "#58169c";
+  const bgLightColor = "rgba(106, 53, 156, 0.08)";
+  const blockRows = chunk(pathway.blocks, 3);
 
   const handleOpenResource = () => {
     router.push(`/pathways/${id}/view`);
@@ -87,64 +126,61 @@ export default function PathwaySuccessPage({ params }: { params: Promise<{ id: s
           Your <strong>pathway</strong> is ready!
         </p>
 
-        <div className={styles.pathwayCardMock}>
-          <div className={styles.resourceHeader}>
-            <Image 
-              src={MOCK_PATHWAY.authorAvatarUrl} 
-              alt={MOCK_PATHWAY.authorName} 
-              width={24} 
-              height={24} 
-              className={styles.authorAvatar}
-              unoptimized 
-            />
-            <span className={styles.authorName}>{MOCK_PATHWAY.authorName}</span>
-          </div>
-          
-          <h3 className={styles.resourceTitle} style={{ color: mainColor }}>{MOCK_PATHWAY.title}</h3>
-          <div className={styles.resourcePrice} style={{ color: mainColor }}>{MOCK_PATHWAY.price}</div>
-          <p className={styles.resourceDesc}>{MOCK_PATHWAY.description}</p>
-          
-          <div className={styles.tags}>
-            {MOCK_PATHWAY.tags.map((tag) => (
-              <span key={tag} className={styles.tag} style={{ backgroundColor: mainColor }}>{tag}</span>
-            ))}
-          </div>
-
-          <div className={styles.resourceCount}>
-            <DocumentIcon />
-            <span>{MOCK_PATHWAY.resourceCount} Resources</span>
-          </div>
-
-          <div className={styles.sequenceBlock} style={{ backgroundColor: bgLightColor }}>
-            <div className={styles.sequenceRow}>
-              <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                <div className={styles.sequenceNumber} style={{ color: mainColor }}>1</div>
-                Intro
-              </div>
-              <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
-              <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                <div className={styles.sequenceNumber} style={{ color: mainColor }}>2</div>
-                Tools
-              </div>
-              <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
-              <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                <div className={styles.sequenceNumber} style={{ color: mainColor }}>3</div>
-                Projects
-              </div>
+        {isLoading ? (
+          <div className={styles.pathwayCardMock}>Loading...</div>
+        ) : (
+          <div className={styles.pathwayCardMock}>
+            <div className={styles.resourceHeader}>
+              <Image
+                src={pathway.authorAvatarUrl}
+                alt={pathway.authorName}
+                width={24}
+                height={24}
+                className={styles.authorAvatar}
+                unoptimized
+              />
+              <span className={styles.authorName}>{pathway.authorName}</span>
             </div>
-            <div className={styles.sequenceRow}>
-              <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                <div className={styles.sequenceNumber} style={{ color: mainColor }}>4</div>
-                Set Up VS Code
-              </div>
-              <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
-              <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
-                <div className={styles.sequenceNumber} style={{ color: mainColor }}>5</div>
-                CV Template
-              </div>
+
+            <h3 className={styles.resourceTitle} style={{ color: mainColor }}>{pathway.title}</h3>
+            <div className={styles.resourcePrice} style={{ color: mainColor }}>{pathway.price}</div>
+            <p className={styles.resourceDesc}>{pathway.description}</p>
+
+            <div className={styles.tags}>
+              {pathway.tags.map((tag) => (
+                <span key={tag} className={styles.tag} style={{ backgroundColor: mainColor }}>{tag}</span>
+              ))}
             </div>
+
+            <div className={styles.resourceCount}>
+              <DocumentIcon />
+              <span>{pathway.resourceCount} Resources</span>
+            </div>
+
+            {blockRows.length > 0 && (
+              <div className={styles.sequenceBlock} style={{ backgroundColor: bgLightColor }}>
+                {blockRows.map((row, rowIdx) => (
+                  <div className={styles.sequenceRow} key={rowIdx}>
+                    {row.map((block, idx) => {
+                      const number = rowIdx * 3 + idx + 1;
+                      return (
+                        <Fragment key={block._id || number}>
+                          <div className={styles.sequenceItem} style={{ backgroundColor: mainColor }}>
+                            <div className={styles.sequenceNumber} style={{ color: mainColor }}>{number}</div>
+                            {block.name}
+                          </div>
+                          {idx < row.length - 1 && (
+                            <div className={styles.sequenceDash} style={{ borderTop: `2px dashed ${mainColor}` }}></div>
+                          )}
+                        </Fragment>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         <div className={styles.buttonGroup}>
           <button className={styles.primaryBtn} onClick={handleOpenResource}>

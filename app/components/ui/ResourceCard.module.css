@@ -76,16 +76,6 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.rsBadge {
-  background-color: #E9FCEA;
-  border: 0.5px solid #1CAB22;
-  border-radius: 6px;
-  padding: 4px;
-  font-weight: 600;
-  color: #1CAB22;
-  font-size: 10px;
-}
-
 .openBadge {
   background-color: white;
   padding: 4px 12px;
@@ -214,12 +204,6 @@
   justify-content: space-between;
 }
 
-.statsLeft {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 .avatarStack {
   display: flex;
   align-items: center;
@@ -229,40 +213,149 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid;
-  margin-right: -8px;
+  object-fit: cover;
+  margin-right: -6px;
 }
 
-/* Match border to variant background */
-.variantPurple .avatarStack img {
-  border-color: #58169c;
-}
-
-.variantOrange .avatarStack img {
-  border-color: #ad3307;
-}
-
-.variantPink .avatarStack img {
-  border-color: #9c1658;
-}
-
-.variantGreen .avatarStack img {
-  border-color: #52b114;
-}
-
-.viewCount {
-  font-size: 0.8125rem;
+.viewCountBubble {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f1f1f1;
+  color: #101928;
+  font-size: 8px;
   font-weight: 500;
-  margin-left: 12px;
-}
-
-.statsRight {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
 }
 
-.commentCount {
-  font-size: 0.8125rem;
-  font-weight: 500;
+.confidenceChip {
+  background-color: #e9fcea;
+  border: 0.5px solid #1cab22;
+  border-radius: 6px;
+  padding: 4px;
+  font-weight: 600;
+  color: #1cab22;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Mobile — Pinterest-style pin: image dominant, minimal text,
+   floating save button. Pure reorder/hide, no markup changes.
+   ============================================================ */
+@media (max-width: 768px) {
+  .card {
+    position: relative;
+    padding: 8px;
+    border-radius: 18px;
+    gap: 0;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  /* Image becomes the pin's cover, pushed to the very top */
+  .previewContainer {
+    order: -3;
+    flex: none;
+    min-height: 130px;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    margin-bottom: 8px;
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .previewImage {
+    border-radius: 14px;
+  }
+
+  /* Author row collapses to just a floating save button over the image */
+  .header {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    left: auto;
+    margin: 0;
+    z-index: 2;
+  }
+
+  .authorInfo {
+    display: none;
+  }
+
+  .bookmarkBtn {
+    background: rgba(255, 255, 255, 0.92);
+    color: #11243d;
+    padding: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  .bookmarkBtn:hover {
+    background: #ffffff;
+  }
+
+  .bookmarkBtn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .openBadge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .title {
+    order: -2;
+    font-size: 12.5px;
+    line-height: 1.3;
+    margin: 0 2px 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .price {
+    order: -1;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0 2px 6px;
+    opacity: 0.9;
+  }
+
+  .description,
+  .metaContainer {
+    display: none;
+  }
+
+  .footer {
+    margin: 0 2px;
+  }
+
+  .avatarStack img {
+    width: 16px;
+    height: 16px;
+    margin-right: -6px;
+  }
+
+  .viewCountBubble {
+    width: 16px;
+    height: 16px;
+    font-size: 6px;
+  }
+
+  .confidenceChip {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
 }

@@ -154,8 +154,8 @@ export default function PurchasedPage() {
         const mapped = purchasedHubs.map((hub, index) => ({
             id: hub._id,
             variant: getVariant(index),
-            authorName: hub.author?.email || "Author",
-            authorAvatarUrl: "https://i.pravatar.cc/150",
+            authorName: hub.owner?.name || hub.owner?.email || "Author",
+            authorAvatarUrl: hub.owner?.avatar || "https://i.pravatar.cc/150",
             previewImageUrl: "/assets/pdf1.png",
             title: hub.name,
             price: "Free",

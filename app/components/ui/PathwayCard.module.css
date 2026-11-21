@@ -5,6 +5,7 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
+  position: relative;
   transition: transform 300ms ease, box-shadow 300ms ease;
   height: 100%;
 }
@@ -237,4 +238,130 @@
 .commentCount {
   font-size: 0.875rem;
   font-weight: 600;
+}
+
+/* ============================================================
+   Mobile — Pinterest-style pin: colored cover block up top,
+   minimal text, floating save button.
+   ============================================================ */
+@media (max-width: 768px) {
+  .card {
+    padding: 8px;
+    border-radius: 18px;
+    gap: 0;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  /* The step-sequence diagram collapses into a plain colored cover,
+     like a pin image, since it can't read at this width */
+  .sequenceBlock {
+    order: -3;
+    padding: 0;
+    margin-bottom: 8px;
+    min-height: 110px;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    flex: none;
+  }
+
+  .sequenceRow {
+    display: none;
+  }
+
+  .header {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    left: auto;
+    margin: 0;
+    z-index: 2;
+  }
+
+  .authorInfo {
+    display: none;
+  }
+
+  .bookmarkBtn {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  .bookmarkBtn:hover {
+    background: #ffffff;
+  }
+
+  .bookmarkBtn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .openBadge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .title {
+    order: -2;
+    font-size: 12.5px;
+    margin: 0 2px 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .price {
+    order: -1;
+    font-size: 11px;
+    margin: 0 2px 6px;
+  }
+
+  .description,
+  .tagsContainer {
+    display: none;
+  }
+
+  .resourceCount {
+    font-size: 10.5px;
+    margin: 0 2px 8px;
+  }
+
+  .resourceCount svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .footer {
+    margin: 0 2px;
+  }
+
+  .avatarStack img {
+    width: 16px;
+    height: 16px;
+    margin-right: -6px;
+  }
+
+  .viewCount,
+  .commentCount {
+    font-size: 10px;
+    margin-left: 6px;
+  }
+
+  .statsRight svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .rsBadge {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
 }

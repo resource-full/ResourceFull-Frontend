@@ -79,9 +79,16 @@ const ArrowDownIcon = () => (
 
 
 
+function toNumber(value: string | number): number {
+  if (typeof value === "number") return value;
+  const parsed = parseFloat(value.replace(/[^0-9.-]/g, ""));
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
 export default function AnalyticsPage() {
   const [activeDate, setActiveDate] = useState("30d");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("Highest Downloads");
   const [filters, setFilters] = useState<DashboardFilters>({
     searchQuery: "",
     worldwide: [],
@@ -159,6 +166,20 @@ export default function AnalyticsPage() {
       setExporting(null);
     }
   };
+
+  const visibleProducts = (Array.isArray(products) ? products : [])
+    .filter((row) => {
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return true;
+      return row.name.toLowerCase().includes(q) || row.category.toLowerCase().includes(q);
+    })
+    .slice()
+    .sort((a, b) => {
+      if (sortBy === "Highest Earnings") return toNumber(b.earnings) - toNumber(a.earnings);
+      if (sortBy === "Highest Downloads") return toNumber(b.downloads) - toNumber(a.downloads);
+      // "Most Recent": the backend doesn't return a date per row, so preserve its own order.
+      return 0;
+    });
 
   if (loading) {
     return (
@@ -341,7 +362,7 @@ export default function AnalyticsPage() {
               </div>
               <div className={styles.sortWrapper}>
                 <span>Sort by</span>
-                <select className={styles.sortSelect} defaultValue="Highest Downloads">
+                <select className={styles.sortSelect} value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                   <option value="Highest Downloads">Highest Downloads</option>
                   <option value="Highest Earnings">Highest Earnings</option>
                   <option value="Most Recent">Most Recent</option>
@@ -365,9 +386,9 @@ export default function AnalyticsPage() {
                 </tr>
               </thead>
               <tbody>
-                {(!Array.isArray(products) || products.length === 0) ? (
+                {visibleProducts.length === 0 ? (
                   <tr><td colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>No performance data available</td></tr>
-                ) : products.map((row, index) => (
+                ) : visibleProducts.map((row, index) => (
                   <tr key={`${row.type}-${row.name}-${index}`}>
                     <td>
                       {row.type === 'Resource' ? <ResourceTypeIcon /> : <PathwayTypeIcon />}

@@ -1,0 +1,131 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(246, 246, 246, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  box-shadow: 0 8px 8px -4px rgba(10, 13, 18, 0.03), 0 20px 24px -4px rgba(10, 13, 18, 0.08);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background: #e6edf4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  width: 100%;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #181d27;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #535862;
+  margin: 0;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.starBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.starBtn:hover {
+  transform: scale(1.08);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.backBtn {
+  flex: 1;
+  height: 44px;
+  border-radius: 16px;
+  background: #f6f6f6;
+  border: none;
+  color: #024a94;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.backBtn:hover {
+  background: #ececec;
+}
+
+.doneBtn {
+  flex: 1;
+  height: 44px;
+  border-radius: 14px;
+  background: #024385;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.doneBtn:hover {
+  background: #013768;
+}
+
+.doneBtn:disabled,
+.backBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

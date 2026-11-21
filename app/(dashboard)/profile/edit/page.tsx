@@ -50,7 +50,10 @@ export default function EditProfilePage() {
   // About
   const [bio, setBio] = useState("Senior PM at Google Lagos · Building career resources for ambitious Africans. Previously Paystack, Andela.");
   const [industry, setIndustry] = useState("Design");
-  const [experienceLevel, setExperienceLevel] = useState("Undergraduate");
+  // "Undergraduate" is not a valid professionalExperience enum value on the
+  // backend (only Student/Entry level/Mid Level/Senior are) — default to a
+  // valid one so saving before ever touching this field doesn't 400.
+  const [experienceLevel, setExperienceLevel] = useState("Student");
 
   // Skills
   const [skills, setSkills] = useState<string[]>(["Product Designer", "Business Analyst"]);
@@ -100,12 +103,14 @@ export default function EditProfilePage() {
           const parsed = res.data;
           if (parsed.firstName) setFirstName(parsed.firstName);
           if (parsed.lastName) setLastName(parsed.lastName);
-          if (parsed.email) setUsername(parsed.email.split('@')[0]);
+          if (parsed.username) setUsername(parsed.username);
+          else if (parsed.email) setUsername(parsed.email.split('@')[0]);
           if (parsed.location) setLocation(parsed.location);
           if (parsed.bio || parsed.shortDescription) setBio(parsed.bio || parsed.shortDescription || "");
           if (parsed.industry) setIndustry(parsed.industry);
           if (parsed.professionalExperience) setExperienceLevel(parsed.professionalExperience);
           if (parsed.currentCareer) setCurrentCareer(parsed.currentCareer);
+          if (parsed.projectedCareer) setCurrentGoals(parsed.projectedCareer);
           if (parsed.skills) setSkills(parsed.skills);
           if (parsed.primaryCareerGoal) setPrimaryGoal(parsed.primaryCareerGoal);
           if (parsed.goalReviewTimeline) {
@@ -126,11 +131,13 @@ export default function EditProfilePage() {
       firstName,
       lastName,
       name: `${firstName} ${lastName}`.trim(),
+      username,
       location,
       bio,
       industry,
       professionalExperience: experienceLevel,
       currentCareer: currentCareer || industry,
+      projectedCareer: currentGoals,
       skills,
       primaryCareerGoal: primaryGoal,
       goalReviewTimeline: goalTimeline[0] === "12_months" ? "1year" : "6months",

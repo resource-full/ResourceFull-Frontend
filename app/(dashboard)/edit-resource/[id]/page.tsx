@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
-import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { COUNTRIES, SKILLS_OPTIONS, CONTENT_EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { Resource } from "@/app/lib/types/resource";
 import styles from "./page.module.css";
@@ -304,7 +304,7 @@ export default function EditResourcePage() {
 
           <FormMultiSelect
             label="Experience"
-            options={EXPERIENCE_OPTIONS}
+            options={CONTENT_EXPERIENCE_OPTIONS}
             selected={experiences}
             onChange={setExperiences}
             isOpen={openDropdown === 'experience'}

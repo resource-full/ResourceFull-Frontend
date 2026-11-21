@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
-import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { COUNTRIES, SKILLS_OPTIONS, CONTENT_EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { pathwayAPI } from "@/app/lib/api/pathway";
 import { hubAPI } from "@/app/lib/api/hub";
@@ -124,9 +124,12 @@ export default function AddHubPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // A hub can only bundle resources/pathways the current user owns —
+        // the backend rejects IDs it doesn't own with a 400 — so the picker
+        // must only offer the user's own content, not the full catalog.
         const [resRes, pathRes] = await Promise.all([
-          resourceAPI.getAllResources(),
-          pathwayAPI.getAllPathways()
+          resourceAPI.getMyResources(),
+          pathwayAPI.getMyPathways()
         ]);
         if (resRes.success && resRes.data.resources) {
           setResources(resRes.data.resources);
@@ -155,7 +158,7 @@ export default function AddHubPage() {
           description,
           industry: industries[0] || "Software Development",
           applicableLocation: locations[0] || "Worldwide",
-          experience: experiences[0] || "Professional",
+          experience: experiences[0] || "Professional (above 6 years)",
           resources: selectedResources,
           pathways: selectedPathways,
         };
@@ -258,7 +261,7 @@ export default function AddHubPage() {
 
         <FormMultiSelect
           label="Experience"
-          options={EXPERIENCE_OPTIONS}
+          options={CONTENT_EXPERIENCE_OPTIONS}
           selected={experiences}
           onChange={setExperiences}
           isOpen={openDropdown === 'experience'}
@@ -323,7 +326,7 @@ export default function AddHubPage() {
                         <CheckIcon />
                       </div>
                     </div>
-                    <DummyPathwayCard title={pw.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
+                    <DummyPathwayCard title={pw.name || pw.title || "Untitled Pathway"} variant={idx % 2 === 0 ? "purple" : "orange"} />
                   </div>
                 );
               })}
@@ -375,7 +378,7 @@ export default function AddHubPage() {
                           {isSelected && <span style={{ color: '#fff' }}><CheckIcon /></span>}
                         </div>
                         <div style={{ pointerEvents: 'none', width: '100%' }}>
-                          <DummyPathwayCard title={pw.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
+                          <DummyPathwayCard title={pw.name || pw.title || "Untitled Pathway"} variant={idx % 2 === 0 ? "purple" : "orange"} />
                         </div>
                         <input 
                           type="checkbox" 
