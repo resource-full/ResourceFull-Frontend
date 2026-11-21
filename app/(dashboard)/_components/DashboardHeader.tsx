@@ -220,8 +220,16 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
     }
   };
 
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFiltersChange({ ...filters, searchQuery: e.target.value });
+  };
+
+  // Search already filters live as you type; the button just confirms the
+  // action (and dismisses the mobile keyboard) rather than re-triggering it.
+  const handleSearchSubmit = () => {
+    searchInputRef.current?.blur();
   };
 
   const setWorldwide = (val: string[]) => onFiltersChange({ ...filters, worldwide: val });
@@ -267,13 +275,15 @@ export default function DashboardHeader({ filters, onFiltersChange }: DashboardH
         <div className={styles.searchBar}>
           <span className={styles.searchIcon}><SearchIcon /></span>
           <input
+            ref={searchInputRef}
             type="text"
             placeholder="Search Resourcefull"
             className={styles.searchInput}
             value={filters.searchQuery}
             onChange={handleSearch}
+            onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
           />
-          <button className={styles.searchBtn}>Search</button>
+          <button type="button" className={styles.searchBtn} onClick={handleSearchSubmit}>Search</button>
         </div>
 
         <div className={styles.filterPillsContainer}>

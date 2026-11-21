@@ -14,7 +14,7 @@ export default function AboutBackstory() {
 
           <div className={styles.descriptionContainer}>
             <p className={styles.description}>
-              We understood that people need resources. But more than that, we realized that people are completely exhausted by the hunt for them.
+              But more than that, we realized that people are completely exhausted by the hunt for them.
             </p>
 
             <p className={styles.description}>

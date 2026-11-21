@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -115,6 +115,14 @@ const LockIcon = () => (
   </svg>
 );
 
+const GlobeIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
+);
+
 const MoreIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="1" />
@@ -151,62 +159,89 @@ const ResourceTypeIcon = () => (
   </svg>
 );
 
-// --- Mock Data ---
-const MOCK_RESOURCES_TABLE = [
-  { id: 1, name: "Graphic Design CV", desc: "Our Graphic Design...", price: "$120", downloads: "24", saves: "24", status: "Active" },
-  { id: 2, name: "Leading text", desc: "Leading text", price: "Free", downloads: "300", saves: "300", status: "Only Me" },
-  { id: 3, name: "Leading text", desc: "Leading text", price: "Leading text", downloads: "700,000", saves: "700,000", status: "Label" },
-  { id: 4, name: "Leading text", desc: "Leading text", price: "Leading text", downloads: "2M", saves: "2M", status: "Label" },
-  { id: 5, name: "Leading text", desc: "Leading text", price: "Leading text", downloads: "1", saves: "1", status: "Label" },
-  { id: 6, name: "Leading text", desc: "Leading text", price: "Leading text", downloads: "3", saves: "3", status: "Label" },
-];
-
-const MOCK_PATHWAYS_TABLE = [
-  { id: 1, name: "Graphic Design CV", desc: "Our Graphic Design...", price: "$120", resources: "9", downloads: "24", saves: "24", status: "Active" },
-  { id: 2, name: "Leading text", desc: "Leading text", price: "Free", resources: "3", downloads: "300", saves: "300", status: "Only Me" },
-  { id: 3, name: "Leading text", desc: "Leading text", price: "Leading text", resources: "2", downloads: "700,000", saves: "700,000", status: "Label" },
-  { id: 4, name: "Leading text", desc: "Leading text", price: "Leading text", resources: "5", downloads: "2M", saves: "2M", status: "Label" },
-  { id: 5, name: "Leading text", desc: "Leading text", price: "Leading text", resources: "10", downloads: "1", saves: "1", status: "Label" },
-  { id: 6, name: "Leading text", desc: "Leading text", price: "Leading text", resources: "3", downloads: "3", saves: "3", status: "Label" },
-];
-
-const MOCK_HUBS_TABLE = [
-  { id: 1, name: "Graphic Design CV", desc: "Our Graphic Design...", resources: "9", pathways: "1", downloads: "24", saves: "24", status: "Active" },
-  { id: 2, name: "Leading text", desc: "Leading text", resources: "3", pathways: "3", downloads: "300", saves: "300", status: "Only Me" },
-  { id: 3, name: "Leading text", desc: "Leading text", resources: "2", pathways: "2", downloads: "700,000", saves: "700,000", status: "Label" },
-  { id: 4, name: "Leading text", desc: "Leading text", resources: "5", pathways: "5", downloads: "2M", saves: "2M", status: "Label" },
-  { id: 5, name: "Leading text", desc: "Leading text", resources: "10", pathways: "10", downloads: "1", saves: "1", status: "Label" },
-  { id: 6, name: "Leading text", desc: "Leading text", resources: "3", pathways: "3", downloads: "3", saves: "3", status: "Label" },
-];
-
-const MOCK_MIXED_TABLE = [
-  { id: 1, type: "resource", name: "Graphic Design CV", desc: "Our Graphic Design...", downloads: "24", saves: "24" },
-  { id: 2, type: "pathway", name: "Leading text", desc: "Leading text", downloads: "300", saves: "300" },
-  { id: 3, type: "hub", name: "Leading text", desc: "Leading text", downloads: "700,000", saves: "700,000" },
-  { id: 4, type: "pathway", name: "Leading text", desc: "Leading text", downloads: "2M", saves: "2M" },
-  { id: 5, type: "resource", name: "Leading text", desc: "Leading text", downloads: "1", saves: "1" },
-  { id: 6, type: "hub", name: "Leading text", desc: "Leading text", downloads: "3", saves: "3" },
-];
 
 
-import { useDashboardData } from "@/app/hooks/useDashboardData";
+import { formatPrice } from "@/app/hooks/useDashboardData";
 import { userAPI } from "@/app/lib/api/user";
-import { UserProfileStats, UserProfileSocials } from "@/app/lib/types/user";
+import { resourceAPI } from "@/app/lib/api/resource";
+import { pathwayAPI } from "@/app/lib/api/pathway";
+import { hubAPI } from "@/app/lib/api/hub";
+import {
+  UserProfileStats,
+  UserProfileSocials,
+  UserProfileItem,
+  UserProfileDraftOrPrivateItem,
+} from "@/app/lib/types/user";
+
+interface ProfileTableRow {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  viewCount: number;
+  resourceCount: number;
+  pathwayCount: number;
+  status: 'draft' | 'public' | 'private';
+}
+
+function toRow(item: UserProfileItem): ProfileTableRow {
+  return {
+    id: item._id,
+    title: item.name,
+    description: item.description,
+    price: formatPrice(item.isFree, item.price, item.currency),
+    viewCount: item.viewCount || 0,
+    // Resource count: a pathway's resource-type blocks, or a hub's linked resources
+    resourceCount: item.blocks
+      ? item.blocks.filter((b) => b.type === "resource").length
+      : item.resources?.length || 0,
+    pathwayCount: item.pathways?.length || 0,
+    status: item.status,
+  };
+}
 
 export default function ProfilePage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'resources' | 'pathways' | 'hubs' | 'onlyme' | 'drafts'>('resources');
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
-  const {
-    displayResources,
-    displayPathways,
-    displayHubs,
-    isLoadingResources,
-    isLoadingPathways,
-    isLoadingHubs,
-  } = useDashboardData();
+
+  // Driven by GET /users/profile's own resources/pathways/hubs/drafts/onlyMe
+  // arrays (set alongside the rest of the profile below) — the dedicated
+  // explore-style endpoints (getAllResources/getMyResources etc.) are the
+  // wrong data source here since they return the public catalog or, for
+  // pathways specifically, a backend response shape whose title is never
+  // populated.
+  const [resourcesMine, setResourcesMine] = useState<UserProfileItem[]>([]);
+  const [pathwaysMine, setPathwaysMine] = useState<UserProfileItem[]>([]);
+  const [hubsMine, setHubsMine] = useState<UserProfileItem[]>([]);
+  const [draftsMine, setDraftsMine] = useState<UserProfileDraftOrPrivateItem[]>([]);
+  const [onlyMeMine, setOnlyMeMine] = useState<UserProfileDraftOrPrivateItem[]>([]);
+
+  // The Resources/Pathways/Hubs tabs only show what's actually live; items
+  // marked "Only Me" (private) or left as drafts move to their own tabs,
+  // matching the status values set via Mark as Only Me / Save Draft.
+  const publishedResources = useMemo(
+    () => resourcesMine.filter((r) => r.status === "public").map(toRow),
+    [resourcesMine]
+  );
+  const publishedPathways = useMemo(
+    () => pathwaysMine.filter((p) => p.status === "public").map(toRow),
+    [pathwaysMine]
+  );
+  const publishedHubs = useMemo(
+    () => hubsMine.filter((h) => h.status === "public").map(toRow),
+    [hubsMine]
+  );
+
+  const draftItems = useMemo(
+    () => draftsMine.map((d) => ({ ...toRow(d), type: d.itemType.toLowerCase() as 'resource' | 'pathway' | 'hub' })),
+    [draftsMine]
+  );
+  const onlyMeItems = useMemo(
+    () => onlyMeMine.map((d) => ({ ...toRow(d), type: d.itemType.toLowerCase() as 'resource' | 'pathway' | 'hub' })),
+    [onlyMeMine]
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -236,30 +271,61 @@ export default function ProfilePage() {
   const [stats, setStats] = useState<UserProfileStats | null>(null);
   const [socials, setSocials] = useState<UserProfileSocials | null>(null);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await userAPI.getUserProfile();
-        if (res.success && res.data) {
-          setProfile({
-            name: res.data.name || `${res.data.firstName} ${res.data.lastName}`,
-            profession: res.data.currentRole || "Professional",
-            username: res.data.email ? `@${res.data.email.split('@')[0]}` : "@user",
-            bio: res.data.bio || res.data.shortDescription || "Building career resources...",
-            avatar: res.data.avatar || "",
-            coverPhoto: res.data.coverImage || "linear-gradient(90deg, #d4a72d 0%, #a6d88c 100%)"
-          });
-          setStats(res.data.stats || null);
-          setSocials(res.data.socials || null);
-        }
-      } catch (e) {
-        console.error("Error fetching profile from API:", e);
-      } finally {
-        setIsProfileLoading(false);
+  const fetchProfile = async () => {
+    try {
+      const res = await userAPI.getUserProfile();
+      if (res.success && res.data) {
+        setProfile({
+          name: res.data.name || `${res.data.firstName} ${res.data.lastName}`,
+          profession: res.data.currentRole || "Professional",
+          username: res.data.username ? `@${res.data.username}` : (res.data.email ? `@${res.data.email.split('@')[0]}` : "@user"),
+          bio: res.data.bio || res.data.shortDescription || "Building career resources...",
+          avatar: res.data.avatar || "",
+          coverPhoto: res.data.coverImage || "linear-gradient(90deg, #d4a72d 0%, #a6d88c 100%)"
+        });
+        setStats(res.data.stats || null);
+        setSocials(res.data.socials || null);
+        setResourcesMine(res.data.resources || []);
+        setPathwaysMine(res.data.pathways || []);
+        setHubsMine(res.data.hubs || []);
+        setDraftsMine(res.data.drafts || []);
+        setOnlyMeMine(res.data.onlyMe || []);
       }
-    };
+    } catch (e) {
+      console.error("Error fetching profile from API:", e);
+    } finally {
+      setIsProfileLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
   }, []);
+
+  const [changingStatusId, setChangingStatusId] = useState<string | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
+
+  const handleChangeStatus = async (type: 'resource' | 'pathway' | 'hub', id: string, status: 'draft' | 'public' | 'private') => {
+    setOpenDropdownId(null);
+    setChangingStatusId(id);
+    setStatusError(null);
+    try {
+      const api = type === 'resource' ? resourceAPI : type === 'pathway' ? pathwayAPI : hubAPI;
+      const res = await api.changeStatus(id, status);
+      if (res && res.success === false) {
+        setStatusError(res.message || "Failed to update status.");
+      } else {
+        await fetchProfile();
+      }
+    } catch (e) {
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
+      setStatusError(err.response?.data?.message || err.message || "Failed to update status.");
+      console.error("Failed to change status:", e);
+    } finally {
+      setChangingStatusId(null);
+      setTimeout(() => setStatusError(null), 5000);
+    }
+  };
 
   const renderStatus = (status: string) => {
     if (status === "Active") return <span className={`${styles.statusLabel} ${styles.statusActive}`}>{status}</span>;
@@ -287,6 +353,19 @@ export default function ProfilePage() {
 
   return (
     <div className={styles.pageContainer}>
+      {statusError && (
+        <div
+          style={{
+            position: "fixed", top: 20, right: 20, zIndex: 2000,
+            background: "#fef2f2", border: "1px solid #fecaca", color: "#991b1b",
+            padding: "12px 16px", borderRadius: "10px", fontSize: "0.875rem",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)", maxWidth: "360px",
+          }}
+          role="alert"
+        >
+          {statusError}
+        </div>
+      )}
 
       {/* Hero Section */}
       <div className={styles.heroSection}>
@@ -389,31 +468,31 @@ export default function ProfilePage() {
           className={`${styles.tab} ${activeTab === 'resources' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('resources')}
         >
-          <DocumentIcon /> Resources <span className={styles.tabCount}>{displayResources.length}</span>
+          <DocumentIcon /> Resources <span className={styles.tabCount}>{publishedResources.length}</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'pathways' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('pathways')}
         >
-          <PathwayLineIconDark /> Pathways <span className={styles.tabCount}>{displayPathways.length}</span>
+          <PathwayLineIconDark /> Pathways <span className={styles.tabCount}>{publishedPathways.length}</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'hubs' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('hubs')}
         >
-          <HubFolderIcon /> Hubs <span className={styles.tabCount}>{displayHubs.length}</span>
+          <HubFolderIcon /> Hubs <span className={styles.tabCount}>{publishedHubs.length}</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'onlyme' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('onlyme')}
         >
-          <LockIcon /> Only me <span className={styles.tabCount}>0</span>
+          <LockIcon /> Only me <span className={styles.tabCount}>{onlyMeItems.length}</span>
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'drafts' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('drafts')}
         >
-          <DraftIcon /> Drafts <span className={styles.tabCount}>0</span>
+          <DraftIcon /> Drafts <span className={styles.tabCount}>{draftItems.length}</span>
         </button>
       </div>
 
@@ -435,7 +514,7 @@ export default function ProfilePage() {
                 </tr>
               </thead>
               <tbody>
-                {displayResources.map((res) => (
+                {publishedResources.map((res) => (
                   <tr key={res.id} className={styles.tr}>
                     <td className={styles.td}>
                       <div className={styles.resourceName}>
@@ -473,6 +552,12 @@ export default function ProfilePage() {
                             <button className={styles.dropdownItem} onClick={() => setOpenDropdownId(null)}>
                               <ShareIcon /> Share
                             </button>
+                            <button className={styles.dropdownItem} disabled={changingStatusId === res.id} onClick={() => handleChangeStatus('resource', res.id, 'draft')}>
+                              <DraftIcon /> Save as Draft
+                            </button>
+                            <button className={styles.dropdownItem} disabled={changingStatusId === res.id} onClick={() => handleChangeStatus('resource', res.id, 'private')}>
+                              <LockIcon /> Mark as Only Me
+                            </button>
                             <button className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`} onClick={() => setOpenDropdownId(null)}>
                               <TrashIcon /> Delete
                             </button>
@@ -504,7 +589,7 @@ export default function ProfilePage() {
                 </tr>
               </thead>
               <tbody>
-                {displayPathways.map((pw) => (
+                {publishedPathways.map((pw) => (
                   <tr key={pw.id} className={styles.tr}>
                     <td className={styles.td}>
                       <div className={styles.resourceName}>
@@ -543,6 +628,12 @@ export default function ProfilePage() {
                             <button className={styles.dropdownItem} onClick={() => setOpenDropdownId(null)}>
                               <ShareIcon /> Share
                             </button>
+                            <button className={styles.dropdownItem} disabled={changingStatusId === pw.id} onClick={() => handleChangeStatus('pathway', pw.id, 'draft')}>
+                              <DraftIcon /> Save as Draft
+                            </button>
+                            <button className={styles.dropdownItem} disabled={changingStatusId === pw.id} onClick={() => handleChangeStatus('pathway', pw.id, 'private')}>
+                              <LockIcon /> Mark as Only Me
+                            </button>
                             <button className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`} onClick={() => setOpenDropdownId(null)}>
                               <TrashIcon /> Delete
                             </button>
@@ -574,7 +665,7 @@ export default function ProfilePage() {
                 </tr>
               </thead>
               <tbody>
-                {displayHubs.map((hub) => (
+                {publishedHubs.map((hub) => (
                   <tr key={hub.id} className={styles.tr}>
                     <td className={styles.td}>
                       <div className={styles.resourceName}>
@@ -613,6 +704,12 @@ export default function ProfilePage() {
                             <button className={styles.dropdownItem} onClick={() => setOpenDropdownId(null)}>
                               <ShareIcon /> Share
                             </button>
+                            <button className={styles.dropdownItem} disabled={changingStatusId === hub.id} onClick={() => handleChangeStatus('hub', hub.id, 'draft')}>
+                              <DraftIcon /> Save as Draft
+                            </button>
+                            <button className={styles.dropdownItem} disabled={changingStatusId === hub.id} onClick={() => handleChangeStatus('hub', hub.id, 'private')}>
+                              <LockIcon /> Mark as Only Me
+                            </button>
                             <button className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`} onClick={() => setOpenDropdownId(null)}>
                               <TrashIcon /> Delete
                             </button>
@@ -628,7 +725,6 @@ export default function ProfilePage() {
         )}
 
 
-        {/* Placeholders for other tabs */}
         {(activeTab === 'onlyme' || activeTab === 'drafts') && (
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
@@ -644,23 +740,29 @@ export default function ProfilePage() {
                 </tr>
               </thead>
               <tbody>
-                {MOCK_MIXED_TABLE.map((row) => (
-                  <tr key={row.id} className={styles.tr}>
+                {(activeTab === 'onlyme' ? onlyMeItems : draftItems).length === 0 ? (
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: 'center', padding: '40px', color: '#8c95a6' }}>
+                      {activeTab === 'onlyme' ? 'Nothing marked Only Me yet' : 'No drafts yet'}
+                    </td>
+                  </tr>
+                ) : (activeTab === 'onlyme' ? onlyMeItems : draftItems).map((row) => (
+                  <tr key={`${row.type}-${row.id}`} className={styles.tr}>
                     <td className={styles.td}>
                       <div className={styles.resourceName}>
                         {renderTypeIcon(row.type)}
                       </div>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.resourceName} style={{ color: row.id === 1 ? '#024A94' : '#11243d' }}>
-                        {row.name}
+                      <span className={styles.resourceName}>
+                        {row.title}
                       </span>
                     </td>
                     <td className={styles.td}>
-                      <span className={styles.shortDesc}>{row.desc}</span>
+                      <span className={styles.shortDesc}>{row.description}</span>
                     </td>
-                    <td className={styles.td}>{row.downloads}</td>
-                    <td className={styles.td}>{row.saves}</td>
+                    <td className={styles.td}>{row.viewCount}</td>
+                    <td className={styles.td}>{row.viewCount}</td>
                     <td className={styles.td}>
                       <Link href={`/edit-${row.type}/${row.id}`} className={styles.actionIcon}>
                         <EditIcon />
@@ -668,13 +770,13 @@ export default function ProfilePage() {
                     </td>
                     <td className={styles.td}>
                       <div className={styles.moreDropdownWrapper}>
-                        <span 
-                          className={styles.actionIcon} 
-                          onClick={() => setOpenDropdownId(openDropdownId === `mixed-${row.id}` ? null : `mixed-${row.id}`)}
+                        <span
+                          className={styles.actionIcon}
+                          onClick={() => setOpenDropdownId(openDropdownId === `mixed-${row.type}-${row.id}` ? null : `mixed-${row.type}-${row.id}`)}
                         >
                           <MoreIcon />
                         </span>
-                        {openDropdownId === `mixed-${row.id}` && (
+                        {openDropdownId === `mixed-${row.type}-${row.id}` && (
                           <div className={styles.moreDropdown}>
                             <Link href={`/edit-${row.type}/${row.id}`} className={styles.dropdownItem}>
                               <EditIcon /> Edit
@@ -682,6 +784,18 @@ export default function ProfilePage() {
                             <button className={styles.dropdownItem} onClick={() => setOpenDropdownId(null)}>
                               <ShareIcon /> Share
                             </button>
+                            <button className={styles.dropdownItem} disabled={changingStatusId === row.id} onClick={() => handleChangeStatus(row.type, row.id, 'public')}>
+                              <GlobeIcon /> Publish
+                            </button>
+                            {row.status === 'draft' ? (
+                              <button className={styles.dropdownItem} disabled={changingStatusId === row.id} onClick={() => handleChangeStatus(row.type, row.id, 'private')}>
+                                <LockIcon /> Mark as Only Me
+                              </button>
+                            ) : (
+                              <button className={styles.dropdownItem} disabled={changingStatusId === row.id} onClick={() => handleChangeStatus(row.type, row.id, 'draft')}>
+                                <DraftIcon /> Save as Draft
+                              </button>
+                            )}
                             <button className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`} onClick={() => setOpenDropdownId(null)}>
                               <TrashIcon /> Delete
                             </button>

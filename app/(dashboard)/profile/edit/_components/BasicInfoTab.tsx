@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import Select from "@/app/components/ui/Select";
+import { COUNTRIES } from "@/app/lib/constants/onboarding";
 import styles from "./Tab.module.css";
 
 const PlusIcon = () => (
@@ -36,15 +37,9 @@ interface BasicInfoTabProps {
   onChange: (field: string, value: string) => void;
 }
 
-const LOCATION_OPTIONS = [
-  { value: "Nigeria", label: "Nigeria" },
-  { value: "Kenya", label: "Kenya" },
-  { value: "South Africa", label: "South Africa" },
-  { value: "Ghana", label: "Ghana" },
-  { value: "United States", label: "United States" },
-  { value: "United Kingdom", label: "United Kingdom" },
-  { value: "Worldwide", label: "Worldwide" },
-];
+// Same source and value format (2-letter codes) as onboarding's Location
+// field, so a location set at signup actually shows as selected here too.
+const LOCATION_OPTIONS = COUNTRIES.filter((c) => c.value !== "worldwide");
 
 export default function BasicInfoTab({
   coverPhoto,
@@ -222,6 +217,7 @@ export default function BasicInfoTab({
                 onChange={(val) => onChange("location", val)}
                 placeholder="Select Location"
                 isTransparent={false}
+                searchable
               />
             </div>
           </div>

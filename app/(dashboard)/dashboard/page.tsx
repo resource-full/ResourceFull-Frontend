@@ -62,6 +62,19 @@ export default function DashboardPage() {
     isLoadingHubs,
   } = useDashboardData(displayFilters);
 
+  // "best_match" and "most_saved" have no backing data in the bulk list
+  // responses (no relevance score, no per-item save count), so they're
+  // left as a no-op (original order preserved) rather than faked.
+  function applySort<T extends { createdAt: string; averageRating?: number }>(items: T[], sort: string[]): T[] {
+    if (sort.includes("newest")) {
+      return [...items].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    if (sort.includes("highest_rating") && items.length && items[0].averageRating !== undefined) {
+      return [...items].sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+    }
+    return items;
+  }
+
   const filteredResources = useMemo(() => {
     let result = displayResources;
     if (activeTag !== "All") {
@@ -73,7 +86,7 @@ export default function DashboardPage() {
     if (priceFilters.includes("paid") && !priceFilters.includes("free")) {
       result = result.filter(r => !r.isFree);
     }
-    return result;
+    return applySort(result, priceFilters);
   }, [displayResources, activeTag, priceFilters]);
 
   const filteredPathways = useMemo(() => {
@@ -87,7 +100,7 @@ export default function DashboardPage() {
     if (priceFilters.includes("paid") && !priceFilters.includes("free")) {
       result = result.filter(p => !p.isFree);
     }
-    return result;
+    return applySort(result, priceFilters);
   }, [displayPathways, activeTag, priceFilters]);
 
   const filteredHubs = useMemo(() => {
@@ -95,8 +108,11 @@ export default function DashboardPage() {
     if (activeTag !== "All") {
       result = result.filter(h => h.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase().replace(" ", ""))));
     }
+    if (priceFilters.includes("newest")) {
+      result = [...result].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
     return result;
-  }, [displayHubs, activeTag]);
+  }, [displayHubs, activeTag, priceFilters]);
 
   const getDynamicTitle = () => {
     if (filters.searchQuery) {

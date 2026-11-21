@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
-import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { COUNTRIES, SKILLS_OPTIONS, CONTENT_EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { pathwayAPI } from "@/app/lib/api/pathway";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { Resource } from "@/app/lib/types/resource";
@@ -160,7 +160,7 @@ export default function AddPathwayPage() {
         : 'Worldwide';
 
       const experienceLabel = experiences.length > 0
-        ? EXPERIENCE_OPTIONS.find(e => e.value === experiences[0])?.label
+        ? CONTENT_EXPERIENCE_OPTIONS.find(e => e.value === experiences[0])?.label
         : 'Undergraduate';
 
       const industryLabel = industries.length > 0
@@ -370,7 +370,7 @@ export default function AddPathwayPage() {
 
           <FormMultiSelect
             label="Experience"
-            options={EXPERIENCE_OPTIONS}
+            options={CONTENT_EXPERIENCE_OPTIONS}
             selected={experiences}
             onChange={setExperiences}
             isOpen={openDropdown === 'experience'}

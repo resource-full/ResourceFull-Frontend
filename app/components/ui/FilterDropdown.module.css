@@ -110,3 +110,38 @@
   width: 12px;
   height: 12px;
 }
+
+/* ============================================================
+   Mobile — pill-shaped chip to match the rest of the modern
+   mobile filter row, instead of a plain text link.
+   ============================================================ */
+@media (max-width: 768px) {
+  .dropdownTrigger {
+    background: #f6f6f6;
+    border-radius: 9999px;
+    padding: 8px 14px;
+    white-space: nowrap;
+  }
+
+  .dropdownTrigger:hover {
+    background: #eeeeee;
+  }
+
+  .dropdownMenu {
+    position: fixed;
+    top: auto;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    margin-top: 0;
+    min-width: 0;
+    max-height: 60vh;
+    border-radius: 20px;
+    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.14);
+    z-index: 300;
+  }
+
+  .menuItems {
+    max-height: 50vh;
+  }
+}

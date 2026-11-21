@@ -53,6 +53,74 @@
 }
 
 /* ============================================================
+   Vastago Grotesk — Local Font Faces (body/secondary typeface)
+   ============================================================ */
+
+@font-face {
+  font-family: "Vastago Grotesk";
+  src: url("/fonts/vastago-grotesk-fonts/VastagoGrotesk-ExtraLight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vastago Grotesk";
+  src: url("/fonts/vastago-grotesk-fonts/VastagoGrotesk-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vastago Grotesk";
+  src: url("/fonts/vastago-grotesk-fonts/VastagoGrotesk-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vastago Grotesk";
+  src: url("/fonts/vastago-grotesk-fonts/VastagoGrotesk-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vastago Grotesk";
+  src: url("/fonts/vastago-grotesk-fonts/VastagoGrotesk-SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vastago Grotesk";
+  src: url("/fonts/vastago-grotesk-fonts/VastagoGrotesk-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vastago Grotesk";
+  src: url("/fonts/vastago-grotesk-fonts/VastagoGrotesk-Heavy.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vastago Grotesk";
+  src: url("/fonts/vastago-grotesk-fonts/VastagoGrotesk-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
    Design Tokens — Tailwind v4 @theme
    ============================================================ */
 
@@ -87,6 +155,7 @@
 
   /* Typography */
   --font-family: "Clash Grotesk", system-ui, -apple-system, sans-serif;
+  --font-family-body: "Vastago Grotesk", system-ui, -apple-system, sans-serif;
 
   /* Radius */
   --radius-sm: 6px;

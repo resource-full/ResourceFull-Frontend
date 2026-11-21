@@ -38,6 +38,7 @@
 }
 
 .description {
+  font-family: var(--font-family-body);
   font-size: 16px;
   font-weight: 400;
   line-height: 1.7;

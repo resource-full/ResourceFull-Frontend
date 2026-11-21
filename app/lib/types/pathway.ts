@@ -13,6 +13,10 @@ export interface Pathway {
   _id: string;
   id: string;
   name: string;
+  // Despite the create payload's `name` field, the backend's actual schema
+  // field is `title` — it comes back null today due to a backend bug where
+  // the create handler never maps the submitted name onto it.
+  title?: string | null;
   description: string;
   blocks: PathwayBlock[];
   author: {
@@ -35,7 +39,7 @@ export interface Pathway {
   isFree: boolean;
   price: number;
   currency: string;
-  status: "draft" | "published";
+  status: "draft" | "public" | "private";
   hub: {
     _id: string;
     name: string;

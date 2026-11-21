@@ -28,7 +28,7 @@ export const hubAPI = {
     },
 
     getMyHubs: async (params?: Record<string, any>) => {
-        const response = await apiClient.get(`/hubs/my`, { params });
+        const response = await apiClient.get<GetAllHubsResponse>(`/hubs/my`, { params });
         return response.data;
     },
 

@@ -47,5 +47,10 @@ export const walletAPI = {
     getMonthlySummary: async (year: number, month: number) => {
         const response = await apiClient.get<GetMonthlySummaryResponse>(`/wallet/transactions/summary/${year}/${month}`);
         return response.data;
+    },
+
+    exportTransactions: async (format: "pdf" | "csv") => {
+        const response = await apiClient.get(`/wallet/transactions/export/${format}`, { responseType: 'blob' });
+        return response.data;
     }
 };

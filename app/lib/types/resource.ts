@@ -11,7 +11,7 @@ export interface Resource {
   description: string;
   resourceFile: ResourceFile;
   coverPhoto: string;
-  status: 'draft' | 'published';
+  status: 'draft' | 'public' | 'private';
   owner: {
     name: string;
     avatar: string;

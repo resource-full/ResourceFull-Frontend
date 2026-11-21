@@ -1,20 +1,21 @@
 .sidebarPanel {
   display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
   width: 50%;
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-xl);
+  background: var(--color-sidebar-bg);
 }
 
 .heroImage {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 8px;
-  overflow-y: auto;
-  min-height: 100vh;
+  width: 100%;
+  height: auto;
+  /* Cap at the source image's native resolution so wide panels don't
+     upscale it past its real pixel size, which is what made it blurry. */
+  max-width: 576px;
 }
 
 /* ---------- Responsive ---------- */

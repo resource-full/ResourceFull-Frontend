@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
-import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { COUNTRIES, SKILLS_OPTIONS, CONTENT_EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { hubAPI } from "@/app/lib/api/hub";
 import { resourceAPI } from "@/app/lib/api/resource";
 import { pathwayAPI } from "@/app/lib/api/pathway";
@@ -143,8 +143,13 @@ export default function EditHubPage() {
           setLocations(hub.applicableLocation ? hub.applicableLocation.split(",").map((s) => s.trim()).filter(Boolean) : []);
           setExperiences(hub.experience ? hub.experience.split(",").map((s) => s.trim()).filter(Boolean) : []);
           setIndustries(hub.industry ? hub.industry.split(",").map((s) => s.trim()).filter(Boolean) : []);
-          setSelectedResources(hub.resources || []);
-          setSelectedPathways(hub.pathways || []);
+          // GET /hubs/:id returns resources/pathways as populated objects,
+          // not plain ID strings, even though the Hub type says string[] —
+          // normalize so downstream code (which treats these as IDs) works.
+          const toId = (item: unknown): string =>
+            typeof item === "string" ? item : (item as { _id?: string; id?: string })._id || (item as { id?: string }).id || "";
+          setSelectedResources(((hub.resources as unknown[]) || []).map(toId).filter(Boolean));
+          setSelectedPathways(((hub.pathways as unknown[]) || []).map(toId).filter(Boolean));
         }
       } catch (error) {
         console.error("Failed to fetch hub:", error);
@@ -158,9 +163,12 @@ export default function EditHubPage() {
   useEffect(() => {
     const fetchAvailable = async () => {
       try {
+        // A hub can only bundle resources/pathways the current user owns —
+        // the backend rejects IDs it doesn't own with a 400 — so the picker
+        // must only offer the user's own content, not the full catalog.
         const [resRes, pathRes] = await Promise.all([
-          resourceAPI.getAllResources(),
-          pathwayAPI.getAllPathways(),
+          resourceAPI.getMyResources(),
+          pathwayAPI.getMyPathways(),
         ]);
         if (resRes.success && resRes.data.resources) {
           setAvailableResources(resRes.data.resources);
@@ -314,7 +322,7 @@ export default function EditHubPage() {
 
         <FormMultiSelect
           label="Experience"
-          options={EXPERIENCE_OPTIONS}
+          options={CONTENT_EXPERIENCE_OPTIONS}
           selected={experiences}
           onChange={setExperiences}
           isOpen={openDropdown === 'experience'}
@@ -382,7 +390,7 @@ export default function EditHubPage() {
                         <CheckIcon />
                       </div>
                     </div>
-                    <DummyPathwayCard title={path.name} variant="purple" />
+                    <DummyPathwayCard title={path.name || path.title || "Untitled Pathway"} variant="purple" />
                   </div>
                 );
               })}
@@ -437,7 +445,7 @@ export default function EditHubPage() {
                           {isSelected && <span style={{ color: '#fff' }}><CheckIcon /></span>}
                         </div>
                         <div style={{ pointerEvents: 'none', width: '100%' }}>
-                          <DummyPathwayCard title={path.name} variant={idx % 2 === 0 ? "purple" : "orange"} />
+                          <DummyPathwayCard title={path.name || path.title || "Untitled Pathway"} variant={idx % 2 === 0 ? "purple" : "orange"} />
                         </div>
                         <input
                           type="checkbox"

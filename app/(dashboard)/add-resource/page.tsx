@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FormMultiSelect from "@/app/components/ui/FormMultiSelect";
-import { COUNTRIES, SKILLS_OPTIONS, EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
+import { COUNTRIES, SKILLS_OPTIONS, CONTENT_EXPERIENCE_OPTIONS } from "@/app/lib/constants/onboarding";
 import { resourceAPI } from "@/app/lib/api/resource";
 import styles from "./page.module.css";
 
@@ -117,8 +117,8 @@ export default function AddResourcePage() {
         ? COUNTRIES.find(c => c.value === locations[0])?.label 
         : 'Worldwide';
         
-      const experienceLabel = experiences.length > 0 
-        ? EXPERIENCE_OPTIONS.find(e => e.value === experiences[0])?.label 
+      const experienceLabel = experiences.length > 0
+        ? CONTENT_EXPERIENCE_OPTIONS.find(e => e.value === experiences[0])?.label
         : 'Professional (above 6 years)';
         
       const industryLabel = industries.length > 0 
@@ -321,7 +321,7 @@ export default function AddResourcePage() {
 
             <FormMultiSelect
               label="Experience"
-              options={EXPERIENCE_OPTIONS}
+              options={CONTENT_EXPERIENCE_OPTIONS}
               selected={experiences}
               onChange={setExperiences}
               isOpen={openDropdown === 'experience'}

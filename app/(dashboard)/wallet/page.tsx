@@ -6,6 +6,7 @@ import DashboardHeader, { DashboardFilters } from "../_components/DashboardHeade
 import BalanceCard from "./_components/BalanceCard";
 import TransactionHistory from "./_components/TransactionHistory";
 import PayoutSidebar from "./_components/PayoutSidebar";
+import { walletAPI } from "@/app/lib/api/wallet";
 import styles from "./page.module.css";
 
 export default function WalletPage() {
@@ -15,6 +16,27 @@ export default function WalletPage() {
     industry: [],
     experience: [],
   });
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadStatement = async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const blob = await walletAPI.exportTransactions("pdf");
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "wallet-statement.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Failed to download statement", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <div className={styles.pageContainer}>
@@ -27,7 +49,14 @@ export default function WalletPage() {
         </div>
         <div className={styles.headerLinks}>
           <Link href="/analytics" className={styles.downloadLink}>Analytics</Link>
-          <Link href="#" className={styles.downloadLink}>Download statement</Link>
+          <button
+            className={styles.downloadLink}
+            onClick={handleDownloadStatement}
+            disabled={isDownloading}
+            style={{ background: "none", border: "none", padding: 0, cursor: isDownloading ? "default" : "pointer", fontFamily: "inherit" }}
+          >
+            {isDownloading ? "Downloading..." : "Download statement"}
+          </button>
         </div>
       </div>
 

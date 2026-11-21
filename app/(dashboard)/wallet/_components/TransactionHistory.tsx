@@ -57,10 +57,30 @@ export default function TransactionHistory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showExportToast, setShowExportToast] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
-  const handleExport = () => {
-    setShowExportToast(true);
-    setTimeout(() => setShowExportToast(false), 3000);
+  const handleExport = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+    setExportError(null);
+    try {
+      const blob = await walletAPI.exportTransactions("pdf");
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "wallet-statement.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      setShowExportToast(true);
+      setTimeout(() => setShowExportToast(false), 3000);
+    } catch (err) {
+      setExportError(getErrorMessage(err, "Failed to export transactions."));
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   useEffect(() => {
@@ -146,11 +166,15 @@ export default function TransactionHistory() {
             ))}
           </div>
 
-          <button className={styles.exportBtn} onClick={handleExport}>
-            Export
+          <button className={styles.exportBtn} onClick={handleExport} disabled={isExporting}>
+            {isExporting ? "Exporting..." : "Export"}
           </button>
         </div>
       </div>
+
+      {exportError && (
+        <div className={styles.errorMessage} role="alert">{exportError}</div>
+      )}
 
       <div className={styles.list}>
         {loading ? (

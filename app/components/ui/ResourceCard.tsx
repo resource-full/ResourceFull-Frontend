@@ -18,6 +18,7 @@ interface ResourceCardProps {
   previewImageUrl?: string;
   viewCount: string;
   commentCount: number | string;
+  confidenceScore?: number;
   href?: string;
   isPurchased?: boolean;
   isSaved?: boolean;
@@ -45,12 +46,6 @@ const DocumentIcon = () => (
   </svg>
 );
 
-const MessageIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-  </svg>
-);
-
 export default function ResourceCard({
   variant,
   authorName,
@@ -62,7 +57,7 @@ export default function ResourceCard({
   tags,
   previewImageUrl,
   viewCount,
-  commentCount,
+  confidenceScore,
   href,
   isPurchased,
   isSaved,
@@ -135,23 +130,14 @@ export default function ResourceCard({
       </div>
 
       <div className={styles.footer}>
-        <div className={styles.statsLeft}>
-          <div className={styles.avatarStack}>
-            {/* Mocking a stack of avatars */}
-            <Image src="https://i.pravatar.cc/150?u=1" alt="User 1" width={28} height={28} unoptimized />
-            <Image src="https://i.pravatar.cc/150?u=2" alt="User 2" width={28} height={28} unoptimized />
-          </div>
-          <span className={styles.viewCount}>{viewCount}</span>
+        <div className={styles.avatarStack}>
+          {/* Mocking a stack of avatars */}
+          <Image src="https://i.pravatar.cc/150?u=1" alt="User 1" width={24} height={24} unoptimized />
+          <Image src="https://i.pravatar.cc/150?u=2" alt="User 2" width={24} height={24} unoptimized />
+          <span className={styles.viewCountBubble}>{viewCount}</span>
         </div>
-        <div className={styles.statsRight}>
-          <span className={styles.commentCount}>{commentCount}</span>
-          {isPurchased ? (
-            <div className={styles.rsBadge}>R.S</div>
-          ) : isSaved ? (
-            <div className={styles.rsBadge}>R.S</div>
-          ) : (
-            <MessageIcon />
-          )}
+        <div className={styles.confidenceChip}>
+          {Math.round((confidenceScore || 0) * 100)}% C.S
         </div>
       </div>
     </div>

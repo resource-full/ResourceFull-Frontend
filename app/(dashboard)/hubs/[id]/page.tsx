@@ -359,8 +359,8 @@ export default function HubDetailPage({ params }: { params: Promise<{ id: string
                 <div className={styles.heroHeader}>
                   <div className={styles.authorInfo}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://i.pravatar.cc/150?u=stella" alt="Author" width={32} height={32} className={styles.authorAvatar} />
-                    <span className={styles.authorName}>{hub?.author?.email || "Author"}</span>
+                    <img src={hub?.owner?.avatar || "https://i.pravatar.cc/150"} alt="Author" width={32} height={32} className={styles.authorAvatar} />
+                    <span className={styles.authorName}>{hub?.owner?.name || hub?.owner?.email || "Author"}</span>
                   </div>
                   <div className={styles.heroActions}>
                     <button className={styles.iconBtn} aria-label="Share">
